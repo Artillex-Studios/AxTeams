@@ -1,7 +1,6 @@
 package com.artillexstudios.axteams.teams;
 
 import com.artillexstudios.axapi.utils.LogUtils;
-import com.artillexstudios.axteams.api.teams.Group;
 import com.artillexstudios.axteams.api.teams.Permission;
 import com.artillexstudios.axteams.api.teams.TeamID;
 import com.artillexstudios.axteams.api.teams.values.Identifiable;
@@ -15,7 +14,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -241,5 +239,12 @@ public final class Team implements com.artillexstudios.axteams.api.teams.Team {
     @Override
     public boolean hasAllyRequest(TeamID teamID) {
         return this.allyRequests.contains(teamID);
+    }
+
+    @Override
+    public void message(String message) {
+        for (User member : this.members(true)) {
+            member.message(message);
+        }
     }
 }

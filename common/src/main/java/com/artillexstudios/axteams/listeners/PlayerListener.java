@@ -21,6 +21,9 @@ public final class PlayerListener implements Listener {
                 if (Config.DEBUG) {
                     LogUtils.debug("Loaded user!");
                 }
+
+                // TODO: Send message that there are ally requests
+
             });
         } catch (UserAlreadyLoadedException ignored) {
             LogUtils.error("Could not load user, as the user is already loaded!");

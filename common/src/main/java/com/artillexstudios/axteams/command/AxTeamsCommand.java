@@ -380,11 +380,13 @@ public enum AxTeamsCommand {
                                             String password = args.getByClass("password", String.class);
                                             if (!warp.password().isBlank() && !warp.password().equals(password)) {
                                                 // TODO: Send incorrect password message
+                                                MessageUtils.sendMessage(sender, Language.PREFIX, "Incorrect password");
                                                 return;
                                             }
 
                                             PaperUtils.teleportAsync(sender, warp.location()).thenAccept(accepted -> {
                                                 // TODO: Send teleported message
+                                                MessageUtils.sendMessage(sender, Language.PREFIX, "teleported to warp");
                                             });
                                         })
                                 )
@@ -406,13 +408,15 @@ public enum AxTeamsCommand {
                                         return;
                                     }
 
-                                    if (warp.password() != null) {
+                                    if (warp.password() != null && !warp.password().isBlank()) {
                                         // TODO: Send needs password message
+                                        MessageUtils.sendMessage(sender, Language.PREFIX, "needs password");
                                         return;
                                     }
 
                                     PaperUtils.teleportAsync(sender, warp.location()).thenAccept(accepted -> {
                                         // TODO: Send teleported message
+                                        MessageUtils.sendMessage(sender, Language.PREFIX, "teleported to warp");
                                     });
                                 })
                         )

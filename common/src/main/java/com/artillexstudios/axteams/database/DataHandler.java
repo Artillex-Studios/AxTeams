@@ -14,6 +14,7 @@ import com.artillexstudios.axteams.api.teams.values.TeamValue;
 import com.artillexstudios.axteams.api.teams.values.TeamValues;
 import com.artillexstudios.axteams.api.users.User;
 import com.artillexstudios.axteams.config.Config;
+import com.artillexstudios.axteams.config.Groups;
 import com.artillexstudios.axteams.teams.Teams;
 import com.artillexstudios.axteams.users.Users;
 import it.unimi.dsi.fastutil.longs.LongLongPair;
@@ -39,6 +40,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public final class DataHandler {
     private static final Table<Record> USERS = DSL.table("axteams_users");
@@ -52,8 +54,6 @@ public final class DataHandler {
     private static final Field<Integer> TEAM_ID = DSL.field("team_id", int.class);
     private static final Field<Integer> TEAM_LEADER = DSL.field("team_leader", int.class);
     private static final Field<Long> LAST_SEEN = DSL.field("last_seen", long.class);
-    private static final Field<Long> TEAM = DSL.field("team", long.class);
-    private static final Field<Long> OTHER_TEAM = DSL.field("other_team", long.class);
 
     public static CompletionStage<Void> setup() {
         ArrayList<CompletableFuture<Integer>> futures = new ArrayList<>();
@@ -320,6 +320,9 @@ public final class DataHandler {
                     .execute();
 
             com.artillexstudios.axteams.teams.Team team = new com.artillexstudios.axteams.teams.Team(teamID, user, name);
+            for (Supplier<Group> groupSupplier : Groups.DEFAULT_GROUPS) {
+                team.add(TeamValues.GROUPS, groupSupplier.get());
+            }
             user.team(team);
             return team;
         }, AsyncUtils.executor()).exceptionallyAsync(throwable -> {

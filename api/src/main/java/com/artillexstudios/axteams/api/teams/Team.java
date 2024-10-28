@@ -93,4 +93,6 @@ public interface Team {
     boolean isAlly(TeamID teamID);
 
     boolean hasAllyRequest(TeamID teamID);
+
+    void message(String message);
 }

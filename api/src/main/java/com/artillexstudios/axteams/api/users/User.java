@@ -25,4 +25,6 @@ public interface User {
     Group group();
 
     void markUnsaved();
+
+    void message(String message);
 }
