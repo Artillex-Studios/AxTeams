@@ -23,7 +23,6 @@ public final class PlayerListener implements Listener {
                 }
 
                 // TODO: Send message that there are ally requests
-
             });
         } catch (UserAlreadyLoadedException ignored) {
             LogUtils.error("Could not load user, as the user is already loaded!");

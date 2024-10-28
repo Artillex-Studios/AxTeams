@@ -2,6 +2,7 @@ package com.artillexstudios.axteams.teams;
 
 import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axteams.api.teams.Permission;
+import com.artillexstudios.axteams.api.teams.Permissions;
 import com.artillexstudios.axteams.api.teams.TeamID;
 import com.artillexstudios.axteams.api.teams.values.Identifiable;
 import com.artillexstudios.axteams.api.teams.values.TeamValue;
@@ -184,7 +185,7 @@ public final class Team implements com.artillexstudios.axteams.api.teams.Team {
             return true;
         }
 
-        return user.group().permissions().contains(permission);
+        return user.group().permissions().contains(Permissions.ALL) || user.group().permissions().contains(permission);
     }
 
     @Override

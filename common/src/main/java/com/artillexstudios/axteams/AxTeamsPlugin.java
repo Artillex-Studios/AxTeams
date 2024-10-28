@@ -8,6 +8,7 @@ import com.artillexstudios.axapi.utils.AsyncUtils;
 import com.artillexstudios.axapi.utils.FeatureFlags;
 import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axteams.api.AxTeamsAPI;
+import com.artillexstudios.axteams.api.teams.Group;
 import com.artillexstudios.axteams.api.teams.Team;
 import com.artillexstudios.axteams.api.users.User;
 import com.artillexstudios.axteams.command.AxTeamsCommand;
@@ -121,12 +122,39 @@ public final class AxTeamsPlugin extends AxPlugin {
         });
 
         Placeholders.register("group", ctx -> {
+            if (ctx.has(Group.class)) {
+                Group group = ctx.raw(Group.class);
+                if (group == null) {
+                    return "---";
+                }
+
+                return MiniMessage.miniMessage().serialize(group.displayName());
+            }
+
             User user = ctx.resolve(User.class);
             if (user == null) {
                 return "";
             }
 
             return MiniMessage.miniMessage().serialize(user.group().displayName());
+        });
+
+        Placeholders.register("group_name", ctx -> {
+            if (ctx.has(Group.class)) {
+                Group group = ctx.raw(Group.class);
+                if (group == null) {
+                    return "---";
+                }
+
+                return group.name();
+            }
+
+            User user = ctx.resolve(User.class);
+            if (user == null) {
+                return "---";
+            }
+
+            return user.group().name();
         });
 
         Placeholders.register("player", ctx -> {

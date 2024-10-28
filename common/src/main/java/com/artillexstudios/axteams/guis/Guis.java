@@ -1,6 +1,7 @@
 package com.artillexstudios.axteams.guis;
 
 import com.artillexstudios.axteams.api.users.User;
+import com.artillexstudios.axteams.guis.implementation.GroupsGui;
 import com.artillexstudios.axteams.guis.implementation.MainGui;
 import com.artillexstudios.axteams.guis.implementation.UsersGui;
 
@@ -15,6 +16,7 @@ public final class Guis {
         guis.clear();
         guis.put("main", MainGui::new);
         guis.put("users", UsersGui::new);
+        guis.put("groups", GroupsGui::new);
 
         // TODO: Load other files
     }

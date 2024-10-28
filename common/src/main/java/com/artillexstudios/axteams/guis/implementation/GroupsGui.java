@@ -8,7 +8,9 @@ import com.artillexstudios.axapi.placeholders.Placeholders;
 import com.artillexstudios.axapi.placeholders.ResolutionType;
 import com.artillexstudios.axapi.utils.ItemBuilder;
 import com.artillexstudios.axapi.utils.LogUtils;
+import com.artillexstudios.axteams.api.teams.Group;
 import com.artillexstudios.axteams.api.teams.Team;
+import com.artillexstudios.axteams.api.teams.values.TeamValues;
 import com.artillexstudios.axteams.api.users.User;
 import com.artillexstudios.axteams.guis.GuiBase;
 import com.artillexstudios.axteams.utils.FileUtils;
@@ -18,10 +20,10 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public final class UsersGui extends GuiBase {
-    private static final Config config = new Config(FileUtils.PLUGIN_DIRECTORY.resolve("guis/").resolve("users.yml").toFile());
+public final class GroupsGui extends GuiBase {
+    private static final Config config = new Config(FileUtils.PLUGIN_DIRECTORY.resolve("guis/").resolve("groups.yml").toFile());
 
-    public UsersGui(User user) {
+    public GroupsGui(User user) {
         super(user, config, true);
     }
 
@@ -34,18 +36,18 @@ public final class UsersGui extends GuiBase {
 
         Player player = offlinePlayer.getPlayer();
         if (player == null) {
-            LogUtils.warn("Attempted to open users gui for offline player {} ({})", offlinePlayer.getName(), offlinePlayer.getUniqueId());
+            LogUtils.warn("Attempted to open groups gui for offline player {} ({})", offlinePlayer.getName(), offlinePlayer.getUniqueId());
             return;
         }
 
         this.gui().open(player);
     }
 
-    public ItemStack getItem(User member) {
-        Context.Builder ctx = Context.builder(ParseContext.INTERNAL, ResolutionType.OFFLINE).add(User.class, member);
-        Section section = this.config().getSection("user");
+    public ItemStack getItem(Group group, User member) {
+        Context.Builder ctx = Context.builder(ParseContext.INTERNAL, ResolutionType.OFFLINE).add(Group.class, group).add(User.class, member);
+        Section section = this.config().getSection("group");
         if (section == null) {
-            LogUtils.warn("No user section present for users gui! Please reset, or fix your configuration!");
+            LogUtils.warn("No user section present for groups gui! Please reset, or fix your configuration!");
             return new ItemStack(Material.BARRIER);
         }
 
@@ -60,9 +62,9 @@ public final class UsersGui extends GuiBase {
             return;
         }
 
-        for (User member : team.members(true)) {
-            this.gui().addItem(new GuiItem(this.getItem(member), event -> {
-                System.out.println("wowowow");
+        for (Group value : team.values(TeamValues.GROUPS)) {
+            this.gui().addItem(new GuiItem(this.getItem(value, this.user()), event -> {
+                new GroupEditGui(this.user(), value).open();
             }));
         }
     }

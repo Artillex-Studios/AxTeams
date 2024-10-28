@@ -5,6 +5,7 @@ import com.artillexstudios.axteams.api.utils.Registry;
 
 public final class Permissions {
     private static final Registry<String, Permission> registry = new Registry<>();
+    public static final Permission ALL = register(new Permission("*"));
     public static final Permission CHANGE_DISPLAY_NAME = register(new Permission("change_display_name"));
     public static final Permission PVP = register(new Permission("team_pvp"));
     public static final Permission WARP_CREATE = register(new Permission("warp_create"));

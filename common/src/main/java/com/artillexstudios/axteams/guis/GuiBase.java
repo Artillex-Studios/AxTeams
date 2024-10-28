@@ -26,7 +26,7 @@ public abstract class GuiBase {
     private final Config config;
     private final BaseGui gui;
 
-    public GuiBase(User user, Config config, boolean paginated) {
+    public GuiBase(User user, Config config, boolean paginated, boolean latePopulate) {
         this.user = user;
         this.config = config;
         if (paginated) {
@@ -44,7 +44,13 @@ public abstract class GuiBase {
                     .create();
         }
 
-        this.populate();
+        if (!latePopulate) {
+            this.populate();
+        }
+    }
+
+    public GuiBase(User user, Config config, boolean paginated) {
+        this(user, config, paginated, false);
     }
 
     public void populate() {

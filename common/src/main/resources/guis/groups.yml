@@ -1,13 +1,11 @@
-title: "User management"
+title: "Group management"
 rows: 4
 
-user:
-  material: player_head
+group:
+  material: gold_block
   texture: "<texture>"
-  name: "<player>"
+  name: "<group> group"
   lore:
-    - ""
-    - "<gray>- <white>Group: <group>"
     - ""
     - "<gray>» <white>Click to manage!"
 
@@ -25,10 +23,5 @@ items:
     texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTFmMDU5Yzk5ZThlOTIyZjhjYjdmYThlNjA0YTcwMTQ3ZmExMTg0OWIzYjNkYmJmZjIyNjU3OTEyMTRlMjM5MSJ9fX0="
     name: "Next page"
     slots: 29
-    actions:
-      - "[page] next"
-  - type: cauldron
-    name: "Back"
-    slots: 31
     actions:
       - "[page] next"
