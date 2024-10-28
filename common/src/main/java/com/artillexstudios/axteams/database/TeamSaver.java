@@ -40,7 +40,7 @@ public final class TeamSaver {
                 LogUtils.error("An unexpected error occurred while saving teams!", throwable);
                 return null;
             });
-        }, 0, Config.AUTOSAVE_SECONDS, TimeUnit.SECONDS);
+        }, Config.AUTOSAVE_SECONDS, Config.AUTOSAVE_SECONDS, TimeUnit.SECONDS);
     }
 
     public void stop() {

@@ -20,8 +20,6 @@ team-name:
   blacklist:
     - "badword" # The string it contains; regular expression
 
-
-
 # How often should changes to teams get saved?
 # This setting controls how often teams get saved
 # into the database if they have changed.

@@ -63,8 +63,12 @@ public abstract class GuiBase {
             List<String> actionSet = (List<String>) item.get("actions");
             List<Action<?>> actions = Actions.compile(actionSet);
             List<Object> values = Actions.parseAll(actionSet);
+            Map<String, String> placeholders = Placeholders.asMap(Context.builder(ParseContext.INTERNAL, ResolutionType.OFFLINE).add(User.class, this.user));
+            if (com.artillexstudios.axteams.config.Config.DEBUG) {
+                LogUtils.debug("Placeholders for item: {}", placeholders);
+            }
 
-            this.gui.setItem(slots, new GuiItem(new ItemBuilder(item, Placeholders.asMap(Context.builder(ParseContext.INTERNAL, ResolutionType.OFFLINE).add(User.class, user))).get(), event -> {
+            this.gui.setItem(slots, new GuiItem(new ItemBuilder(item, placeholders).get(), event -> {
                 Actions.execute(this.user, this, actions, values);
             }));
         }
@@ -76,7 +80,7 @@ public abstract class GuiBase {
         }
 
         if (slots instanceof Integer integer) {
-            return new IntArrayList(integer);
+            return new IntArrayList(List.of(integer));
         } else if (slots instanceof List<?> list) {
             IntArrayList integers = new IntArrayList();
             List<String> l = (List<String>) list;

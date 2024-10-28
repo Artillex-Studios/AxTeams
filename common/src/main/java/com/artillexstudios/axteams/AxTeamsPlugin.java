@@ -9,11 +9,12 @@ import com.artillexstudios.axapi.utils.FeatureFlags;
 import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axteams.api.AxTeamsAPI;
 import com.artillexstudios.axteams.api.teams.Team;
-import com.artillexstudios.axteams.api.teams.values.TeamValues;
 import com.artillexstudios.axteams.api.users.User;
 import com.artillexstudios.axteams.command.AxTeamsCommand;
 import com.artillexstudios.axteams.config.Config;
+import com.artillexstudios.axteams.config.Groups;
 import com.artillexstudios.axteams.config.Language;
+import com.artillexstudios.axteams.config.Levels;
 import com.artillexstudios.axteams.database.DataHandler;
 import com.artillexstudios.axteams.database.DatabaseConnector;
 import com.artillexstudios.axteams.database.TeamSaver;
@@ -52,6 +53,8 @@ public final class AxTeamsPlugin extends AxPlugin {
 
         Config.reload();
         Language.reload();
+        Levels.reload();
+        Groups.reload();
         AsyncUtils.setup(Config.ASYNC_PROCESSOR_POOL_SIZE);
 
         CommandAPI.onLoad(new CommandAPIBukkitConfig(this)

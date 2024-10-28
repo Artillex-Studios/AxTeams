@@ -20,8 +20,11 @@ import com.artillexstudios.axteams.command.arguments.TeamMemberArgument;
 import com.artillexstudios.axteams.command.arguments.TeamValueArgument;
 import com.artillexstudios.axteams.command.arguments.WarpArgument;
 import com.artillexstudios.axteams.config.Config;
+import com.artillexstudios.axteams.config.Groups;
 import com.artillexstudios.axteams.config.Language;
+import com.artillexstudios.axteams.config.Levels;
 import com.artillexstudios.axteams.guis.implementation.MainGui;
+import com.artillexstudios.axteams.guis.implementation.UsersGui;
 import com.artillexstudios.axteams.teams.NameValidation;
 import com.artillexstudios.axteams.teams.Teams;
 import com.artillexstudios.axteams.users.Users;
@@ -148,7 +151,7 @@ public enum AxTeamsCommand {
                                 return;
                             }
 
-                            new MainGui(user).open();
+                            new UsersGui(user).open();
                         })
                 )
                 .then(new LiteralArgument("chat")
@@ -865,6 +868,14 @@ public enum AxTeamsCommand {
 
                                     if (!Config.reload()) {
                                         failed.add("config.yml");
+                                    }
+
+                                    if (!Groups.reload()) {
+                                        failed.add("groups.yml");
+                                    }
+
+                                    if (!Levels.reload()) {
+                                        failed.add("levels.yml");
                                     }
 
                                     if (!Language.reload()) {
