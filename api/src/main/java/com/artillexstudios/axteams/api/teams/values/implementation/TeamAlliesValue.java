@@ -1,15 +1,11 @@
-package com.artillexstudios.axteams.api.teams.values.newteamvalues;
+package com.artillexstudios.axteams.api.teams.values.implementation;
 
 import com.artillexstudios.axapi.utils.Pair;
 import com.artillexstudios.axteams.api.AxTeamsAPI;
 import com.artillexstudios.axteams.api.teams.Team;
 import com.artillexstudios.axteams.api.teams.TeamID;
 import com.artillexstudios.axteams.api.teams.values.TeamValue;
-import com.artillexstudios.axteams.api.teams.values.TeamValueOld;
 import com.artillexstudios.axteams.api.teams.values.identifiables.IdentifiableInteger;
-import com.artillexstudios.axteams.api.teams.values.identifiables.Warp;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.jooq.DataType;
 import org.jooq.Field;
 import org.jooq.Record;

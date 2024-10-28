@@ -1,4 +1,4 @@
-package com.artillexstudios.axteams.api.teams.values.newteamvalues;
+package com.artillexstudios.axteams.api.teams.values.implementation;
 
 import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axapi.utils.Pair;
