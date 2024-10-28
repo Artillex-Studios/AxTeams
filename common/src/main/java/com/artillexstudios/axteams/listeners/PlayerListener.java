@@ -3,6 +3,7 @@ package com.artillexstudios.axteams.listeners;
 import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axteams.api.teams.Team;
 import com.artillexstudios.axteams.api.users.User;
+import com.artillexstudios.axteams.config.Config;
 import com.artillexstudios.axteams.exception.UserAlreadyLoadedException;
 import com.artillexstudios.axteams.teams.Teams;
 import com.artillexstudios.axteams.users.Users;
@@ -17,7 +18,9 @@ public final class PlayerListener implements Listener {
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
         try {
             Users.loadUser(event.getPlayer().getUniqueId()).thenAccept(user -> {
-                LogUtils.debug("Loaded user!");
+                if (Config.DEBUG) {
+                    LogUtils.debug("Loaded user!");
+                }
             });
         } catch (UserAlreadyLoadedException ignored) {
             LogUtils.error("Could not load user, as the user is already loaded!");
