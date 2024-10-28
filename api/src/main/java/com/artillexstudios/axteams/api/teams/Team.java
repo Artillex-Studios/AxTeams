@@ -6,7 +6,6 @@ import com.artillexstudios.axteams.api.users.User;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -29,10 +28,6 @@ public interface Team {
     default List<User> members() {
         return this.members(false);
     }
-
-    Group group(String id);
-
-    Collection<Group> groups();
 
     List<User> members(boolean includeOwner);
 

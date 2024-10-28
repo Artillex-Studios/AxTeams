@@ -63,6 +63,11 @@ public final class User implements com.artillexstudios.axteams.api.users.User {
     }
 
     @Override
+    public void group(Group group) {
+        this.group = group;
+    }
+
+    @Override
     public Group group() {
         return this.group;
     }

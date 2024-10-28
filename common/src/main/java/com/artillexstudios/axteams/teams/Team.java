@@ -77,16 +77,6 @@ public final class Team implements com.artillexstudios.axteams.api.teams.Team {
     }
 
     @Override
-    public Group group(String id) {
-        return null;
-    }
-
-    @Override
-    public Collection<Group> groups() {
-        return null;
-    }
-
-    @Override
     public List<User> members(boolean includeOwner) {
         List<User> members = new ArrayList<>(this.members);
         if (includeOwner) {

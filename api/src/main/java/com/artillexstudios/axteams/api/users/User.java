@@ -20,6 +20,8 @@ public interface User {
 
     String textures();
 
+    void group(Group group);
+
     Group group();
 
     void markUnsaved();
