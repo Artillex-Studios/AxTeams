@@ -1,0 +1,12 @@
+title: "Team gui"
+rows: 4
+
+items:
+  - type: gray_stained_glass_pane
+    slots:
+      - "0-35"
+  - type: player_head
+    texture: "<texture>"
+    name: "<green>User management"
+    actions:
+      - "[open] users"

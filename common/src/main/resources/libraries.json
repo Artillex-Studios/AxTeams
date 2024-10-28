@@ -1,0 +1,40 @@
+{
+  "version": 0,
+  "repositories": [
+    "https://repo.maven.apache.org/maven2/"
+  ],
+  "libraries": [
+    {
+      "groupId": "org.jooq",
+      "artifactId": "jooq",
+      "version": "3.19.10",
+      "resolveTransitiveDependencies": true
+    },
+    {
+      "groupId": "com.zaxxer",
+      "artifactId": "HikariCP",
+      "version": "5.1.0",
+      "resolveTransitiveDependencies": true
+    },
+    {
+      "groupId": "dev.triumphteam",
+      "artifactId": "triumph-gui",
+      "version": "3.1.10",
+      "resolveTransitiveDependencies": true
+    }
+  ],
+  "relocations": [
+    {
+      "pattern": "org.jooq",
+      "relocatedPattern": "com.artillexstudios.axteams.libs.jooq"
+    },
+    {
+      "pattern": "com.zaxxer",
+      "relocatedPattern": "com.artillexstudios.axteams.libs.hikaricp"
+    },
+    {
+      "pattern": "dev.triumphteam.gui",
+      "relocatedPattern": "com.artillexstudios.axteams.libs.triumphgui"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+prefix: "<b><gradient:#CB2D3E:#EF473A>AxTeams</gradient></b> <gray>»</gray> "
+
+reload:
+  success: "<#00FF00>Successfully reloaded the configurations of the plugin in <white><time></white>ms!"
+  fail: "<#FF0000>There were some issues while reloading file(s): <white><files></white>! Please check out the console for more information! <br>Reload done in: <white><time></white>ms!"
+
+error:
+  user-not-loaded: "<#FF0000>Your userdata has not loaded yet! Please try again in a moment!"
+  already-in-team: "<#FF0000>You are already part of team <team>!"
+  teamvalue-not-found: "<#FF0000>There is no teamvalue registered with id <id>!"
+
+update-notifier:
+  new-version-available: "<#00FF00>A new version of this plugin is available! <gray>(<white>Current:</white> <#FF0000><current></#FF0000> <gray>| <white>Latest:</white> <#00FF00><latest></#00FF00>)</gray>"
+
+config-version: 1

@@ -1,0 +1,8 @@
+name: "AxTeams"
+main: "com.artillexstudios.axteams.AxTeamsPlugin"
+version: "${version}"
+api-version: "1.18"
+folia-supported: true
+
+softdepend:
+  - PlaceholderAPI

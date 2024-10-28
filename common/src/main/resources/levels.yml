@@ -1,0 +1,21 @@
+# If team levels should be enabled
+enabled: true
+# Set to -1 to disable
+max-level: 20
+# If team xp can go negative
+allow-negative: false
+
+levels:
+  - level: 1
+    experience: "300 - 200"
+    methods:
+      - id: "kill"
+        filters:
+          - id: "entity_type"
+            whitelist:
+              - "player"
+        experience: "2"
+      - id: "death"
+        experience: "-2"
+
+config-version: 1

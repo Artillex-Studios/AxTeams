@@ -1,0 +1,14 @@
+groups:
+  - id: member # This is only used internally
+    name: "Member" # This is the name that shows up
+    priority: -1 # Default group priority
+    permissions:
+      - "chest.open"
+  - id: moderator
+    name: "Moderator"
+    priority: 1
+  - id: owner
+    name: "Owner"
+    priority: 10000 # Owner prioirty
+    permissions:
+      - "*"
