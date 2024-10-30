@@ -8,7 +8,6 @@ import com.artillexstudios.axapi.utils.PaperUtils;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axteams.AxTeamsPlugin;
 import com.artillexstudios.axteams.api.AxTeamsAPI;
-import com.artillexstudios.axteams.api.teams.Group;
 import com.artillexstudios.axteams.api.teams.Permissions;
 import com.artillexstudios.axteams.api.teams.Team;
 import com.artillexstudios.axteams.api.teams.TeamID;
@@ -373,6 +372,8 @@ public enum AxTeamsCommand {
                                         return;
                                     }
 
+
+                                    other.group(team.leader().group());
                                     team.leader(other);
                                     // TODO: feedback
                                 })

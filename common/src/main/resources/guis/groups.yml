@@ -4,7 +4,7 @@ rows: 4
 group:
   material: gold_block
   texture: "<texture>"
-  name: "<group> group"
+  name: "<group_display_name> group"
   lore:
     - ""
     - "<gray>» <white>Click to manage!"

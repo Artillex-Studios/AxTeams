@@ -1,15 +1,30 @@
 title: "Group editor"
 rows: 4
 
-delete:
-  type: barrier
-  name: "Delete"
-  slots: 25
+permissions:
+  type: clock
+  name: "Manage permissions"
+  slots: 14
+
+priority:
+  type: candle
+  name: "Change priority"
+  slots: 16
+
+prefix:
+  type: oak_sign
+  name: "Change prefix"
+  slots: 18
 
 rename:
   type: oak_sign
   name: "Rename"
-  slots: 34
+  slots: 18
+
+delete:
+  type: barrier
+  name: "Delete"
+  slots: 26
 
 items:
   - type: gray_stained_glass_pane

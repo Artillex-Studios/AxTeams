@@ -17,6 +17,7 @@ import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import net.kyori.adventure.text.Component;
 
 import java.util.List;
 import java.util.Map;
@@ -31,14 +32,12 @@ public abstract class GuiBase {
         this.config = config;
         if (paginated) {
             this.gui = Gui.paginated()
-                    .title(StringUtils.format(Placeholders.parse(config.getString("title"), Context.builder(ParseContext.INTERNAL, ResolutionType.OFFLINE).add(User.class, user))))
                     .pageSize(config.getInt("page-size"))
                     .rows(config.getInt("rows"))
                     .disableAllInteractions()
                     .create();
         } else {
             this.gui = Gui.gui()
-                    .title(StringUtils.format(Placeholders.parse(config.getString("title"), Context.builder(ParseContext.INTERNAL, ResolutionType.OFFLINE).add(User.class, user))))
                     .rows(config.getInt("rows"))
                     .disableAllInteractions()
                     .create();
@@ -54,6 +53,7 @@ public abstract class GuiBase {
     }
 
     public void populate() {
+        this.gui.updateTitle(this.title(config.getString("title")));
         for (Map<Object, Object> item : this.config.getMapList("items")) {
             Object slotConfig = item.get("slots");
             if (slotConfig == null) {
@@ -107,6 +107,10 @@ public abstract class GuiBase {
         }
 
         return new IntArrayList();
+    }
+
+    public String title(String title) {
+        return StringUtils.formatToString(Placeholders.parse(title, Context.builder(ParseContext.INTERNAL, ResolutionType.OFFLINE).add(User.class, user)));
     }
 
     public Config config() {

@@ -43,7 +43,7 @@ public final class GroupsGui extends GuiBase {
         this.gui().open(player);
     }
 
-    public ItemStack getItem(Group group, User member) {
+    private ItemStack getItem(Group group, User member) {
         Context.Builder ctx = Context.builder(ParseContext.INTERNAL, ResolutionType.OFFLINE).add(Group.class, group).add(User.class, member);
         Section section = this.config().getSection("group");
         if (section == null) {
