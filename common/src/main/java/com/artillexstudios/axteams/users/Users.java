@@ -41,8 +41,6 @@ public final class Users {
             tempUsers.put(uuid, user);
         }
 
-        Teams.
-
         return user;
     }
 
