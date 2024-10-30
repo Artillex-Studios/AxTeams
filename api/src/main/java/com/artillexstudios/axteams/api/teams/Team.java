@@ -3,6 +3,7 @@ package com.artillexstudios.axteams.api.teams;
 import com.artillexstudios.axteams.api.teams.values.Identifiable;
 import com.artillexstudios.axteams.api.teams.values.TeamValue;
 import com.artillexstudios.axteams.api.users.User;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -94,5 +95,5 @@ public interface Team {
 
     boolean hasAllyRequest(TeamID teamID);
 
-    void message(String message);
+    void message(Component message);
 }

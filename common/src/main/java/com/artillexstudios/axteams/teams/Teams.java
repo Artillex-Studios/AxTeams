@@ -155,6 +155,10 @@ public final class Teams {
     public static CompletableFuture<com.artillexstudios.axteams.teams.Team> create(User user, String name) {
         teamNames.put(name, EMPTY_TEAMID);
         return DataHandler.createTeam(user, name).thenApply(team -> {
+            if (team == null) {
+                return null;
+            }
+
             teamNames.put(name, team.id());
             return team;
         });

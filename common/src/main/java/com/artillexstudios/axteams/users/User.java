@@ -6,6 +6,7 @@ import com.artillexstudios.axteams.api.teams.Group;
 import com.artillexstudios.axteams.api.teams.StringGroup;
 import com.artillexstudios.axteams.api.teams.Team;
 import com.artillexstudios.axteams.api.teams.values.TeamValues;
+import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
@@ -86,13 +87,13 @@ public final class User implements com.artillexstudios.axteams.api.users.User {
     }
 
     @Override
-    public void message(String message) {
+    public void message(Component message) {
         Player player = this.player().getPlayer();
         if (player == null) {
             return;
         }
 
-        NMSHandlers.getNmsHandler().sendMessage(player, StringUtils.format(message));
+        NMSHandlers.getNmsHandler().sendMessage(player, message);
     }
 
     @Override

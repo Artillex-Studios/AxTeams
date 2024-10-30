@@ -12,6 +12,7 @@ import com.artillexstudios.axteams.api.users.User;
 import com.artillexstudios.axteams.collections.ExpiringList;
 import com.artillexstudios.axteams.config.Config;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.kyori.adventure.text.Component;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -243,7 +244,7 @@ public final class Team implements com.artillexstudios.axteams.api.teams.Team {
     }
 
     @Override
-    public void message(String message) {
+    public void message(Component message) {
         for (User member : this.members(true)) {
             member.message(message);
         }

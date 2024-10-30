@@ -2,6 +2,7 @@ package com.artillexstudios.axteams.api.users;
 
 import com.artillexstudios.axteams.api.teams.Group;
 import com.artillexstudios.axteams.api.teams.Team;
+import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,5 +27,5 @@ public interface User {
 
     void markUnsaved();
 
-    void message(String message);
+    void message(Component message);
 }

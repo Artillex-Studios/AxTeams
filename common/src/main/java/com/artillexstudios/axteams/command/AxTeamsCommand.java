@@ -1,10 +1,14 @@
 package com.artillexstudios.axteams.command;
 
+import com.artillexstudios.axapi.placeholders.Context;
+import com.artillexstudios.axapi.placeholders.Placeholders;
 import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axapi.utils.MessageUtils;
 import com.artillexstudios.axapi.utils.PaperUtils;
+import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axteams.AxTeamsPlugin;
 import com.artillexstudios.axteams.api.AxTeamsAPI;
+import com.artillexstudios.axteams.api.teams.Group;
 import com.artillexstudios.axteams.api.teams.Permissions;
 import com.artillexstudios.axteams.api.teams.Team;
 import com.artillexstudios.axteams.api.teams.TeamID;
@@ -36,6 +40,7 @@ import dev.jorel.commandapi.arguments.LiteralArgument;
 import dev.jorel.commandapi.arguments.OfflinePlayerArgument;
 import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
+import dev.jorel.commandapi.arguments.TextArgument;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
@@ -45,6 +50,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public enum AxTeamsCommand {
     INSTANCE;
@@ -53,7 +59,7 @@ public enum AxTeamsCommand {
         new CommandTree("axteams")
                 .withAliases("axteam", "teams", "team")
                 .then(new LiteralArgument("create")
-                        .then(new StringArgument("name")
+                        .then(new TextArgument("name")
                                 .executesPlayer((sender, args) -> {
                                     User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                                     if (user == null) {
@@ -87,6 +93,11 @@ public enum AxTeamsCommand {
                                         case NOT_WHITELISTED ->
                                                 MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_WHITELISTED);
                                         case VALID -> Teams.create(user, name).thenAccept(team -> {
+                                            if (team == null) {
+                                                MessageUtils.sendMessage(sender, Language.PREFIX, "Failed to create team! No owner group is set up! Please inform server administrators!");
+                                                return;
+                                            }
+
                                             team.add(TeamValues.TEAM_DISPLAY_NAME, new IdentifiableComponent(Component.text(name)));
                                             MessageUtils.sendMessage(sender, Language.PREFIX, Language.CREATED);
                                         });
@@ -169,9 +180,12 @@ public enum AxTeamsCommand {
                                         return;
                                     }
 
-                                    for (User member : team.members(true)) {
-
+                                    Map<String, String> placeholders = Placeholders.asMap(Context.builder().add(String.class, args.getByClass("message", String.class)).add(User.class, user));
+                                    if (Config.DEBUG) {
+                                        LogUtils.debug("Placeholders in message send: {}", placeholders);
                                     }
+
+                                    team.message(StringUtils.format(Language.TEAM_CHAT_FORMAT, placeholders));
                                 })
                         )
                         .executesPlayer((sender, args) -> {
@@ -229,7 +243,15 @@ public enum AxTeamsCommand {
                                         return;
                                     }
 
+                                    Component message = StringUtils.format(Language.ALLY_CHAT_FORMAT, Placeholders.asMap(Context.builder().add(String.class, args.getByClass("message", String.class)).add(User.class, user)));
+                                    team.message(message);
 
+                                    for (Integer value : team.values(TeamValues.ALLIES)) {
+                                        Team ally = AxTeamsAPI.instance().getTeamIfLoadedImmediately(new TeamID(value));
+                                        if (ally != null) {
+                                            ally.message(message);
+                                        }
+                                    }
                                 })
                         )
                         .executesPlayer((sender, args) -> {
@@ -245,7 +267,7 @@ public enum AxTeamsCommand {
                                 return;
                             }
 
-
+                            // TODO: settings on user
                         })
                 )
                 .then(new LiteralArgument("home")

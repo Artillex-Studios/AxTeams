@@ -10,6 +10,7 @@ import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axteams.api.AxTeamsAPI;
 import com.artillexstudios.axteams.api.teams.Group;
 import com.artillexstudios.axteams.api.teams.Team;
+import com.artillexstudios.axteams.api.teams.values.TeamValues;
 import com.artillexstudios.axteams.api.users.User;
 import com.artillexstudios.axteams.command.AxTeamsCommand;
 import com.artillexstudios.axteams.config.Config;
@@ -25,6 +26,7 @@ import com.artillexstudios.axteams.listeners.TeamPvPListener;
 import com.artillexstudios.axteams.utils.FileUtils;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -103,6 +105,25 @@ public final class AxTeamsPlugin extends AxPlugin {
             return team.name();
         }, ParseContext.PLACEHOLDER_API);
 
+        Placeholders.register("team_display_name", ctx -> {
+            User user = ctx.resolve(User.class);
+            if (user == null) {
+                return "Do I know you?";
+            }
+
+            Team team = user.team();
+            if (team == null) {
+                return "No team";
+            }
+
+            Component first = team.first(TeamValues.TEAM_DISPLAY_NAME);
+            if (first == null) {
+                return team.name();
+            }
+
+            return MiniMessage.miniMessage().serialize(first);
+        }, ParseContext.PLACEHOLDER_API);
+
         Placeholders.register("member_count", ctx -> {
             Team team = ctx.resolve(Team.class);
             if (team == null) {
@@ -121,7 +142,7 @@ public final class AxTeamsPlugin extends AxPlugin {
             return user.textures();
         });
 
-        Placeholders.register("group", ctx -> {
+        Placeholders.register("group_display_name", ctx -> {
             if (ctx.has(Group.class)) {
                 Group group = ctx.raw(Group.class);
                 if (group == null) {
@@ -183,6 +204,10 @@ public final class AxTeamsPlugin extends AxPlugin {
             }
 
             return "level" /*team.first(TeamValues.WARP_LIMIT)*/; // TODO: yes
+        });
+
+        Placeholders.register("message", ctx -> {
+            return ctx.resolve(String.class);
         });
 
         FileUtils.copyFromResource("guis");

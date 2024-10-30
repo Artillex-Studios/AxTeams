@@ -321,8 +321,20 @@ public final class DataHandler {
 
             com.artillexstudios.axteams.teams.Team team = new com.artillexstudios.axteams.teams.Team(teamID, user, name);
             for (Supplier<Group> groupSupplier : Groups.DEFAULT_GROUPS) {
-                team.add(TeamValues.GROUPS, groupSupplier.get());
+                Group group = groupSupplier.get();
+                if (Config.DEBUG) {
+                    LogUtils.debug("Adding default group {}!", group.name());
+                }
+                team.add(TeamValues.GROUPS, group);
             }
+
+            Group ownerGroup = team.values(TeamValues.GROUPS).stream().filter(group -> group.priority() == Group.OWNER_PRIORITY).findFirst().orElse(null);
+            if (ownerGroup == null) {
+                LogUtils.error("No owner group was set up! Could not create team!");
+                return null;
+            }
+
+            user.group(ownerGroup);
             user.team(team);
             return team;
         }, AsyncUtils.executor()).exceptionallyAsync(throwable -> {

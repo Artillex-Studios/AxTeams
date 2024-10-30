@@ -23,7 +23,7 @@ public final class TeamGroupsValue extends TeamValue<Group, Group> {
     private final Pattern delimiter = Pattern.compile("\\|");
     private final Field<Integer> priority = DSL.field("priority", int.class);
     private final Field<String> name = DSL.field("name", String.class);
-    private final Field<String> displayName = DSL.field("displayName", String.class);
+    private final Field<String> displayName = DSL.field("displayname", String.class);
     private final Field<String> permissions = DSL.field("permissions", String.class);
 
     public TeamGroupsValue() {
