@@ -4,17 +4,17 @@ rows: 4
 permissions:
   type: clock
   name: "Manage permissions"
-  slots: 14
+  slots: 11
 
 priority:
   type: candle
   name: "Change priority"
-  slots: 16
+  slots: 13
 
 prefix:
   type: oak_sign
   name: "Change prefix"
-  slots: 18
+  slots: 15
 
 rename:
   type: oak_sign

@@ -36,16 +36,25 @@ public final class Teams {
     public static Team getTeamIfLoadedImmediately(TeamID teamID) {
         Team team = loadedTeams.get(teamID);
         if (team != null) {
+            if (Config.DEBUG) {
+                LogUtils.debug("Team with id {} is loaded already!", teamID.id());
+            }
             return team;
         }
 
         team = tempTeams.getIfPresent(teamID);
         if (team != null) {
+            if (Config.DEBUG) {
+                LogUtils.debug("Team with id {} is temp loaded!", teamID.id());
+            }
             return team;
         }
 
         Optional<Team> foundTeam = unsaved.stream().filter(t -> t.id().equals(teamID)).findAny();
         if (foundTeam.isPresent()) {
+            if (Config.DEBUG) {
+                LogUtils.debug("Team with id {} is unsaved!", teamID.id());
+            }
             team = foundTeam.get();
             tempTeams.put(teamID, team);
         }
@@ -60,8 +69,14 @@ public final class Teams {
     }
 
     public static CompletableFuture<Team> loadTeam(TeamID teamID) {
+        if (Config.DEBUG) {
+            LogUtils.debug("Team load called!");
+        }
         Team team = tempTeams.getIfPresent(teamID);
         if (team != null) {
+            if (Config.DEBUG) {
+                LogUtils.debug("Found already loaded team!");
+            }
             tempTeams.invalidate(teamID);
             loadedTeams.put(teamID, team);
             return CompletableFuture.completedFuture(team);
@@ -76,9 +91,15 @@ public final class Teams {
     public static CompletableFuture<Team> getTeam(TeamID teamID, LoadContext context) {
         Team team = getTeamIfLoadedImmediately(teamID);
         if (team != null) {
+            if (Config.DEBUG) {
+                LogUtils.debug("Found team from getTeamIfLoadedImmediately for teamId {}.", teamID.id());
+            }
             return CompletableFuture.completedFuture(team);
         }
 
+        if (Config.DEBUG) {
+            LogUtils.debug("Loading unloaded team with id {}", teamID.id());
+        }
         return DataHandler.loadTeam(teamID, context).toCompletableFuture();
     }
 

@@ -1,6 +1,7 @@
 package com.artillexstudios.axteams.command;
 
 import com.artillexstudios.axapi.placeholders.Context;
+import com.artillexstudios.axapi.placeholders.ParseContext;
 import com.artillexstudios.axapi.placeholders.Placeholders;
 import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axapi.utils.MessageUtils;
@@ -179,7 +180,7 @@ public enum AxTeamsCommand {
                                         return;
                                     }
 
-                                    Map<String, String> placeholders = Placeholders.asMap(Context.builder().add(String.class, args.getByClass("message", String.class)).add(User.class, user));
+                                    Map<String, String> placeholders = Placeholders.asMap(Context.builder(ParseContext.INTERNAL).add(String.class, args.getByClass("message", String.class)).add(User.class, user));
                                     if (Config.DEBUG) {
                                         LogUtils.debug("Placeholders in message send: {}", placeholders);
                                     }
@@ -242,7 +243,7 @@ public enum AxTeamsCommand {
                                         return;
                                     }
 
-                                    Component message = StringUtils.format(Language.ALLY_CHAT_FORMAT, Placeholders.asMap(Context.builder().add(String.class, args.getByClass("message", String.class)).add(User.class, user)));
+                                    Component message = StringUtils.format(Language.ALLY_CHAT_FORMAT, Placeholders.asMap(Context.builder(ParseContext.INTERNAL).add(String.class, args.getByClass("message", String.class)).add(User.class, user)));
                                     team.message(message);
 
                                     for (Integer value : team.values(TeamValues.ALLIES)) {

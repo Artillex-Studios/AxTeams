@@ -32,12 +32,14 @@ public abstract class GuiBase {
         this.config = config;
         if (paginated) {
             this.gui = Gui.paginated()
+                    .title(Component.empty())
                     .pageSize(config.getInt("page-size"))
                     .rows(config.getInt("rows"))
                     .disableAllInteractions()
                     .create();
         } else {
             this.gui = Gui.gui()
+                    .title(Component.empty())
                     .rows(config.getInt("rows"))
                     .disableAllInteractions()
                     .create();

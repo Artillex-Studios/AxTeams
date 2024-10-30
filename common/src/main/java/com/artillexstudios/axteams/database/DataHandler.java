@@ -172,6 +172,20 @@ public final class DataHandler {
             }
 
             Integer teamID = record.get(TEAM_ID);
+            if (teamID != null) {
+                Team loaded = Teams.getTeamIfLoadedImmediately(new TeamID(teamID));
+                if (loaded != null) {
+                    for (User member : loaded.members(true)) {
+                        if (member.player().getUniqueId().equals(uuid)) {
+                            Users.loadWithContext(member, context);
+                            Teams.loadWithContext(loaded, context);
+                            userConsumer.accept(member);
+                            return;
+                        }
+                    }
+                }
+            }
+
             Scheduler.get().run(() -> {
                 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
                 if (offlinePlayer.isOnline()) {

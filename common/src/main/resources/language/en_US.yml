@@ -7,7 +7,11 @@ reload:
 error:
   user-not-loaded: "<#FF0000>Your userdata has not loaded yet! Please try again in a moment!"
   already-in-team: "<#FF0000>You are already part of team <team>!"
+  not-in-team: "<#FF0000>You are not in a team!"
+  no-permission: "<#FF0000>You are not permitted to do this!"
+  not-leader: "<#FF0000>You are not the leader of this team!"
   teamvalue-not-found: "<#FF0000>There is no teamvalue registered with id <id>!"
+  already-exists: "<#FF0000>A team named <name> already exists!"
 
 update-notifier:
   new-version-available: "<#00FF00>A new version of this plugin is available! <gray>(<white>Current:</white> <#FF0000><current></#FF0000> <gray>| <white>Latest:</white> <#00FF00><latest></#00FF00>)</gray>"
