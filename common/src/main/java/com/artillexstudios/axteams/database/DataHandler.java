@@ -177,6 +177,7 @@ public final class DataHandler {
                 if (loaded != null) {
                     for (User member : loaded.members(true)) {
                         if (member.player().getUniqueId().equals(uuid)) {
+                            LogUtils.warn("Got user from loaded team! This is a fail-safe, something went wrong and caused this!");
                             Users.loadWithContext(member, context);
                             Teams.loadWithContext(loaded, context);
                             userConsumer.accept(member);
@@ -498,6 +499,9 @@ public final class DataHandler {
                     .deleteFrom(TEAMS)
                     .where(ID.eq(team.id().id()))
                     .execute();
+        }, AsyncUtils.executor()).exceptionallyAsync(throwable -> {
+            LogUtils.error("An unexpected error occurred while disbanding team!", throwable);
+            return null;
         }, AsyncUtils.executor());
     }
 }

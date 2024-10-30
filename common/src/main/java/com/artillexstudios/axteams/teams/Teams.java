@@ -170,6 +170,9 @@ public final class Teams {
             for (User member : team.members()) {
                 member.team(null);
             }
+        }, AsyncUtils.executor()).exceptionallyAsync(throwable -> {
+            LogUtils.error("An unexpected error occurred while disbanding team!", throwable);
+            return null;
         }, AsyncUtils.executor());
     }
 
