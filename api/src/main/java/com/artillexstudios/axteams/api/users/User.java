@@ -4,6 +4,7 @@ import com.artillexstudios.axteams.api.teams.Group;
 import com.artillexstudios.axteams.api.teams.Team;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 public interface User {
@@ -28,4 +29,8 @@ public interface User {
     void markUnsaved();
 
     void message(Component message);
+
+    Player onlinePlayer();
+
+    String name();
 }

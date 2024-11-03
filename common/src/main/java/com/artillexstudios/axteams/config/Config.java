@@ -34,6 +34,7 @@ public final class Config {
     public static DatabaseType DATABASE_TYPE = DatabaseType.H2;
     public static int TEAM_NAME_MIN_LENGTH = 3;
     public static int TEAM_NAME_MAX_LENGTH = 16;
+    public static int GUI_ACTION_COOLDOWN = 200;
     public static List<Pattern> TEAM_NAME_WHITELIST = new ArrayList<>();
     public static List<Pattern> TEAM_NAME_BLACKLIST = new ArrayList<>();
     public static int AUTOSAVE_SECONDS = 300;

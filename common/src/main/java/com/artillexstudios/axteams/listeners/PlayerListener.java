@@ -18,6 +18,7 @@ public final class PlayerListener implements Listener {
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
         try {
             Users.loadUser(event.getPlayer().getUniqueId()).thenAccept(user -> {
+                ((com.artillexstudios.axteams.users.User) user).onlinePlayer(event.getPlayer());
                 if (Config.DEBUG) {
                     LogUtils.debug("Loaded user!");
                 }
@@ -35,6 +36,8 @@ public final class PlayerListener implements Listener {
         if (user == null) {
             return;
         }
+
+        ((com.artillexstudios.axteams.users.User) user).onlinePlayer(null);
 
         Team team = user.team();
         if (team == null) {

@@ -34,12 +34,24 @@ public class Group implements Identifiable<Group> {
         return this.priority;
     }
 
+    public void priority(int priority) {
+        this.priority = priority;
+    }
+
     public String name() {
         return this.name;
     }
 
+    public void name(String name) {
+        this.name = name;
+    }
+
     public Component displayName() {
         return this.displayName;
+    }
+
+    public void displayName(Component displayName) {
+        this.displayName = displayName;
     }
 
     public List<Permission> permissions() {

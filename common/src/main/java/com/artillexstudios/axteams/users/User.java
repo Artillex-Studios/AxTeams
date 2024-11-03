@@ -1,7 +1,6 @@
 package com.artillexstudios.axteams.users;
 
 import com.artillexstudios.axapi.nms.NMSHandlers;
-import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axteams.api.teams.Group;
 import com.artillexstudios.axteams.api.teams.StringGroup;
 import com.artillexstudios.axteams.api.teams.Team;
@@ -17,6 +16,7 @@ public final class User implements com.artillexstudios.axteams.api.users.User {
     private Team team;
     private String textures;
     private Group group;
+    private Player onlinePlayer;
     private long lastOnline;
 
     public User(int id, OfflinePlayer player, Team team, String texture, Group group, long lastOnline) {
@@ -74,6 +74,7 @@ public final class User implements com.artillexstudios.axteams.api.users.User {
     @Override
     public void group(Group group) {
         this.group = group;
+        this.markUnsaved();
     }
 
     @Override
@@ -94,6 +95,20 @@ public final class User implements com.artillexstudios.axteams.api.users.User {
         }
 
         NMSHandlers.getNmsHandler().sendMessage(player, message);
+    }
+
+    @Override
+    public Player onlinePlayer() {
+        return this.onlinePlayer;
+    }
+
+    @Override
+    public String name() {
+        return this.onlinePlayer == null ? this.player().getName() : this.onlinePlayer.getName();
+    }
+
+    public void onlinePlayer(Player player) {
+        this.onlinePlayer = player;
     }
 
     @Override

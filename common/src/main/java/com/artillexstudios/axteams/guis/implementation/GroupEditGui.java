@@ -1,6 +1,7 @@
 package com.artillexstudios.axteams.guis.implementation;
 
 import com.artillexstudios.axapi.config.Config;
+import com.artillexstudios.axapi.gui.SignInput;
 import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.block.implementation.Section;
 import com.artillexstudios.axapi.placeholders.Context;
 import com.artillexstudios.axapi.placeholders.ParseContext;
@@ -8,15 +9,20 @@ import com.artillexstudios.axapi.placeholders.Placeholders;
 import com.artillexstudios.axapi.placeholders.ResolutionType;
 import com.artillexstudios.axapi.utils.ItemBuilder;
 import com.artillexstudios.axapi.utils.LogUtils;
+import com.artillexstudios.axapi.utils.MessageUtils;
 import com.artillexstudios.axteams.api.teams.Group;
 import com.artillexstudios.axteams.api.users.User;
 import com.artillexstudios.axteams.guis.GuiBase;
 import com.artillexstudios.axteams.utils.FileUtils;
 import dev.triumphteam.gui.guis.GuiItem;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
+import java.util.UUID;
 
 public final class GroupEditGui extends GuiBase {
     private static final Config config = new Config(FileUtils.PLUGIN_DIRECTORY.resolve("guis/").resolve("group-editor.yml").toFile());
@@ -31,14 +37,13 @@ public final class GroupEditGui extends GuiBase {
     public void open() {
         this.populate();
 
-        OfflinePlayer offlinePlayer = this.user().player();
         if (com.artillexstudios.axteams.config.Config.DEBUG) {
-            LogUtils.debug("Open called for user: {}", offlinePlayer.getName());
+            LogUtils.debug("Open called for user: {}", this.user().name());
         }
 
-        Player player = offlinePlayer.getPlayer();
+        Player player = this.user().onlinePlayer();
         if (player == null) {
-            LogUtils.warn("Attempted to open group editor gui for offline player {} ({})", offlinePlayer.getName(), offlinePlayer.getUniqueId());
+            LogUtils.warn("Attempted to open group editor gui for offline player {} ({})", this.user().name(), this.user().player().getUniqueId());
             return;
         }
 
@@ -61,22 +66,101 @@ public final class GroupEditGui extends GuiBase {
         super.populate();
 
         this.gui().setItem(this.slots(this.config().get("permissions.slots")), new GuiItem(this.getItem("permissions", this.user()), event -> {
-//            new GroupEditGui(this.user(), value).open();
+            UUID uuid = event.getWhoClicked().getUniqueId();
+            if (clickCooldown.hasCooldown(uuid)) {
+                return;
+            }
+
+            clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.GUI_ACTION_COOLDOWN);
+            //            new GroupEditGui(this.user(), value).open();
         }));
 
         this.gui().setItem(this.slots(this.config().get("priority.slots")), new GuiItem(this.getItem("priority", this.user()), event -> {
-//            new GroupEditGui(this.user(), value).open();
+            UUID uuid = event.getWhoClicked().getUniqueId();
+            if (clickCooldown.hasCooldown(uuid)) {
+                return;
+            }
+
+            clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.GUI_ACTION_COOLDOWN);
+            SignInput signInput = new SignInput.Builder()
+                    .setLines(List.of(Component.empty(), Component.text("Enter the new priority"), Component.empty(), Component.empty()))
+                    .setHandler((player, lines) -> {
+                        String firstLine = PlainTextComponentSerializer.plainText().serialize(lines[0]);
+                        try {
+                            int priority = Integer.parseInt(firstLine);
+                            group.priority(priority);
+                        } catch (NumberFormatException exception) {
+                            MessageUtils.sendMessage(player, "<red>Failed to parse number!");
+                            return;
+                        }
+
+                        // TODO: Change the priority of different groups, permission checks
+                        new GroupEditGui(GroupEditGui.this.user(), GroupEditGui.this.group).open();
+                    })
+                    .build((Player) event.getWhoClicked());
+
+            signInput.open();
         }));
 
         this.gui().setItem(this.slots(this.config().get("prefix.slots")), new GuiItem(this.getItem("prefix", this.user()), event -> {
-//            new GroupEditGui(this.user(), value).open();
+            UUID uuid = event.getWhoClicked().getUniqueId();
+            if (clickCooldown.hasCooldown(uuid)) {
+                return;
+            }
+
+            clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.GUI_ACTION_COOLDOWN);
+
+            SignInput signInput = new SignInput.Builder()
+                    .setLines(List.of(Component.empty(), Component.text("Enter the new prefix"), Component.empty(), Component.empty()))
+                    .setHandler((player, lines) -> {
+                        String firstLine = PlainTextComponentSerializer.plainText().serialize(lines[0]);
+                        if (firstLine.isBlank()) {
+                            MessageUtils.sendMessage(player, "<red>You did not input a new name!");
+                            return;
+                        }
+
+                        group.displayName(lines[0]);
+                        new GroupEditGui(GroupEditGui.this.user(), GroupEditGui.this.group).open();
+                    })
+                    .build((Player) event.getWhoClicked());
+
+            signInput.open();
         }));
 
+        // TODO: Proper lang from files
         this.gui().setItem(this.slots(this.config().get("rename.slots")), new GuiItem(this.getItem("rename", this.user()), event -> {
-//            new GroupEditGui(this.user(), value).open();
+            UUID uuid = event.getWhoClicked().getUniqueId();
+            if (clickCooldown.hasCooldown(uuid)) {
+                return;
+            }
+
+            clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.GUI_ACTION_COOLDOWN);
+
+            SignInput signInput = new SignInput.Builder()
+                    .setLines(List.of(Component.empty(), Component.text("Enter the new name"), Component.empty(), Component.empty()))
+                    .setHandler((player, lines) -> {
+                        String firstLine = PlainTextComponentSerializer.plainText().serialize(lines[0]);
+                        if (firstLine.isBlank()) {
+                            MessageUtils.sendMessage(player, "<red>You did not input a new name!");
+                            return;
+                        }
+
+                        group.name(firstLine);
+                        new GroupEditGui(GroupEditGui.this.user(), GroupEditGui.this.group).open();
+                    })
+                    .build((Player) event.getWhoClicked());
+
+            signInput.open();
         }));
 
         this.gui().setItem(this.slots(this.config().get("delete.slots")), new GuiItem(this.getItem("delete", this.user()), event -> {
+            UUID uuid = event.getWhoClicked().getUniqueId();
+            if (clickCooldown.hasCooldown(uuid)) {
+                return;
+            }
+
+            clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.GUI_ACTION_COOLDOWN);
+
 //            new GroupEditGui(this.user(), value).open();
         }));
     }

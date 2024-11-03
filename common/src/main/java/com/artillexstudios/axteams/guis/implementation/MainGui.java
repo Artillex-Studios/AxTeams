@@ -5,7 +5,6 @@ import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axteams.api.users.User;
 import com.artillexstudios.axteams.guis.GuiBase;
 import com.artillexstudios.axteams.utils.FileUtils;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 public final class MainGui extends GuiBase {
@@ -17,14 +16,13 @@ public final class MainGui extends GuiBase {
 
     @Override
     public void open() {
-        OfflinePlayer offlinePlayer = this.user().player();
         if (com.artillexstudios.axteams.config.Config.DEBUG) {
-            LogUtils.debug("Open called for user: {}", offlinePlayer.getName());
+            LogUtils.debug("Open called for user: {}", this.user().name());
         }
 
-        Player player = offlinePlayer.getPlayer();
+        Player player = this.user().onlinePlayer();
         if (player == null) {
-            LogUtils.warn("Attempted to open main gui for offline player {} ({})", offlinePlayer.getName(), offlinePlayer.getUniqueId());
+            LogUtils.warn("Attempted to open main gui for offline player {} ({})", this.user().name(), this.user().player().getUniqueId());
             return;
         }
 

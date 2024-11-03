@@ -14,9 +14,10 @@ import com.artillexstudios.axteams.guis.GuiBase;
 import com.artillexstudios.axteams.utils.FileUtils;
 import dev.triumphteam.gui.guis.GuiItem;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.UUID;
 
 public final class UsersGui extends GuiBase {
     private static final Config config = new Config(FileUtils.PLUGIN_DIRECTORY.resolve("guis/").resolve("users.yml").toFile());
@@ -27,14 +28,13 @@ public final class UsersGui extends GuiBase {
 
     @Override
     public void open() {
-        OfflinePlayer offlinePlayer = this.user().player();
         if (com.artillexstudios.axteams.config.Config.DEBUG) {
-            LogUtils.debug("Open called for user: {}", offlinePlayer.getName());
+            LogUtils.debug("Open called for user: {}", this.user().name());
         }
 
-        Player player = offlinePlayer.getPlayer();
+        Player player = this.user().onlinePlayer();
         if (player == null) {
-            LogUtils.warn("Attempted to open users gui for offline player {} ({})", offlinePlayer.getName(), offlinePlayer.getUniqueId());
+            LogUtils.warn("Attempted to open main gui for offline player {} ({})", this.user().name(), this.user().player().getUniqueId());
             return;
         }
 
@@ -62,6 +62,12 @@ public final class UsersGui extends GuiBase {
 
         for (User member : team.members(true)) {
             this.gui().addItem(new GuiItem(this.getItem(member), event -> {
+                UUID uuid = event.getWhoClicked().getUniqueId();
+                if (clickCooldown.hasCooldown(uuid)) {
+                    return;
+                }
+
+                clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.GUI_ACTION_COOLDOWN);
                 System.out.println("wowowow");
             }));
         }

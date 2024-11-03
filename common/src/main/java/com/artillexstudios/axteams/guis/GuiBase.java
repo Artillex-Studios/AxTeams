@@ -5,6 +5,7 @@ import com.artillexstudios.axapi.placeholders.Context;
 import com.artillexstudios.axapi.placeholders.ParseContext;
 import com.artillexstudios.axapi.placeholders.Placeholders;
 import com.artillexstudios.axapi.placeholders.ResolutionType;
+import com.artillexstudios.axapi.utils.Cooldown;
 import com.artillexstudios.axapi.utils.ItemBuilder;
 import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axapi.utils.NumberUtils;
@@ -21,8 +22,10 @@ import net.kyori.adventure.text.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public abstract class GuiBase {
+    protected static final Cooldown<UUID> clickCooldown = new Cooldown<>();
     private final User user;
     private final Config config;
     private final BaseGui gui;
@@ -77,6 +80,12 @@ public abstract class GuiBase {
             }
 
             this.gui.setItem(slots, new GuiItem(new ItemBuilder(item, placeholders).get(), event -> {
+                UUID uuid = event.getWhoClicked().getUniqueId();
+                if (clickCooldown.hasCooldown(uuid)) {
+                    return;
+                }
+
+                clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.GUI_ACTION_COOLDOWN);
                 Actions.execute(this.user, this, actions, values);
             }));
         }
