@@ -73,9 +73,21 @@ public interface Team {
 
     void clearDeleted();
 
-    boolean hasPermission(User user, Permission permission);
+    default boolean hasPermission(User user, Permission permission) {
+        if (user.equals(this.leader())) {
+            return true;
+        }
 
-    boolean hasPermission(User user, User other, Permission permission);
+        return user.group().permissions().contains(Permissions.ALL) || user.group().permissions().contains(permission);
+    }
+
+    default boolean hasPermission(User user, User other, Permission permission) {
+        return this.hasPermission(user, other.group(), permission);
+    }
+
+    default boolean hasPermission(User user, Group other, Permission permission) {
+        return this.hasPermission(user, permission) && user.group().priority() > other.priority();
+    }
 
     void invite(User user);
 

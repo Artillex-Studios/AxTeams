@@ -14,6 +14,12 @@ public final class Permissions {
     public static final Permission KICK = register(new Permission("kick"));
     public static final Permission ALLY_SEND = register(new Permission("ally_send"));
     public static final Permission ALLY_ACCEPT = register(new Permission("ally_accept"));
+    public static final Permission GROUP_RENAME = register(new Permission("group_rename"));
+    public static final Permission GROUP_DELETE = register(new Permission("group_delete"));
+    public static final Permission GROUP_CREATE = register(new Permission("group_create"));
+    public static final Permission GROUP_PREFIX_CHANGE = register(new Permission("group_prefix_change"));
+    public static final Permission GROUP_PRIORITY_CHANGE = register(new Permission("group_priority_change"));
+    public static final Permission GROUP_PERMISSIONS_EDIT = register(new Permission("group_permissions_edit"));
 
     public static Permission register(Permission permission) {
         try {

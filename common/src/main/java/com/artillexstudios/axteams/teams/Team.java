@@ -1,8 +1,6 @@
 package com.artillexstudios.axteams.teams;
 
 import com.artillexstudios.axapi.utils.LogUtils;
-import com.artillexstudios.axteams.api.teams.Permission;
-import com.artillexstudios.axteams.api.teams.Permissions;
 import com.artillexstudios.axteams.api.teams.TeamID;
 import com.artillexstudios.axteams.api.teams.values.Identifiable;
 import com.artillexstudios.axteams.api.teams.values.TeamValue;
@@ -178,20 +176,6 @@ public final class Team implements com.artillexstudios.axteams.api.teams.Team {
         for (Map.Entry<TeamValue<?, ?>, List<Identifiable<?>>> entry : this.data.entrySet()) {
             entry.getValue().removeIf(next -> next.id() == Identifiable.DELETED);
         }
-    }
-
-    @Override
-    public boolean hasPermission(User user, Permission permission) {
-        if (user.equals(this.leader)) {
-            return true;
-        }
-
-        return user.group().permissions().contains(Permissions.ALL) || user.group().permissions().contains(permission);
-    }
-
-    @Override
-    public boolean hasPermission(User user, User other, Permission permission) {
-        return hasPermission(user, permission) && user.group().priority() > other.group().priority();
     }
 
     @Override

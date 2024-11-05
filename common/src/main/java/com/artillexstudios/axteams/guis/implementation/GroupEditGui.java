@@ -11,7 +11,9 @@ import com.artillexstudios.axapi.utils.ItemBuilder;
 import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axapi.utils.MessageUtils;
 import com.artillexstudios.axteams.api.teams.Group;
+import com.artillexstudios.axteams.api.teams.Permissions;
 import com.artillexstudios.axteams.api.users.User;
+import com.artillexstudios.axteams.config.Language;
 import com.artillexstudios.axteams.guis.GuiBase;
 import com.artillexstudios.axteams.utils.FileUtils;
 import dev.triumphteam.gui.guis.GuiItem;
@@ -72,6 +74,10 @@ public final class GroupEditGui extends GuiBase {
             }
 
             clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.GUI_ACTION_COOLDOWN);
+            if (!user().hasPermission(Permissions.GROUP_PERMISSIONS_EDIT, group)) {
+                MessageUtils.sendMessage(user().onlinePlayer(), Language.PREFIX, Language.NO_PERMISSION);
+                return;
+            }
             //            new GroupEditGui(this.user(), value).open();
         }));
 
@@ -82,6 +88,11 @@ public final class GroupEditGui extends GuiBase {
             }
 
             clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.GUI_ACTION_COOLDOWN);
+            if (!user().hasPermission(Permissions.GROUP_PRIORITY_CHANGE, group)) {
+                MessageUtils.sendMessage(user().onlinePlayer(), Language.PREFIX, Language.NO_PERMISSION);
+                return;
+            }
+
             SignInput signInput = new SignInput.Builder()
                     .setLines(List.of(Component.empty(), Component.text("Enter the new priority"), Component.empty(), Component.empty()))
                     .setHandler((player, lines) -> {
@@ -109,6 +120,10 @@ public final class GroupEditGui extends GuiBase {
             }
 
             clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.GUI_ACTION_COOLDOWN);
+            if (!user().hasPermission(Permissions.GROUP_PREFIX_CHANGE, group)) {
+                MessageUtils.sendMessage(user().onlinePlayer(), Language.PREFIX, Language.NO_PERMISSION);
+                return;
+            }
 
             SignInput signInput = new SignInput.Builder()
                     .setLines(List.of(Component.empty(), Component.text("Enter the new prefix"), Component.empty(), Component.empty()))
@@ -135,6 +150,10 @@ public final class GroupEditGui extends GuiBase {
             }
 
             clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.GUI_ACTION_COOLDOWN);
+            if (!user().hasPermission(Permissions.GROUP_RENAME, group)) {
+                MessageUtils.sendMessage(user().onlinePlayer(), Language.PREFIX, Language.NO_PERMISSION);
+                return;
+            }
 
             SignInput signInput = new SignInput.Builder()
                     .setLines(List.of(Component.empty(), Component.text("Enter the new name"), Component.empty(), Component.empty()))
@@ -160,6 +179,10 @@ public final class GroupEditGui extends GuiBase {
             }
 
             clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.GUI_ACTION_COOLDOWN);
+            if (!user().hasPermission(Permissions.GROUP_DELETE, group)) {
+                MessageUtils.sendMessage(user().onlinePlayer(), Language.PREFIX, Language.NO_PERMISSION);
+                return;
+            }
 
 //            new GroupEditGui(this.user(), value).open();
         }));

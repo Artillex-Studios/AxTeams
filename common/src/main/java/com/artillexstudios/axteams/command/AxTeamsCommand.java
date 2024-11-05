@@ -119,7 +119,6 @@ public enum AxTeamsCommand {
                                 return;
                             }
 
-                            LogUtils.info("open");
                             new MainGui(user).open();
                         })
                 )
@@ -309,7 +308,7 @@ public enum AxTeamsCommand {
                                 return;
                             }
 
-                            if (!team.hasPermission(user, Permissions.HOME_CREATE)) {
+                            if (!user.hasPermission(Permissions.HOME_CREATE)) {
                                 MessageUtils.sendMessage(sender, Language.PREFIX, Language.NO_PERMISSION);
                                 return;
                             }
@@ -332,7 +331,7 @@ public enum AxTeamsCommand {
                                 return;
                             }
 
-                            if (!team.hasPermission(user, Permissions.PVP)) {
+                            if (!user.hasPermission(Permissions.PVP)) {
                                 MessageUtils.sendMessage(sender, Language.PREFIX, Language.NO_PERMISSION);
                                 return;
                             }
@@ -461,7 +460,7 @@ public enum AxTeamsCommand {
                                                 return;
                                             }
 
-                                            if (!team.hasPermission(user, Permissions.WARP_CREATE)) {
+                                            if (!user.hasPermission(Permissions.WARP_CREATE)) {
                                                 MessageUtils.sendMessage(sender, Language.PREFIX, Language.NO_PERMISSION);
                                                 return;
                                             }
@@ -503,7 +502,7 @@ public enum AxTeamsCommand {
                                         return;
                                     }
 
-                                    if (!team.hasPermission(user, Permissions.WARP_CREATE)) {
+                                    if (!user.hasPermission(Permissions.WARP_CREATE)) {
                                         MessageUtils.sendMessage(sender, Language.PREFIX, Language.NO_PERMISSION);
                                         return;
                                     }
@@ -553,7 +552,7 @@ public enum AxTeamsCommand {
                                         return;
                                     }
 
-                                    if (!team.hasPermission(user, Permissions.INVITE)) {
+                                    if (!user.hasPermission(Permissions.INVITE)) {
                                         MessageUtils.sendMessage(sender, Language.PREFIX, Language.NO_PERMISSION);
                                         return;
                                     }
@@ -676,7 +675,7 @@ public enum AxTeamsCommand {
                                                 return;
                                             }
 
-                                            if (!userTeam.hasPermission(user, Permissions.ALLY_SEND)) {
+                                            if (!user.hasPermission(Permissions.ALLY_SEND)) {
                                                 MessageUtils.sendMessage(sender, Language.PREFIX, Language.NO_PERMISSION);
                                                 return;
                                             }
@@ -771,7 +770,7 @@ public enum AxTeamsCommand {
                                         return;
                                     }
 
-                                    if (!team.hasPermission(user, other, Permissions.KICK)) {
+                                    if (!user.hasPermission(Permissions.KICK, other)) {
                                         MessageUtils.sendMessage(sender, Language.PREFIX, Language.NO_PERMISSION);
                                         return;
                                     }
