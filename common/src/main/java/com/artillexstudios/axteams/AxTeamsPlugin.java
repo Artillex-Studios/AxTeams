@@ -9,6 +9,7 @@ import com.artillexstudios.axapi.utils.FeatureFlags;
 import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axteams.api.AxTeamsAPI;
 import com.artillexstudios.axteams.api.teams.Group;
+import com.artillexstudios.axteams.api.teams.Permission;
 import com.artillexstudios.axteams.api.teams.Team;
 import com.artillexstudios.axteams.api.teams.values.TeamValues;
 import com.artillexstudios.axteams.api.users.User;
@@ -185,6 +186,16 @@ public final class AxTeamsPlugin extends AxPlugin {
             }
 
             return user.player().getName();
+        });
+
+        Placeholders.register("permission", ctx -> {
+            Permission permission = ctx.resolve(Permission.class);
+            if (permission == null) {
+                return "";
+            }
+
+            // TODO: Better permissions
+            return permission.permission();
         });
 
         Placeholders.register("level", ctx -> {

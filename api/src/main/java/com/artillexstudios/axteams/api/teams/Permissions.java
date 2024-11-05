@@ -3,6 +3,8 @@ package com.artillexstudios.axteams.api.teams;
 import com.artillexstudios.axteams.api.exception.RegistrationFailedException;
 import com.artillexstudios.axteams.api.utils.Registry;
 
+import java.util.Collection;
+
 public final class Permissions {
     private static final Registry<String, Permission> registry = new Registry<>();
     public static final Permission ALL = register(new Permission("*"));
@@ -36,5 +38,9 @@ public final class Permissions {
         } catch (RegistrationFailedException e) {
             return null;
         }
+    }
+
+    public static Collection<Permission> values() {
+        return registry.values();
     }
 }

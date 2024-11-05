@@ -37,8 +37,6 @@ public final class GroupEditGui extends GuiBase {
 
     @Override
     public void open() {
-        this.populate();
-
         if (com.artillexstudios.axteams.config.Config.DEBUG) {
             LogUtils.debug("Open called for user: {}", this.user().name());
         }
@@ -49,6 +47,7 @@ public final class GroupEditGui extends GuiBase {
             return;
         }
 
+        this.populate();
         this.gui().open(player);
     }
 
@@ -74,11 +73,12 @@ public final class GroupEditGui extends GuiBase {
             }
 
             clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.GUI_ACTION_COOLDOWN);
-            if (!user().hasPermission(Permissions.GROUP_PERMISSIONS_EDIT, group)) {
+            if (!user().hasPermission(Permissions.GROUP_PERMISSIONS_EDIT, this.group)) {
                 MessageUtils.sendMessage(user().onlinePlayer(), Language.PREFIX, Language.NO_PERMISSION);
                 return;
             }
-            //            new GroupEditGui(this.user(), value).open();
+
+            new PermissionEditGui(this.user(), this.group).open();
         }));
 
         this.gui().setItem(this.slots(this.config().get("priority.slots")), new GuiItem(this.getItem("priority", this.user()), event -> {
@@ -88,7 +88,7 @@ public final class GroupEditGui extends GuiBase {
             }
 
             clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.GUI_ACTION_COOLDOWN);
-            if (!user().hasPermission(Permissions.GROUP_PRIORITY_CHANGE, group)) {
+            if (!user().hasPermission(Permissions.GROUP_PRIORITY_CHANGE, this.group)) {
                 MessageUtils.sendMessage(user().onlinePlayer(), Language.PREFIX, Language.NO_PERMISSION);
                 return;
             }
@@ -120,7 +120,7 @@ public final class GroupEditGui extends GuiBase {
             }
 
             clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.GUI_ACTION_COOLDOWN);
-            if (!user().hasPermission(Permissions.GROUP_PREFIX_CHANGE, group)) {
+            if (!user().hasPermission(Permissions.GROUP_PREFIX_CHANGE, this.group)) {
                 MessageUtils.sendMessage(user().onlinePlayer(), Language.PREFIX, Language.NO_PERMISSION);
                 return;
             }
@@ -150,7 +150,7 @@ public final class GroupEditGui extends GuiBase {
             }
 
             clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.GUI_ACTION_COOLDOWN);
-            if (!user().hasPermission(Permissions.GROUP_RENAME, group)) {
+            if (!user().hasPermission(Permissions.GROUP_RENAME, this.group)) {
                 MessageUtils.sendMessage(user().onlinePlayer(), Language.PREFIX, Language.NO_PERMISSION);
                 return;
             }
@@ -179,7 +179,7 @@ public final class GroupEditGui extends GuiBase {
             }
 
             clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.GUI_ACTION_COOLDOWN);
-            if (!user().hasPermission(Permissions.GROUP_DELETE, group)) {
+            if (!user().hasPermission(Permissions.GROUP_DELETE, this.group)) {
                 MessageUtils.sendMessage(user().onlinePlayer(), Language.PREFIX, Language.NO_PERMISSION);
                 return;
             }
