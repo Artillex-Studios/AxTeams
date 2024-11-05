@@ -11,6 +11,7 @@ import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axteams.api.teams.Group;
 import com.artillexstudios.axteams.api.teams.Permission;
 import com.artillexstudios.axteams.api.teams.Permissions;
+import com.artillexstudios.axteams.api.teams.Team;
 import com.artillexstudios.axteams.api.users.User;
 import com.artillexstudios.axteams.guis.GuiBase;
 import com.artillexstudios.axteams.utils.FileUtils;
@@ -60,6 +61,10 @@ public final class PermissionEditGui extends GuiBase {
     @Override
     public void populate() {
         super.populate();
+        Team team = this.user().team();
+        if (team == null) {
+            return;
+        }
 
         for (Permission value : Permissions.values()) {
             if (this.group.permissions().contains(value)) {
@@ -72,6 +77,7 @@ public final class PermissionEditGui extends GuiBase {
                     clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.GUI_ACTION_COOLDOWN);
 
                     this.group.permissions().remove(value);
+                    team.markUnsaved();
                     new PermissionEditGui(this.user(), group).open();
                 }));
             } else {
@@ -84,6 +90,7 @@ public final class PermissionEditGui extends GuiBase {
                     clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.GUI_ACTION_COOLDOWN);
 
                     this.group.permissions().add(value);
+                    team.markUnsaved();
                     new PermissionEditGui(this.user(), group).open();
                 }));
             }
