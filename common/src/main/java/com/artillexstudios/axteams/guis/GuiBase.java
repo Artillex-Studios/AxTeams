@@ -16,7 +16,6 @@ import com.artillexstudios.axteams.guis.actions.Actions;
 import dev.triumphteam.gui.guis.BaseGui;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
-import dev.triumphteam.gui.guis.PaginatedGui;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.kyori.adventure.text.Component;
@@ -134,6 +133,10 @@ public abstract class GuiBase {
     }
 
     public abstract void open();
+
+    public void open(int page) {
+        this.open();
+    }
 
     public User user() {
         return this.user;

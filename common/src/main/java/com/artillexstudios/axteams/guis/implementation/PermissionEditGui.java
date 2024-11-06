@@ -16,6 +16,7 @@ import com.artillexstudios.axteams.api.users.User;
 import com.artillexstudios.axteams.guis.GuiBase;
 import com.artillexstudios.axteams.utils.FileUtils;
 import dev.triumphteam.gui.guis.GuiItem;
+import dev.triumphteam.gui.guis.PaginatedGui;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -33,6 +34,11 @@ public final class PermissionEditGui extends GuiBase {
 
     @Override
     public void open() {
+        this.open(1);
+    }
+
+    @Override
+    public void open(int page) {
         if (com.artillexstudios.axteams.config.Config.DEBUG) {
             LogUtils.debug("Open called for user: {}", this.user().name());
         }
@@ -44,7 +50,9 @@ public final class PermissionEditGui extends GuiBase {
         }
 
         this.populate();
-        this.gui().open(player);
+        if (this.gui() instanceof PaginatedGui paginatedGui) {
+            paginatedGui.open(player, page);
+        }
     }
 
     private ItemStack getItem(String item, Permission permission) {
@@ -78,7 +86,7 @@ public final class PermissionEditGui extends GuiBase {
 
                     this.group.permissions().remove(value);
                     team.markUnsaved();
-                    new PermissionEditGui(this.user(), group).open();
+                    new PermissionEditGui(this.user(), group).open(((PaginatedGui) this.gui()).getCurrentPageNum());
                 }));
             } else {
                 this.gui().addItem(new GuiItem(this.getItem("disabled", value), event -> {
@@ -91,7 +99,7 @@ public final class PermissionEditGui extends GuiBase {
 
                     this.group.permissions().add(value);
                     team.markUnsaved();
-                    new PermissionEditGui(this.user(), group).open();
+                    new PermissionEditGui(this.user(), group).open(((PaginatedGui) this.gui()).getCurrentPageNum());
                 }));
             }
         }
