@@ -4,17 +4,17 @@ import net.kyori.adventure.text.Component;
 
 import java.util.List;
 
-public final class StringGroup extends Group {
-    private final String name;
+public final class IdGroup extends Group {
+    private final int id;
 
-    public StringGroup(String name) {
-        super(0, 0, null, null, null);
-        this.name = name;
+    public IdGroup(int id) {
+        super(id, 0, null, null, null);
+        this.id = id;
     }
 
     @Override
     public String name() {
-        return this.name;
+        return "";
     }
 
     @Override
@@ -31,4 +31,5 @@ public final class StringGroup extends Group {
     public List<Permission> permissions() {
         return List.of();
     }
+
 }

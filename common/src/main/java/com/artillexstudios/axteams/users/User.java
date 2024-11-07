@@ -2,7 +2,7 @@ package com.artillexstudios.axteams.users;
 
 import com.artillexstudios.axapi.nms.NMSHandlers;
 import com.artillexstudios.axteams.api.teams.Group;
-import com.artillexstudios.axteams.api.teams.StringGroup;
+import com.artillexstudios.axteams.api.teams.IdGroup;
 import com.artillexstudios.axteams.api.teams.Team;
 import com.artillexstudios.axteams.api.teams.values.TeamValues;
 import net.kyori.adventure.text.Component;
@@ -30,16 +30,20 @@ public final class User implements com.artillexstudios.axteams.api.users.User {
 
     @Override
     public void team(Team team) {
-        if (this.group instanceof StringGroup) {
+        if (this.group instanceof IdGroup) {
             this.group = team.values(TeamValues.GROUPS)
                     .stream()
-                    .filter(gr -> gr.name().equals(this.group.name()))
+                    .filter(gr -> gr.id() == this.group.id())
                     .findFirst()
-                    .orElse(this.group); // TODO: get default group or owner group if the user is the leader
+                    .orElse(team.values(TeamValues.GROUPS).stream()
+                            .filter(gr -> team.leader().equals(this) ? gr.priority() == Group.OWNER_PRIORITY : gr.priority() == Group.DEFAULT_PRIORITY)
+                            .findFirst()
+                            .orElseThrow()
+                    );
         }
 
         if (team == null) {
-            this.group = Group.ofString("");
+            this.group = Group.ofId(0);
         }
 
         this.team = team;

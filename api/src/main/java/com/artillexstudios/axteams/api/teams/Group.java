@@ -14,10 +14,6 @@ public class Group implements Identifiable<Group> {
     private Component displayName;
     private List<Permission> permissions;
 
-    public static Group ofString(String name) {
-        return new StringGroup(name);
-    }
-
     public Group(int id, int priority, String name, Component displayName, List<Permission> permissions) {
         this.id = id;
         this.priority = priority;
@@ -28,6 +24,10 @@ public class Group implements Identifiable<Group> {
 
     public Group(int priority, String name, Component displayName, List<Permission> permissions) {
         this(DEFAULT, priority, name, displayName, permissions);
+    }
+
+    public static Group ofId(int id) {
+        return new IdGroup(id);
     }
 
     public int priority() {
@@ -76,5 +76,17 @@ public class Group implements Identifiable<Group> {
     @Override
     public void id(int id) {
         this.id = id;
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (!(o instanceof Group group)) return false;
+
+        return this.id == group.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.id;
     }
 }

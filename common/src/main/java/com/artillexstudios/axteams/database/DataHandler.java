@@ -49,7 +49,7 @@ public final class DataHandler {
     private static final Field<UUID> USER_UUID = DSL.field("uuid", UUID.class);
     private static final Field<String> USERNAME = DSL.field("username", String.class);
     private static final Field<String> TEAM_NAME = DSL.field("team_name", String.class);
-    private static final Field<String> TEAM_GROUP = DSL.field("team_group", String.class);
+    private static final Field<Integer> TEAM_GROUP = DSL.field("team_group", int.class);
     private static final Field<String> TEXTURES = DSL.field("textures", String.class);
     private static final Field<Integer> TEAM_ID = DSL.field("team_id", int.class);
     private static final Field<Integer> TEAM_LEADER = DSL.field("team_leader", int.class);
@@ -76,7 +76,7 @@ public final class DataHandler {
                 .column(USERNAME, SQLDataType.VARCHAR(16))
                 .column(TEXTURES, SQLDataType.VARCHAR)
                 .column(LAST_SEEN, SQLDataType.BIGINT)
-                .column(TEAM_GROUP, SQLDataType.VARCHAR)
+                .column(TEAM_GROUP, SQLDataType.INTEGER)
                 .column(TEAM_ID, SQLDataType.INTEGER)
                 .primaryKey(ID)
                 .executeAsync(AsyncUtils.executor())
@@ -202,7 +202,7 @@ public final class DataHandler {
                         if (Config.DEBUG) {
                             LogUtils.debug("Not null team ({}) id; online!", teamID);
                         }
-                        User user = new com.artillexstudios.axteams.users.User(record.get(ID), offlinePlayer, null, textures == null ? "" : textures.first(), Group.ofString(record.get(TEAM_GROUP)), System.currentTimeMillis());
+                        User user = new com.artillexstudios.axteams.users.User(record.get(ID), offlinePlayer, null, textures == null ? "" : textures.first(), Group.ofId(record.get(TEAM_GROUP)), System.currentTimeMillis());
                         Users.loadWithContext(user, context);
                         if (context == LoadContext.FULL) {
                             if (Config.DEBUG) {
@@ -236,7 +236,7 @@ public final class DataHandler {
                     if (teamID == null) {
                         userConsumer.accept(new com.artillexstudios.axteams.users.User(record.get(ID), offlinePlayer, null, record.get(TEXTURES), null, record.get(LAST_SEEN)));
                     } else {
-                        User user = new com.artillexstudios.axteams.users.User(record.get(ID), offlinePlayer, null, record.get(TEXTURES), Group.ofString(record.get(TEAM_GROUP)), record.get(LAST_SEEN));
+                        User user = new com.artillexstudios.axteams.users.User(record.get(ID), offlinePlayer, null, record.get(TEXTURES), Group.ofId(record.get(TEAM_GROUP)), record.get(LAST_SEEN));
                         Users.loadWithContext(user, context);
                         if (context == LoadContext.FULL) {
                             Teams.loadTeam(new TeamID(teamID)).thenAccept(team -> {
@@ -278,7 +278,7 @@ public final class DataHandler {
                     .set(USERNAME, offlinePlayer.getLeft().getName())
                     .set(TEXTURES, offlinePlayer.getRight())
                     .set(LAST_SEEN, offlinePlayer.getMiddle() ? System.currentTimeMillis() : 0)
-                    .set(TEAM_GROUP, "")
+                    .set(TEAM_GROUP, 0)
                     .set(TEAM_ID, 0)
                     .returningResult(ID)
                     .fetchOne();
@@ -476,7 +476,7 @@ public final class DataHandler {
                         .set(USERNAME, player.getName())
                         .set(TEXTURES, user.textures())
                         .set(LAST_SEEN, player.isOnline() ? System.currentTimeMillis() : user.lastOnline())
-                        .set(TEAM_GROUP, group != null ? group.name() : "")
+                        .set(TEAM_GROUP, group != null ? group.id() : 0)
                         .set(TEAM_ID, team != null ? team.id().id() : 0)
                         .where(ID.eq(user.id()))
                 );
