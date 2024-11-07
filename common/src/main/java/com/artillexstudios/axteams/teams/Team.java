@@ -87,7 +87,7 @@ public final class Team implements com.artillexstudios.axteams.api.teams.Team {
     @Override
     public boolean hasOnline() {
         for (User member : members(true)) {
-            if (member.player().isOnline()) {
+            if (member.onlinePlayer() != null) {
                 return true;
             }
         }

@@ -177,6 +177,7 @@ public final class DataHandler {
                 if (loaded != null) {
                     for (User member : loaded.members(true)) {
                         if (member.player().getUniqueId().equals(uuid)) {
+                            // TODO: Figure out what causes this
                             LogUtils.warn("Got user from loaded team! This is a fail-safe, something went wrong and caused this!");
                             Users.loadWithContext(member, context);
                             Teams.loadWithContext(loaded, context);
