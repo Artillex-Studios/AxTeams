@@ -10,6 +10,9 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+import java.util.Optional;
+
 public final class User implements com.artillexstudios.axteams.api.users.User {
     private final OfflinePlayer player;
     private final int id;
@@ -31,15 +34,20 @@ public final class User implements com.artillexstudios.axteams.api.users.User {
     @Override
     public void team(Team team) {
         if (this.group instanceof IdGroup) {
-            this.group = team.values(TeamValues.GROUPS)
+            List<Group> groups = team.values(TeamValues.GROUPS);
+            Optional<Group> optional = groups
                     .stream()
-                    .filter(gr -> gr.id() == this.group.id())
-                    .findFirst()
-                    .orElse(team.values(TeamValues.GROUPS).stream()
-                            .filter(gr -> team.leader().equals(this) ? gr.priority() == Group.OWNER_PRIORITY : gr.priority() == Group.DEFAULT_PRIORITY)
-                            .findFirst()
-                            .orElseThrow()
-                    );
+                    .filter(group -> group.id() == this.group.id())
+                    .findFirst();
+
+            if (optional.isPresent()) {
+                this.group = optional.get();
+            } else {
+                this.group = groups.stream()
+                        .filter(gr -> team.leader().equals(this) ? gr.priority() == Group.OWNER_PRIORITY : gr.priority() == Group.DEFAULT_PRIORITY)
+                        .findFirst()
+                        .orElseThrow();
+            }
         }
 
         if (team == null) {
