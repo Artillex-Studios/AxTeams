@@ -74,7 +74,7 @@ public interface Team {
     void clearDeleted();
 
     default boolean hasPermission(User user, Permission permission) {
-        if (user.equals(this.leader())) {
+        if (user == this.leader()) {
             return true;
         }
 
@@ -86,6 +86,10 @@ public interface Team {
     }
 
     default boolean hasPermission(User user, Group other, Permission permission) {
+        if (user == this.leader()) {
+            return true;
+        }
+
         return this.hasPermission(user, permission) && user.group().priority() > other.priority();
     }
 

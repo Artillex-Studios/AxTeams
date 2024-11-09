@@ -385,7 +385,6 @@ public final class DataHandler {
                     LogUtils.debug("Loaded leader: {}", user);
                 }
                 com.artillexstudios.axteams.teams.Team team = new com.artillexstudios.axteams.teams.Team(teamID, user, name);
-                user.team(team);
 
                 for (TeamValue<?, ?> value : TeamValues.values()) {
                     Result<Record> valueSelect = DatabaseConnector.getInstance().context()
@@ -400,6 +399,7 @@ public final class DataHandler {
                     team.loadAll(value, (List<Identifiable<?>>) value.parse(valueSelect));
                 }
 
+                user.team(team);
                 Result<Record> users = DatabaseConnector.getInstance().context()
                         .select()
                         .from(USERS)

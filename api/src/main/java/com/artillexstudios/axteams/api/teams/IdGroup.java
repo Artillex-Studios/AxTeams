@@ -5,11 +5,9 @@ import net.kyori.adventure.text.Component;
 import java.util.List;
 
 public final class IdGroup extends Group {
-    private final int id;
 
     public IdGroup(int id) {
         super(id, 0, null, null, null);
-        this.id = id;
     }
 
     @Override

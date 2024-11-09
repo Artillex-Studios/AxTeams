@@ -1,10 +1,12 @@
 package com.artillexstudios.axteams.users;
 
 import com.artillexstudios.axapi.nms.NMSHandlers;
+import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axteams.api.teams.Group;
 import com.artillexstudios.axteams.api.teams.IdGroup;
 import com.artillexstudios.axteams.api.teams.Team;
 import com.artillexstudios.axteams.api.teams.values.TeamValues;
+import com.artillexstudios.axteams.config.Config;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -34,7 +36,14 @@ public final class User implements com.artillexstudios.axteams.api.users.User {
     @Override
     public void team(Team team) {
         if (this.group instanceof IdGroup) {
+            if (Config.DEBUG) {
+                LogUtils.debug("Looking for group with id {}.", this.group.id());
+            }
+
             List<Group> groups = team.values(TeamValues.GROUPS);
+            if (Config.DEBUG) {
+                LogUtils.debug("Loaded groups in team: {}", groups);
+            }
             Optional<Group> optional = groups
                     .stream()
                     .filter(group -> group.id() == this.group.id())
