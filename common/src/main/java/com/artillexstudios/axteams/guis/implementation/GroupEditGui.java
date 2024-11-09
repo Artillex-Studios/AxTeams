@@ -1,7 +1,10 @@
 package com.artillexstudios.axteams.guis.implementation;
 
 import com.artillexstudios.axapi.config.Config;
+import com.artillexstudios.axapi.gui.AnvilInput;
 import com.artillexstudios.axapi.gui.SignInput;
+import com.artillexstudios.axapi.items.WrappedItemStack;
+import com.artillexstudios.axapi.items.component.DataComponents;
 import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.block.implementation.Section;
 import com.artillexstudios.axapi.placeholders.Context;
 import com.artillexstudios.axapi.placeholders.ParseContext;
@@ -10,8 +13,11 @@ import com.artillexstudios.axapi.placeholders.ResolutionType;
 import com.artillexstudios.axapi.utils.ItemBuilder;
 import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axapi.utils.MessageUtils;
+import com.artillexstudios.axapi.utils.StringUtils;
+import com.artillexstudios.axapi.utils.Version;
 import com.artillexstudios.axteams.api.teams.Group;
 import com.artillexstudios.axteams.api.teams.Permissions;
+import com.artillexstudios.axteams.api.teams.Team;
 import com.artillexstudios.axteams.api.users.User;
 import com.artillexstudios.axteams.config.Language;
 import com.artillexstudios.axteams.guis.GuiBase;
@@ -21,11 +27,14 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.view.AnvilView;
 
 import java.util.List;
 import java.util.UUID;
 
+@SuppressWarnings("removal")
 public final class GroupEditGui extends GuiBase {
     private static final Config config = new Config(FileUtils.PLUGIN_DIRECTORY.resolve("guis/").resolve("group-editor.yml").toFile());
     private final Group group;
@@ -125,21 +134,51 @@ public final class GroupEditGui extends GuiBase {
                 return;
             }
 
-            SignInput signInput = new SignInput.Builder()
-                    .setLines(List.of(Component.empty(), Component.text("Enter the new prefix"), Component.empty(), Component.empty()))
-                    .setHandler((player, lines) -> {
-                        String firstLine = PlainTextComponentSerializer.plainText().serialize(lines[0]);
-                        if (firstLine.isBlank()) {
-                            MessageUtils.sendMessage(player, "<red>You did not input a new name!");
-                            return;
+//            SignInput signInput = new SignInput.Builder()
+//                    .setLines(List.of(Component.empty(), Component.text("Enter the new prefix"), Component.empty(), Component.empty()))
+//                    .setHandler((player, lines) -> {
+//                        String firstLine = PlainTextComponentSerializer.plainText().serialize(lines[0]);
+//                        if (firstLine.isBlank()) {
+//                            MessageUtils.sendMessage(player, "<red>You did not input a new name!");
+//                            return;
+//                        }
+//
+//                        group.displayName(lines[0]);
+//                        new GroupEditGui(GroupEditGui.this.user(), GroupEditGui.this.group).open();
+//                    })
+//                    .build((Player) event.getWhoClicked());
+//
+//            signInput.open();
+            AnvilInput anvilInput = new AnvilInput.Builder()
+                    .item(WrappedItemStack.edit(new ItemStack(Material.PAPER), item -> {
+                        item.set(DataComponents.customName(), this.group.displayName());
+                        return item;
+                    }))
+                    .title(Component.text("Enter a new display name!"))
+                    .event((inventoryClickEvent) -> {
+                        inventoryClickEvent.setCancelled(true);
+
+                        String text;
+                        if (Version.getServerVersion().isNewerThanOrEqualTo(Version.v1_21)) {
+                            text = ((AnvilView) inventoryClickEvent.getView()).getRenameText();
+                        } else {
+                            text = ((AnvilInventory) inventoryClickEvent.getInventory()).getRenameText();
                         }
 
-                        group.displayName(lines[0]);
+                        this.group.displayName(StringUtils.format(text));
+                        Team team = this.user().team();
+                        if (team != null) {
+                            team.markUnsaved();
+                        }
+
+                        user().onlinePlayer().closeInventory();
+                    })
+                    .closeEvent(closeEvent -> {
                         new GroupEditGui(GroupEditGui.this.user(), GroupEditGui.this.group).open();
                     })
                     .build((Player) event.getWhoClicked());
 
-            signInput.open();
+            anvilInput.open();
         }));
 
         // TODO: Proper lang from files
