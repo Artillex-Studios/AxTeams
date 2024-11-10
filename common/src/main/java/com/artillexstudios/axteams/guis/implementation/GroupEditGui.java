@@ -14,27 +14,25 @@ import com.artillexstudios.axapi.utils.ItemBuilder;
 import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axapi.utils.MessageUtils;
 import com.artillexstudios.axapi.utils.StringUtils;
-import com.artillexstudios.axapi.utils.Version;
 import com.artillexstudios.axteams.api.teams.Group;
 import com.artillexstudios.axteams.api.teams.Permissions;
 import com.artillexstudios.axteams.api.teams.Team;
 import com.artillexstudios.axteams.api.users.User;
 import com.artillexstudios.axteams.config.Language;
 import com.artillexstudios.axteams.guis.GuiBase;
+import com.artillexstudios.axteams.utils.AnvilInputUtils;
 import com.artillexstudios.axteams.utils.FileUtils;
+import com.artillexstudios.axteams.utils.IdentifiableSupplier;
 import dev.triumphteam.gui.guis.GuiItem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.view.AnvilView;
 
 import java.util.List;
 import java.util.UUID;
 
-@SuppressWarnings("removal")
 public final class GroupEditGui extends GuiBase {
     private static final Config config = new Config(FileUtils.PLUGIN_DIRECTORY.resolve("guis/").resolve("group-editor.yml").toFile());
     private final Group group;
@@ -42,6 +40,12 @@ public final class GroupEditGui extends GuiBase {
     public GroupEditGui(User user, Group group) {
         super(user, config, false, true);
         this.group = group;
+        ((com.artillexstudios.axteams.users.User) this.user()).guis().offer(new IdentifiableSupplier<>(GroupEditGui.class) {
+            @Override
+            public GuiBase get() {
+                return new GroupEditGui(user, group);
+            }
+        });
     }
 
     @Override
@@ -61,7 +65,7 @@ public final class GroupEditGui extends GuiBase {
     }
 
     private ItemStack getItem(String item, User member) {
-        Context.Builder ctx = Context.builder(ParseContext.INTERNAL, ResolutionType.OFFLINE).add(Group.class, group).add(User.class, member);
+        Context.Builder ctx = Context.builder(ParseContext.INTERNAL, ResolutionType.OFFLINE).add(Group.class, this.group).add(User.class, member);
         Section section = this.config().getSection(item);
         if (section == null) {
             LogUtils.warn("No {} section present for groups gui! Please reset, or fix your configuration!", item);
@@ -158,20 +162,15 @@ public final class GroupEditGui extends GuiBase {
                     .event((inventoryClickEvent) -> {
                         inventoryClickEvent.setCancelled(true);
 
-                        String text;
-                        if (Version.getServerVersion().isNewerThanOrEqualTo(Version.v1_21)) {
-                            text = ((AnvilView) inventoryClickEvent.getView()).getRenameText();
-                        } else {
-                            text = ((AnvilInventory) inventoryClickEvent.getInventory()).getRenameText();
-                        }
+                        String input = AnvilInputUtils.getRenameText(inventoryClickEvent);
 
-                        this.group.displayName(StringUtils.format(text));
+                        this.group.displayName(StringUtils.format(input));
                         Team team = this.user().team();
                         if (team != null) {
                             team.markUnsaved();
                         }
 
-                        user().onlinePlayer().closeInventory();
+                        new GroupEditGui(GroupEditGui.this.user(), GroupEditGui.this.group).open();
                     })
                     .closeEvent(closeEvent -> {
                         new GroupEditGui(GroupEditGui.this.user(), GroupEditGui.this.group).open();

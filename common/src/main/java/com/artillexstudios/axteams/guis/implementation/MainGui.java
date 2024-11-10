@@ -5,6 +5,7 @@ import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axteams.api.users.User;
 import com.artillexstudios.axteams.guis.GuiBase;
 import com.artillexstudios.axteams.utils.FileUtils;
+import com.artillexstudios.axteams.utils.IdentifiableSupplier;
 import org.bukkit.entity.Player;
 
 public final class MainGui extends GuiBase {
@@ -12,6 +13,12 @@ public final class MainGui extends GuiBase {
 
     public MainGui(User user) {
         super(user, config, false);
+        ((com.artillexstudios.axteams.users.User) this.user()).guis().offer(new IdentifiableSupplier<>(MainGui.class) {
+            @Override
+            public GuiBase get() {
+                return new MainGui(user);
+            }
+        });
     }
 
     @Override

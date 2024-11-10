@@ -3,6 +3,7 @@ package com.artillexstudios.axteams.guis.actions;
 import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axteams.config.Config;
 import com.artillexstudios.axteams.guis.GuiBase;
+import com.artillexstudios.axteams.guis.actions.implementation.ActionBack;
 import com.artillexstudios.axteams.guis.actions.implementation.ActionClose;
 import com.artillexstudios.axteams.guis.actions.implementation.ActionConsoleCommand;
 import com.artillexstudios.axteams.guis.actions.implementation.ActionMessage;
@@ -25,6 +26,7 @@ public final class Actions {
     private static final Action<?> CONSOLE_COMMAND = register(new ActionConsoleCommand());
     private static final Action<?> CLOSE = register(new ActionClose());
     private static final Action<?> MESSAGE = register(new ActionMessage());
+    private static final Action<?> BACK = register(new ActionBack());
 
     public static Action<?> register(Action<?> action) {
         ACTIONS.put(action.id(), action);

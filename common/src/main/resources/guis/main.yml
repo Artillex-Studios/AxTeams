@@ -8,5 +8,12 @@ items:
   - type: player_head
     texture: "<texture>"
     name: "<green>User management"
+    slots: 10
     actions:
       - "[open] users"
+  - type: player_head
+    texture: "<texture>"
+    name: "<gold>Group management"
+    slots: 11
+    actions:
+      - "[open] groups"

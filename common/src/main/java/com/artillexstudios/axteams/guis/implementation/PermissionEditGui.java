@@ -12,9 +12,11 @@ import com.artillexstudios.axteams.api.teams.Group;
 import com.artillexstudios.axteams.api.teams.Permission;
 import com.artillexstudios.axteams.api.teams.Permissions;
 import com.artillexstudios.axteams.api.teams.Team;
+import com.artillexstudios.axteams.api.teams.values.TeamValues;
 import com.artillexstudios.axteams.api.users.User;
 import com.artillexstudios.axteams.guis.GuiBase;
 import com.artillexstudios.axteams.utils.FileUtils;
+import com.artillexstudios.axteams.utils.IdentifiableSupplier;
 import dev.triumphteam.gui.guis.GuiItem;
 import dev.triumphteam.gui.guis.PaginatedGui;
 import org.bukkit.Material;
@@ -30,6 +32,22 @@ public final class PermissionEditGui extends GuiBase {
     public PermissionEditGui(User user, Group group) {
         super(user, config, true, true);
         this.group = group;
+
+        ((com.artillexstudios.axteams.users.User) this.user()).guis().offer(new IdentifiableSupplier<>(PermissionEditGui.class) {
+            @Override
+            public GuiBase get() {
+                Team team = user.team();
+                if (team == null) {
+                    return null;
+                }
+
+                if (!team.values(TeamValues.GROUPS).contains(group)) {
+                    return null;
+                }
+
+                return new PermissionEditGui(user, group);
+            }
+        });
     }
 
     @Override

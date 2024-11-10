@@ -14,18 +14,26 @@ import com.artillexstudios.axteams.api.teams.values.TeamValues;
 import com.artillexstudios.axteams.api.users.User;
 import com.artillexstudios.axteams.guis.GuiBase;
 import com.artillexstudios.axteams.utils.FileUtils;
+import com.artillexstudios.axteams.utils.IdentifiableSupplier;
 import dev.triumphteam.gui.guis.GuiItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public final class GroupsGui extends GuiBase {
     private static final Config config = new Config(FileUtils.PLUGIN_DIRECTORY.resolve("guis/").resolve("groups.yml").toFile());
 
     public GroupsGui(User user) {
         super(user, config, true);
+        ((com.artillexstudios.axteams.users.User) this.user()).guis().offer(new IdentifiableSupplier<>(GroupsGui.class) {
+            @Override
+            public GuiBase get() {
+                return new GroupsGui(user);
+            }
+        });
     }
 
     @Override

@@ -6,7 +6,9 @@ import com.artillexstudios.axteams.api.teams.Group;
 import com.artillexstudios.axteams.api.teams.IdGroup;
 import com.artillexstudios.axteams.api.teams.Team;
 import com.artillexstudios.axteams.api.teams.values.TeamValues;
+import com.artillexstudios.axteams.collections.CircularLinkedSet;
 import com.artillexstudios.axteams.config.Config;
+import com.artillexstudios.axteams.guis.GuiBase;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -14,8 +16,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public final class User implements com.artillexstudios.axteams.api.users.User {
+    private final CircularLinkedSet<Supplier<GuiBase>> guis = new CircularLinkedSet<>(10);
     private final OfflinePlayer player;
     private final int id;
     private Team team;
@@ -130,6 +134,10 @@ public final class User implements com.artillexstudios.axteams.api.users.User {
 
     public void onlinePlayer(Player player) {
         this.onlinePlayer = player;
+    }
+
+    public CircularLinkedSet<Supplier<GuiBase>> guis() {
+        return this.guis;
     }
 
     @Override

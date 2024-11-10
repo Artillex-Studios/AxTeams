@@ -11,24 +11,34 @@ user:
     - ""
     - "<gray>» <white>Click to manage!"
 
+invite:
+  material: oak_sign
+  name: "<green>Invite a player!"
+  slots: 35
+  lore:
+    - ""
+    - "<gray>» <white>Click here to invite a new player!"
+
 items:
   - type: gray_stained_glass_pane
     slots:
-      - "0-35"
+      - "0-9"
+      - "17-18"
+      - "26-35"
   - type: player_head
     texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTFjMmUyOTE5MWNiYmZhZWM0OWYyYzY0MWE0MGFhODA4ZDQ5ODQ2YjcwNWRmM2M5ZjAyYjIzOTZkYThlMTE2In19fQ=="
     name: "Previous page"
-    slots: 33
+    slots: 29
     actions:
       - "[page] previous"
   - type: player_head
     texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTFmMDU5Yzk5ZThlOTIyZjhjYjdmYThlNjA0YTcwMTQ3ZmExMTg0OWIzYjNkYmJmZjIyNjU3OTEyMTRlMjM5MSJ9fX0="
     name: "Next page"
-    slots: 29
+    slots: 33
     actions:
       - "[page] next"
   - type: cauldron
     name: "Back"
     slots: 31
     actions:
-      - "[page] next"
+      - "[back]"

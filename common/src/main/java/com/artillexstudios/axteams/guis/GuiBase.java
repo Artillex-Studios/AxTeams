@@ -58,7 +58,12 @@ public abstract class GuiBase {
     }
 
     public void populate() {
-        this.gui.updateTitle(this.title(config.getString("title")));
+        this.gui.updateTitle(this.title(this.config.getString("title")));
+        Map<String, String> placeholders = Placeholders.asMap(Context.builder(ParseContext.INTERNAL, ResolutionType.OFFLINE).add(User.class, this.user));
+        if (com.artillexstudios.axteams.config.Config.DEBUG) {
+            LogUtils.debug("Placeholders for item: {}", placeholders);
+        }
+
         for (Map<Object, Object> item : this.config.getMapList("items")) {
             Object slotConfig = item.get("slots");
             if (slotConfig == null) {
@@ -74,10 +79,6 @@ public abstract class GuiBase {
             List<String> actionSet = (List<String>) item.get("actions");
             List<Action<?>> actions = Actions.compile(actionSet);
             List<Object> values = Actions.parseAll(actionSet);
-            Map<String, String> placeholders = Placeholders.asMap(Context.builder(ParseContext.INTERNAL, ResolutionType.OFFLINE).add(User.class, this.user));
-            if (com.artillexstudios.axteams.config.Config.DEBUG) {
-                LogUtils.debug("Placeholders for item: {}", placeholders);
-            }
 
             this.gui.setItem(slots, new GuiItem(new ItemBuilder(item, placeholders).get(), event -> {
                 UUID uuid = event.getWhoClicked().getUniqueId();
