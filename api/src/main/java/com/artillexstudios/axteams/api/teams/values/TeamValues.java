@@ -2,12 +2,14 @@ package com.artillexstudios.axteams.api.teams.values;
 
 import com.artillexstudios.axteams.api.exception.RegistrationFailedException;
 import com.artillexstudios.axteams.api.teams.Group;
+import com.artillexstudios.axteams.api.teams.values.identifiables.IdentifiableBigDecimal;
 import com.artillexstudios.axteams.api.teams.values.identifiables.IdentifiableBoolean;
 import com.artillexstudios.axteams.api.teams.values.identifiables.IdentifiableComponent;
 import com.artillexstudios.axteams.api.teams.values.identifiables.IdentifiableInteger;
 import com.artillexstudios.axteams.api.teams.values.identifiables.IdentifiableLocation;
 import com.artillexstudios.axteams.api.teams.values.identifiables.Warp;
 import com.artillexstudios.axteams.api.teams.values.implementation.TeamAlliesValue;
+import com.artillexstudios.axteams.api.teams.values.implementation.TeamBankValue;
 import com.artillexstudios.axteams.api.teams.values.implementation.TeamDisplayNameValue;
 import com.artillexstudios.axteams.api.teams.values.implementation.TeamGroupsValue;
 import com.artillexstudios.axteams.api.teams.values.implementation.TeamHomeValue;
@@ -21,6 +23,7 @@ import org.bukkit.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Set;
@@ -35,6 +38,7 @@ public final class TeamValues {
     public static final TeamValue<Location, IdentifiableLocation> HOME = register(new TeamHomeValue());
     public static final TeamValue<Integer, IdentifiableInteger> ALLIES = register(new TeamAlliesValue());
     public static final TeamValue<Group, Group> GROUPS = register(new TeamGroupsValue());
+    public static final TeamValue<BigDecimal, IdentifiableBigDecimal> BANK = register(new TeamBankValue());
 
     public static <Y, T extends Identifiable<Y>> TeamValue<Y, T> register(TeamValue<Y, T> teamValue) {
         Preconditions.checkNotNull(teamValue, "Tried to register null teamValue!");

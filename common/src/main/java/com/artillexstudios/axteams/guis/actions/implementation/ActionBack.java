@@ -1,9 +1,7 @@
 package com.artillexstudios.axteams.guis.actions.implementation;
 
-import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axteams.api.users.User;
 import com.artillexstudios.axteams.collections.CircularLinkedSet;
-import com.artillexstudios.axteams.config.Config;
 import com.artillexstudios.axteams.guis.GuiBase;
 import com.artillexstudios.axteams.guis.actions.Action;
 
@@ -44,6 +42,7 @@ public final class ActionBack extends Action<String> {
                 user.onlinePlayer().closeInventory();
             }
         } catch (NoSuchElementException exception) {
+            guis.clear();
             user.onlinePlayer().closeInventory();
         }
     }
