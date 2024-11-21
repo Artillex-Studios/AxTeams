@@ -11,6 +11,7 @@ import com.artillexstudios.axapi.placeholders.ResolutionType;
 import com.artillexstudios.axapi.utils.ItemBuilder;
 import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axapi.utils.MessageUtils;
+import com.artillexstudios.axteams.api.events.PreTeamInviteEvent;
 import com.artillexstudios.axteams.api.teams.Permissions;
 import com.artillexstudios.axteams.api.teams.Team;
 import com.artillexstudios.axteams.api.users.User;
@@ -133,6 +134,10 @@ public final class UsersGui extends GuiBase {
 
                         if (team.invited(invited)) {
                             MessageUtils.sendMessage(this.user().onlinePlayer(), Language.PREFIX, "already invited");
+                            return;
+                        }
+
+                        if (!new PreTeamInviteEvent(team, this.user(), invited).call()) {
                             return;
                         }
 

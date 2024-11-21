@@ -1,0 +1,6 @@
+group_permissions_edit:
+  display: "Group permission edit"
+
+group_priority_change:
+  display: "Group permission edit"
+# TODO: Auto generated from the permissions

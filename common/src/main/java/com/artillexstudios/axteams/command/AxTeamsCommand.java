@@ -9,6 +9,7 @@ import com.artillexstudios.axapi.utils.PaperUtils;
 import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axteams.AxTeamsPlugin;
 import com.artillexstudios.axteams.api.AxTeamsAPI;
+import com.artillexstudios.axteams.api.events.PreTeamInviteEvent;
 import com.artillexstudios.axteams.api.teams.Permissions;
 import com.artillexstudios.axteams.api.teams.Team;
 import com.artillexstudios.axteams.api.teams.TeamID;
@@ -568,6 +569,10 @@ public enum AxTeamsCommand {
                                         return;
                                     }
 
+                                    if (!new PreTeamInviteEvent(team, user, invited).call()) {
+                                        return;
+                                    }
+
                                     // TODO: messages
                                     team.invite(invited);
                                 })
@@ -826,6 +831,17 @@ public enum AxTeamsCommand {
                                         }
                                     }
                                 })
+                        )
+                )
+                .then(new LiteralArgument("bank")
+                        .then(new LiteralArgument("balance")
+
+                        )
+                        .then(new LiteralArgument("take")
+
+                        )
+                        .then(new LiteralArgument("insert")
+
                         )
                 )
                 .then(new LiteralArgument("admin")

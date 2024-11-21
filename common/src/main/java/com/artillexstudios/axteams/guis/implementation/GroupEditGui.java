@@ -138,21 +138,6 @@ public final class GroupEditGui extends GuiBase {
                 return;
             }
 
-//            SignInput signInput = new SignInput.Builder()
-//                    .setLines(List.of(Component.empty(), Component.text("Enter the new prefix"), Component.empty(), Component.empty()))
-//                    .setHandler((player, lines) -> {
-//                        String firstLine = PlainTextComponentSerializer.plainText().serialize(lines[0]);
-//                        if (firstLine.isBlank()) {
-//                            MessageUtils.sendMessage(player, "<red>You did not input a new name!");
-//                            return;
-//                        }
-//
-//                        group.displayName(lines[0]);
-//                        new GroupEditGui(GroupEditGui.this.user(), GroupEditGui.this.group).open();
-//                    })
-//                    .build((Player) event.getWhoClicked());
-//
-//            signInput.open();
             AnvilInput anvilInput = new AnvilInput.Builder()
                     .item(WrappedItemStack.edit(new ItemStack(Material.PAPER), item -> {
                         item.set(DataComponents.customName(), this.group.displayName());
