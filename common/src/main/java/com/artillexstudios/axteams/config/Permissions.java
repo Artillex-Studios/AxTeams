@@ -7,26 +7,32 @@ import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.loader.Lo
 import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.updater.UpdaterSettings;
 import com.artillexstudios.axapi.utils.YamlUtils;
 import com.artillexstudios.axteams.AxTeamsPlugin;
+import com.artillexstudios.axteams.api.teams.Permission;
 import com.artillexstudios.axteams.utils.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
-public final class Levels {
-    private static final Logger log = LoggerFactory.getLogger(Levels.class);
-    private static final Levels INSTANCE = new Levels();
-    public static boolean ENABLED = true;
-    public static int MAX_LEVEL = 20;
-    public static boolean ALLOW_NEGATIVE = false;
+public final class Permissions {
+    private static final Permissions INSTANCE = new Permissions();
     private com.artillexstudios.axapi.config.Config config = null;
 
     public static boolean reload() {
         return INSTANCE.refreshConfig();
     }
 
+    public static void modify(Permission permission) {
+        String display = INSTANCE.config.getString("permissions.%s.display".formatted(permission.permission()));
+        if (display == null) {
+            display = permission.display();
+            INSTANCE.config.set("permissions.%s.display".formatted(permission.permission()), display);
+            INSTANCE.config.save();
+        }
+
+        permission.display(display);
+    }
+
     private boolean refreshConfig() {
-        File file = FileUtils.PLUGIN_DIRECTORY.resolve("levels.yml").toFile();
+        File file = FileUtils.PLUGIN_DIRECTORY.resolve("permissions.yml").toFile();
         if (file.exists()) {
             if (!YamlUtils.suggest(file)) {
                 return false;
@@ -36,24 +42,9 @@ public final class Levels {
         if (this.config != null) {
             this.config.reload();
         } else {
-            this.config = new com.artillexstudios.axapi.config.Config(file, AxTeamsPlugin.instance().getResource("levels.yml"), GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build());
+            this.config = new com.artillexstudios.axapi.config.Config(file, AxTeamsPlugin.instance().getResource("permissions.yml"), GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build());
         }
 
-        refreshValues();
         return true;
-    }
-
-    private void refreshValues() {
-        if (this.config == null) {
-            log.error("Levels were not loaded correctly! Using default values!");
-            return;
-        }
-
-
-        this.validate();
-    }
-
-    private void validate() {
-
     }
 }

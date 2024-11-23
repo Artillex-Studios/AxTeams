@@ -1,8 +1,10 @@
 package com.artillexstudios.axteams.api;
 
+import com.artillexstudios.axteams.api.teams.Permission;
 import com.artillexstudios.axteams.api.teams.Team;
 import com.artillexstudios.axteams.api.teams.TeamID;
 import com.artillexstudios.axteams.api.users.User;
+import com.artillexstudios.axteams.config.Permissions;
 import com.artillexstudios.axteams.database.DatabaseConnector;
 import com.artillexstudios.axteams.teams.Teams;
 import com.artillexstudios.axteams.users.Users;
@@ -43,5 +45,10 @@ public final class AxTeamsAPIImpl implements AxTeamsAPI {
     @Override
     public DSLContext context() {
         return DatabaseConnector.getInstance().context();
+    }
+
+    @Override
+    public void registerPermission(Permission permission) {
+        Permissions.modify(permission);
     }
 }

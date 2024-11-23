@@ -18,6 +18,7 @@ import com.artillexstudios.axteams.config.Config;
 import com.artillexstudios.axteams.config.Groups;
 import com.artillexstudios.axteams.config.Language;
 import com.artillexstudios.axteams.config.Levels;
+import com.artillexstudios.axteams.config.Permissions;
 import com.artillexstudios.axteams.database.DataHandler;
 import com.artillexstudios.axteams.database.DatabaseConnector;
 import com.artillexstudios.axteams.database.TeamSaver;
@@ -59,6 +60,7 @@ public final class AxTeamsPlugin extends AxPlugin {
         Language.reload();
         Levels.reload();
         Groups.reload();
+        Permissions.reload();
         AsyncUtils.setup(Config.ASYNC_PROCESSOR_POOL_SIZE);
 
         CommandAPI.onLoad(new CommandAPIBukkitConfig(this)
@@ -194,8 +196,7 @@ public final class AxTeamsPlugin extends AxPlugin {
                 return "";
             }
 
-            // TODO: Better permissions
-            return permission.permission();
+            return permission.display();
         });
 
         Placeholders.register("level", ctx -> {

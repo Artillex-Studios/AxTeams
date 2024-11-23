@@ -1,5 +1,6 @@
 package com.artillexstudios.axteams.api;
 
+import com.artillexstudios.axteams.api.teams.Permission;
 import com.artillexstudios.axteams.api.teams.Team;
 import com.artillexstudios.axteams.api.teams.TeamID;
 import com.artillexstudios.axteams.api.users.User;
@@ -50,6 +51,8 @@ public interface AxTeamsAPI {
     TeamID getTeamID(String name);
 
     DSLContext context();
+
+    void registerPermission(Permission permission);
 
     static AxTeamsAPI instance() {
         return Holder.INSTANCE;

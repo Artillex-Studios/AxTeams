@@ -39,10 +39,10 @@ public final class Groups {
             }
         }
 
-        if (config != null) {
-            config.reload();
+        if (this.config != null) {
+            this.config.reload();
         } else {
-            config = new com.artillexstudios.axapi.config.Config(file, AxTeamsPlugin.instance().getResource("groups.yml"), GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.DEFAULT, DumperSettings.DEFAULT, UpdaterSettings.DEFAULT);
+            this.config = new com.artillexstudios.axapi.config.Config(file, AxTeamsPlugin.instance().getResource("groups.yml"), GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.DEFAULT, DumperSettings.DEFAULT, UpdaterSettings.DEFAULT);
         }
 
         refreshValues();
@@ -50,7 +50,7 @@ public final class Groups {
     }
 
     private void refreshValues() {
-        if (config == null) {
+        if (this.config == null) {
             log.error("Groups were not loaded correctly! Using default values!");
             return;
         }
@@ -58,7 +58,7 @@ public final class Groups {
         boolean hasOwner = false;
         boolean hasDefault = false;
         DEFAULT_GROUPS.clear();
-        for (Map<Object, Object> group : config.getMapList("groups")) {
+        for (Map<Object, Object> group : this.config.getMapList("groups")) {
             String id = (String) group.get("id");
             if (id == null) {
                 LogUtils.warn("No id defined for group!");

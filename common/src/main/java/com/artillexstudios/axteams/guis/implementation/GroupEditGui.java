@@ -10,6 +10,7 @@ import com.artillexstudios.axapi.placeholders.Context;
 import com.artillexstudios.axapi.placeholders.ParseContext;
 import com.artillexstudios.axapi.placeholders.Placeholders;
 import com.artillexstudios.axapi.placeholders.ResolutionType;
+import com.artillexstudios.axapi.scheduler.Scheduler;
 import com.artillexstudios.axapi.utils.ItemBuilder;
 import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axapi.utils.MessageUtils;
@@ -119,7 +120,9 @@ public final class GroupEditGui extends GuiBase {
                         }
 
                         // TODO: Change the priority of different groups, permission checks
-                        new GroupEditGui(GroupEditGui.this.user(), GroupEditGui.this.group).open();
+                        Scheduler.get().run(() -> {
+                            new GroupEditGui(GroupEditGui.this.user(), GroupEditGui.this.group).open();
+                        });
                     })
                     .build((Player) event.getWhoClicked());
 
@@ -188,7 +191,9 @@ public final class GroupEditGui extends GuiBase {
                         }
 
                         group.name(firstLine);
-                        new GroupEditGui(GroupEditGui.this.user(), GroupEditGui.this.group).open();
+                        Scheduler.get().run(() -> {
+                            new GroupEditGui(GroupEditGui.this.user(), GroupEditGui.this.group).open();
+                        });
                     })
                     .build((Player) event.getWhoClicked());
 

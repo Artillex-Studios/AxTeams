@@ -127,7 +127,7 @@ public final class UsersGui extends GuiBase {
                             return;
                         }
 
-                        if (team.members().contains(invited)) {
+                        if (team.members(true).contains(invited)) {
                             MessageUtils.sendMessage(this.user().onlinePlayer(), Language.PREFIX, "already member");
                             return;
                         }

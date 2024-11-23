@@ -70,11 +70,11 @@ public final class Language {
         }
 
         // The user might have changed the config
-        if (config != null && lastLanguage != null && lastLanguage.equalsIgnoreCase(Config.LANGUAGE)) {
+        if (this.config != null && lastLanguage != null && lastLanguage.equalsIgnoreCase(Config.LANGUAGE)) {
             if (Config.DEBUG) {
                 LogUtils.debug("Config not null");
             }
-            config.reload();
+            this.config.reload();
         } else {
             lastLanguage = shouldDefault ? "en_US" : Config.LANGUAGE;
             if (Config.DEBUG) {
@@ -91,7 +91,7 @@ public final class Language {
             if (Config.DEBUG) {
                 LogUtils.debug("Loading config from file {} with defaults {}", file, defaults);
             }
-            config = new com.artillexstudios.axapi.config.Config(file, defaults, GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build());
+            this.config = new com.artillexstudios.axapi.config.Config(file, defaults, GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build());
         }
 
         refreshValues();
@@ -99,13 +99,13 @@ public final class Language {
     }
 
     private void refreshValues() {
-        if (config == null) {
+        if (this.config == null) {
             log.error("Language configuration was not loaded correctly! Using default values!");
             return;
         }
 
-        PREFIX = config.getString("prefix", PREFIX);
-        USER_NOT_LOADED = config.getString("error.user-not-loaded", USER_NOT_LOADED);
-        TEAM_VALUE_NOT_FOUND = config.getString("error.teamvalue-not-found", TEAM_VALUE_NOT_FOUND);
+        PREFIX = this.config.getString("prefix", PREFIX);
+        USER_NOT_LOADED = this.config.getString("error.user-not-loaded", USER_NOT_LOADED);
+        TEAM_VALUE_NOT_FOUND = this.config.getString("error.teamvalue-not-found", TEAM_VALUE_NOT_FOUND);
     }
 }

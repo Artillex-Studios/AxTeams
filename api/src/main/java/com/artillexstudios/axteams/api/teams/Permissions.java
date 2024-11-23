@@ -24,6 +24,10 @@ public final class Permissions {
     public static final Permission GROUP_PERMISSIONS_EDIT = register(new Permission("group_permissions_edit", "Edit group permissions"));
 
     public static Permission register(Permission permission) {
+        if (permission.permission().contains(".")) {
+            throw new IllegalArgumentException("The permission string can't contain the '.' character! Replace it with something else, like '_'!");
+        }
+
         try {
             registry.register(permission.permission(), permission);
             return permission;

@@ -200,7 +200,6 @@ public final class Teams {
         return teamNames.keySet();
     }
 
-
     public static TeamID byName(String name) {
         return teamNames.get(name);
     }

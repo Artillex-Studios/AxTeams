@@ -56,10 +56,10 @@ public final class Config {
             }
         }
 
-        if (config != null) {
-            config.reload();
+        if (this.config != null) {
+            this.config.reload();
         } else {
-            config = new com.artillexstudios.axapi.config.Config(file, AxTeamsPlugin.instance().getResource("config.yml"), GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build());
+            this.config = new com.artillexstudios.axapi.config.Config(file, AxTeamsPlugin.instance().getResource("config.yml"), GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build());
         }
 
         refreshValues();
@@ -67,33 +67,33 @@ public final class Config {
     }
 
     private void refreshValues() {
-        if (config == null) {
+        if (this.config == null) {
             log.error("Config was not loaded correctly! Using default values!");
             return;
         }
 
-        DATABASE_TYPE = DatabaseType.parse(config.getString("database.type", DATABASE_TYPE.name()));
-        DATABASE_ADDRESS = config.getString("database.address", DATABASE_ADDRESS);
-        DATABASE_PORT = config.getInt("database.port", DATABASE_PORT);
-        DATABASE_DATABASE = config.getString("database.database", DATABASE_DATABASE);
-        DATABASE_USERNAME = config.getString("database.username", DATABASE_USERNAME);
-        DATABASE_PASSWORD = config.getString("database.password", DATABASE_PASSWORD);
-        DATABASE_MAXIMUM_POOL_SIZE = config.getInt("database.pool.maximum-pool-size", DATABASE_MAXIMUM_POOL_SIZE);
-        DATABASE_MINIMUM_IDLE = config.getInt("database.pool.minimum-idle", DATABASE_MINIMUM_IDLE);
-        DATABASE_MAXIMUM_LIFETIME = config.getInt("database.pool.maximum-lifetime", DATABASE_MAXIMUM_LIFETIME);
-        DATABASE_KEEPALIVE_TIME = config.getInt("database.pool.keepalive-time", DATABASE_KEEPALIVE_TIME);
-        DATABASE_CONNECTION_TIMEOUT = config.getInt("database.pool.connection-timeout", DATABASE_CONNECTION_TIMEOUT);
-        TEAM_NAME_MIN_LENGTH = config.getInt("team-name.min-length", TEAM_NAME_MIN_LENGTH);
-        TEAM_NAME_MAX_LENGTH = config.getInt("team-name.max-length", TEAM_NAME_MAX_LENGTH);
+        DATABASE_TYPE = DatabaseType.parse(this.config.getString("database.type", DATABASE_TYPE.name()));
+        DATABASE_ADDRESS = this.config.getString("database.address", DATABASE_ADDRESS);
+        DATABASE_PORT = this.config.getInt("database.port", DATABASE_PORT);
+        DATABASE_DATABASE = this.config.getString("database.database", DATABASE_DATABASE);
+        DATABASE_USERNAME = this.config.getString("database.username", DATABASE_USERNAME);
+        DATABASE_PASSWORD = this.config.getString("database.password", DATABASE_PASSWORD);
+        DATABASE_MAXIMUM_POOL_SIZE = this.config.getInt("database.pool.maximum-pool-size", DATABASE_MAXIMUM_POOL_SIZE);
+        DATABASE_MINIMUM_IDLE = this.config.getInt("database.pool.minimum-idle", DATABASE_MINIMUM_IDLE);
+        DATABASE_MAXIMUM_LIFETIME = this.config.getInt("database.pool.maximum-lifetime", DATABASE_MAXIMUM_LIFETIME);
+        DATABASE_KEEPALIVE_TIME = this.config.getInt("database.pool.keepalive-time", DATABASE_KEEPALIVE_TIME);
+        DATABASE_CONNECTION_TIMEOUT = this.config.getInt("database.pool.connection-timeout", DATABASE_CONNECTION_TIMEOUT);
+        TEAM_NAME_MIN_LENGTH = this.config.getInt("team-name.min-length", TEAM_NAME_MIN_LENGTH);
+        TEAM_NAME_MAX_LENGTH = this.config.getInt("team-name.max-length", TEAM_NAME_MAX_LENGTH);
         TEAM_NAME_WHITELIST.clear();
-        TEAM_NAME_WHITELIST.addAll(config.getStringList("team-name.whitelist", List.of("^[a-zA-Z0-9_]*$")).stream().map(Pattern::compile).toList());
+        TEAM_NAME_WHITELIST.addAll(this.config.getStringList("team-name.whitelist", List.of("^[a-zA-Z0-9_]*$")).stream().map(Pattern::compile).toList());
         TEAM_NAME_BLACKLIST.clear();
-        TEAM_NAME_BLACKLIST.addAll(config.getStringList("team-name.blacklist", List.of("badword")).stream().map(Pattern::compile).toList());
-        AUTOSAVE_SECONDS = config.getInt("autosave-seconds", AUTOSAVE_SECONDS);
-        ASYNC_PROCESSOR_POOL_SIZE = config.getInt("async-processor-pool-size", ASYNC_PROCESSOR_POOL_SIZE);
-        LANGUAGE = config.getString("language", LANGUAGE);
-        USE_BSTATS = config.getBoolean("use-bstats", USE_BSTATS);
-        DEBUG = config.getBoolean("debug", DEBUG);
+        TEAM_NAME_BLACKLIST.addAll(this.config.getStringList("team-name.blacklist", List.of("badword")).stream().map(Pattern::compile).toList());
+        AUTOSAVE_SECONDS = this.config.getInt("autosave-seconds", AUTOSAVE_SECONDS);
+        ASYNC_PROCESSOR_POOL_SIZE = this.config.getInt("async-processor-pool-size", ASYNC_PROCESSOR_POOL_SIZE);
+        LANGUAGE = this.config.getString("language", LANGUAGE);
+        USE_BSTATS = this.config.getBoolean("use-bstats", USE_BSTATS);
+        DEBUG = this.config.getBoolean("debug", DEBUG);
 
         this.validate();
     }

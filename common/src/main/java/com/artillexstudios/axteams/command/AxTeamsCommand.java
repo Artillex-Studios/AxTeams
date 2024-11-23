@@ -558,7 +558,7 @@ public enum AxTeamsCommand {
                                         return;
                                     }
 
-                                    if (team.members().contains(invited)) {
+                                    if (team.members(true).contains(invited)) {
                                         MessageUtils.sendMessage(sender, Language.PREFIX, "already member");
                                         return;
                                     }
@@ -919,6 +919,10 @@ public enum AxTeamsCommand {
 
                                     if (!Levels.reload()) {
                                         failed.add("levels.yml");
+                                    }
+
+                                    if (!com.artillexstudios.axteams.config.Permissions.reload()) {
+                                        failed.add("permissions.yml");
                                     }
 
                                     if (!Language.reload()) {
