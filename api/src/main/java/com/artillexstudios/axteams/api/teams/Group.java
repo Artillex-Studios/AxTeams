@@ -80,9 +80,11 @@ public class Group implements Identifiable<Group> {
 
     @Override
     public final boolean equals(Object o) {
-        if (!(o instanceof Group group)) return false;
+        if (!(o instanceof Group group)) {
+            return false;
+        }
 
-        return this.id == group.id;
+        return this.id == group.id && this.name.equals(group.name);
     }
 
     @Override

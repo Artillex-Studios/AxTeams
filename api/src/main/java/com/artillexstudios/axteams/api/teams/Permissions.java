@@ -1,5 +1,6 @@
 package com.artillexstudios.axteams.api.teams;
 
+import com.artillexstudios.axteams.api.AxTeamsAPI;
 import com.artillexstudios.axteams.api.exception.RegistrationFailedException;
 import com.artillexstudios.axteams.api.utils.Registry;
 
@@ -30,6 +31,7 @@ public final class Permissions {
 
         try {
             registry.register(permission.permission(), permission);
+            AxTeamsAPI.instance().registerPermission(permission);
             return permission;
         } catch (RegistrationFailedException e) {
             throw new RuntimeException(e);

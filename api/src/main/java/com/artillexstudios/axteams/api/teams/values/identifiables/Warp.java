@@ -27,7 +27,7 @@ public final class Warp implements Identifiable<Warp> {
     }
 
     public Location location() {
-        return this.location;
+        return this.location.clone();
     }
 
     public String password() {

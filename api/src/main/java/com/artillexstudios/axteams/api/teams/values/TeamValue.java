@@ -143,4 +143,11 @@ public abstract class TeamValue<Y, T extends Identifiable<Y>> {
     public T defaultValue() {
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "TeamValue{" +
+                "identifier='" + identifier + '\'' +
+                '}';
+    }
 }

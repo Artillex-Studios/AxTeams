@@ -56,11 +56,11 @@ public final class AxTeamsPlugin extends AxPlugin {
         BukkitLibraryManager libraryManager = new BukkitLibraryManager(this);
         libraryManager.configureFromJSON("libraries.json");
 
+        Permissions.reload();
         Config.reload();
         Language.reload();
         Levels.reload();
         Groups.reload();
-        Permissions.reload();
         AsyncUtils.setup(Config.ASYNC_PROCESSOR_POOL_SIZE);
 
         CommandAPI.onLoad(new CommandAPIBukkitConfig(this)

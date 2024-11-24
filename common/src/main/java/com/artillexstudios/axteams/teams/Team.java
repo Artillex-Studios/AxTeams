@@ -121,7 +121,7 @@ public final class Team implements com.artillexstudios.axteams.api.teams.Team {
     }
 
     public void loadAll(TeamValue<?, ?> type, List<Identifiable<?>> values) {
-        data.computeIfAbsent(type, val -> new ArrayList<>()).addAll(values);
+        this.data.computeIfAbsent(type, val -> new ArrayList<>()).addAll(values);
     }
 
     @Override
@@ -157,7 +157,13 @@ public final class Team implements com.artillexstudios.axteams.api.teams.Team {
     public <Y, T extends Identifiable<Y>, Z extends TeamValue<Y, T>> void remove(Z type, T value) {
         List<T> list = (List<T>) this.data.get(type);
         if (list != null) {
-            list.remove(value);
+            for (T t : list) {
+                if (t.equals(value)) {
+                    t.id(Identifiable.DELETED);
+                    break;
+                }
+            }
+
             this.markUnsaved();
         }
     }

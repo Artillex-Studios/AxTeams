@@ -20,7 +20,7 @@ public final class IdentifiableLocation implements Identifiable<Location> {
 
     @Override
     public Location get() {
-        return this.location;
+        return this.location.clone();
     }
 
     @Override

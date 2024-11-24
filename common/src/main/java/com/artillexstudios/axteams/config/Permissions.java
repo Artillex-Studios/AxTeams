@@ -5,6 +5,7 @@ import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.dumper.Du
 import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.general.GeneralSettings;
 import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.loader.LoaderSettings;
 import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.updater.UpdaterSettings;
+import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axapi.utils.YamlUtils;
 import com.artillexstudios.axteams.AxTeamsPlugin;
 import com.artillexstudios.axteams.api.teams.Permission;
@@ -21,6 +22,9 @@ public final class Permissions {
     }
 
     public static void modify(Permission permission) {
+        if (Config.DEBUG) {
+            LogUtils.debug("Modifying permission {}", permission.permission());
+        }
         String display = INSTANCE.config.getString("permissions.%s.display".formatted(permission.permission()));
         if (display == null) {
             display = permission.display();
@@ -32,6 +36,9 @@ public final class Permissions {
     }
 
     private boolean refreshConfig() {
+        if (Config.DEBUG) {
+            LogUtils.debug("Reloading permissions.yml!");
+        }
         File file = FileUtils.PLUGIN_DIRECTORY.resolve("permissions.yml").toFile();
         if (file.exists()) {
             if (!YamlUtils.suggest(file)) {
