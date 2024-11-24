@@ -83,7 +83,7 @@ public abstract class TeamValue<Y, T extends Identifiable<Y>> {
         ArrayList<Query> queries = new ArrayList<>(values.size());
 
         for (T value : values) {
-            if (value.id() == Identifiable.DEFAULT) {
+            if (value.state() == State.UNSAVED) {
                 InsertSetMoreStep<Record> step = AxTeamsAPI.instance()
                         .context()
                         .insertInto(this.table)
@@ -108,7 +108,7 @@ public abstract class TeamValue<Y, T extends Identifiable<Y>> {
                 }
 
                 value.id(id);
-            } else if (value.id() == Identifiable.DELETED) {
+            } else if (value.state() == State.DELETED) {
                 queries.add(AxTeamsAPI.instance()
                         .context()
                         .deleteFrom(this.table)

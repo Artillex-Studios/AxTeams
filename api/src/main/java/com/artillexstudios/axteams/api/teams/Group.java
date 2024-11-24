@@ -1,6 +1,7 @@
 package com.artillexstudios.axteams.api.teams;
 
 import com.artillexstudios.axteams.api.teams.values.Identifiable;
+import com.artillexstudios.axteams.api.teams.values.State;
 import net.kyori.adventure.text.Component;
 
 import java.util.List;
@@ -13,6 +14,7 @@ public class Group implements Identifiable<Group> {
     private String name;
     private Component displayName;
     private List<Permission> permissions;
+    private State state = State.UNSAVED;
 
     public Group(int id, int priority, String name, Component displayName, List<Permission> permissions) {
         this.id = id;
@@ -20,10 +22,14 @@ public class Group implements Identifiable<Group> {
         this.name = name;
         this.displayName = displayName;
         this.permissions = permissions;
+
+        if (this.id != 0) {
+            this.state = State.SAVED;
+        }
     }
 
     public Group(int priority, String name, Component displayName, List<Permission> permissions) {
-        this(DEFAULT, priority, name, displayName, permissions);
+        this(0, priority, name, displayName, permissions);
     }
 
     public static Group ofId(int id) {
@@ -66,6 +72,16 @@ public class Group implements Identifiable<Group> {
     @Override
     public void set(Group value) {
 
+    }
+
+    @Override
+    public State state() {
+        return this.state;
+    }
+
+    @Override
+    public void state(State state) {
+        this.state = state;
     }
 
     @Override

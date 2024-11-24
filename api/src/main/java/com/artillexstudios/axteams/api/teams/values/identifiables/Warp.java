@@ -1,6 +1,7 @@
 package com.artillexstudios.axteams.api.teams.values.identifiables;
 
 import com.artillexstudios.axteams.api.teams.values.Identifiable;
+import com.artillexstudios.axteams.api.teams.values.State;
 import org.bukkit.Location;
 
 import java.util.Objects;
@@ -9,6 +10,7 @@ public final class Warp implements Identifiable<Warp> {
     private final String name;
     private final Location location;
     private final String password;
+    private State state = State.UNSAVED;
     private int id;
 
     public Warp(int id, String name, Location location, String password) {
@@ -16,10 +18,14 @@ public final class Warp implements Identifiable<Warp> {
         this.name = name;
         this.location = location;
         this.password = password;
+
+        if (this.id != 0) {
+            this.state = State.SAVED;
+        }
     }
 
     public Warp(String name, Location location, String password) {
-        this(DEFAULT, name, location, password);
+        this(0, name, location, password);
     }
 
     public String name() {
@@ -42,6 +48,16 @@ public final class Warp implements Identifiable<Warp> {
     @Override
     public void set(Warp value) {
 
+    }
+
+    @Override
+    public State state() {
+        return this.state;
+    }
+
+    @Override
+    public void state(State state) {
+        this.state = state;
     }
 
     @Override

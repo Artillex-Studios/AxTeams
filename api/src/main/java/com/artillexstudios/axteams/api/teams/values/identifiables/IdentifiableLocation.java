@@ -1,21 +1,27 @@
 package com.artillexstudios.axteams.api.teams.values.identifiables;
 
 import com.artillexstudios.axteams.api.teams.values.Identifiable;
+import com.artillexstudios.axteams.api.teams.values.State;
 import org.bukkit.Location;
 
 import java.util.Objects;
 
 public final class IdentifiableLocation implements Identifiable<Location> {
     private Location location;
+    private State state = State.UNSAVED;
     private int id;
 
     public IdentifiableLocation(int id, Location location) {
         this.id = id;
         this.location = location;
+
+        if (this.id != 0) {
+            this.state = State.SAVED;
+        }
     }
 
     public IdentifiableLocation(Location location) {
-        this(DEFAULT, location);
+        this(0, location);
     }
 
     @Override
@@ -26,6 +32,16 @@ public final class IdentifiableLocation implements Identifiable<Location> {
     @Override
     public void set(Location value) {
         this.location = value;
+    }
+
+    @Override
+    public State state() {
+        return this.state;
+    }
+
+    @Override
+    public void state(State state) {
+        this.state = state;
     }
 
     @Override

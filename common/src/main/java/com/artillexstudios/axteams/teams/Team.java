@@ -3,6 +3,7 @@ package com.artillexstudios.axteams.teams;
 import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axteams.api.teams.TeamID;
 import com.artillexstudios.axteams.api.teams.values.Identifiable;
+import com.artillexstudios.axteams.api.teams.values.State;
 import com.artillexstudios.axteams.api.teams.values.TeamValue;
 import com.artillexstudios.axteams.api.teams.values.TeamValues;
 import com.artillexstudios.axteams.api.teams.values.identifiables.IdentifiableInteger;
@@ -105,7 +106,7 @@ public final class Team implements com.artillexstudios.axteams.api.teams.Team {
                     continue;
                 }
 
-                if (identifiable.id() == Identifiable.DELETED) {
+                if (identifiable.state() == State.DELETED) {
                     continue;
                 }
 
@@ -157,12 +158,7 @@ public final class Team implements com.artillexstudios.axteams.api.teams.Team {
     public <Y, T extends Identifiable<Y>, Z extends TeamValue<Y, T>> void remove(Z type, T value) {
         List<T> list = (List<T>) this.data.get(type);
         if (list != null) {
-            for (T t : list) {
-                if (t.equals(value)) {
-                    t.id(Identifiable.DELETED);
-                    break;
-                }
-            }
+            value.state(State.DELETED);
 
             this.markUnsaved();
         }
@@ -181,7 +177,7 @@ public final class Team implements com.artillexstudios.axteams.api.teams.Team {
     @Override
     public void clearDeleted() {
         for (Map.Entry<TeamValue<?, ?>, List<Identifiable<?>>> entry : this.data.entrySet()) {
-            entry.getValue().removeIf(next -> next.id() == Identifiable.DELETED);
+            entry.getValue().removeIf(next -> next.state() == State.DELETED);
         }
     }
 

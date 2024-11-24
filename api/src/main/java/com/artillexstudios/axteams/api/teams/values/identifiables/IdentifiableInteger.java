@@ -1,20 +1,26 @@
 package com.artillexstudios.axteams.api.teams.values.identifiables;
 
 import com.artillexstudios.axteams.api.teams.values.Identifiable;
+import com.artillexstudios.axteams.api.teams.values.State;
 
 import java.util.Objects;
 
 public final class IdentifiableInteger implements Identifiable<Integer> {
     private Integer value;
+    private State state = State.UNSAVED;
     private int id;
 
     public IdentifiableInteger(int id, Integer value) {
         this.id = id;
         this.value = value;
+
+        if (this.id != 0) {
+            this.state = State.SAVED;
+        }
     }
 
     public IdentifiableInteger(Integer value) {
-        this(DEFAULT, value);
+        this(0, value);
     }
 
     @Override
@@ -25,6 +31,16 @@ public final class IdentifiableInteger implements Identifiable<Integer> {
     @Override
     public void set(Integer value) {
         this.value = value;
+    }
+
+    @Override
+    public State state() {
+        return this.state;
+    }
+
+    @Override
+    public void state(State state) {
+        this.state = state;
     }
 
     @Override

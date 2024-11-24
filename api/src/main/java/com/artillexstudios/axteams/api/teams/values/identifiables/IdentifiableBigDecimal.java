@@ -1,21 +1,27 @@
 package com.artillexstudios.axteams.api.teams.values.identifiables;
 
 import com.artillexstudios.axteams.api.teams.values.Identifiable;
+import com.artillexstudios.axteams.api.teams.values.State;
 
 import java.math.BigDecimal;
 import java.util.Objects;
 
 public final class IdentifiableBigDecimal implements Identifiable<BigDecimal> {
     private BigDecimal value;
+    private State state = State.UNSAVED;
     private int id;
 
     public IdentifiableBigDecimal(int id, BigDecimal value) {
         this.id = id;
         this.value = value;
+
+        if (this.id != 0) {
+            this.state = State.SAVED;
+        }
     }
 
     public IdentifiableBigDecimal(BigDecimal value) {
-        this(DEFAULT, value);
+        this(0, value);
     }
 
     @Override
@@ -26,6 +32,16 @@ public final class IdentifiableBigDecimal implements Identifiable<BigDecimal> {
     @Override
     public void set(BigDecimal value) {
         this.value = value;
+    }
+
+    @Override
+    public State state() {
+        return this.state;
+    }
+
+    @Override
+    public void state(State state) {
+        this.state = state;
     }
 
     @Override

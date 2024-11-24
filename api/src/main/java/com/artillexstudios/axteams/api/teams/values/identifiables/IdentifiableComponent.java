@@ -1,6 +1,7 @@
 package com.artillexstudios.axteams.api.teams.values.identifiables;
 
 import com.artillexstudios.axteams.api.teams.values.Identifiable;
+import com.artillexstudios.axteams.api.teams.values.State;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
@@ -8,15 +9,20 @@ import java.util.Objects;
 
 public final class IdentifiableComponent implements Identifiable<Component> {
     private Component component;
+    private State state = State.UNSAVED;
     private int id;
 
     public IdentifiableComponent(int id, Component component) {
         this.id = id;
         this.component = component;
+
+        if (this.id != 0) {
+            this.state = State.SAVED;
+        }
     }
 
     public IdentifiableComponent(Component component) {
-        this(DEFAULT, component);
+        this(0, component);
     }
 
     @Override
@@ -27,6 +33,16 @@ public final class IdentifiableComponent implements Identifiable<Component> {
     @Override
     public void set(Component value) {
         this.component = value;
+    }
+
+    @Override
+    public State state() {
+        return this.state;
+    }
+
+    @Override
+    public void state(State state) {
+        this.state = state;
     }
 
     @Override
