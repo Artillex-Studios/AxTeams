@@ -150,14 +150,15 @@ public final class Team implements com.artillexstudios.axteams.api.teams.Team {
             }
             items.add(value);
         }
-        markUnsaved();
+        this.markUnsaved();
     }
 
+    @Override
     public <Y, T extends Identifiable<Y>, Z extends TeamValue<Y, T>> void remove(Z type, T value) {
         List<T> list = (List<T>) this.data.get(type);
         if (list != null) {
             list.remove(value);
-            markUnsaved();
+            this.markUnsaved();
         }
     }
 

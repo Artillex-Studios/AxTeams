@@ -9,6 +9,14 @@ group:
     - ""
     - "<gray>» <white>Click to manage!"
 
+create:
+  material: oak_sign
+  name: "<green>Create a new group!"
+  slots: 35
+  lore:
+    - ""
+    - "<gray>» <white>Click here to create a new group!"
+
 items:
   - type: gray_stained_glass_pane
     slots:

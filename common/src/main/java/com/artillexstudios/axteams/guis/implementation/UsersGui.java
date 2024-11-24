@@ -115,6 +115,11 @@ public final class UsersGui extends GuiBase {
                         inventoryClickEvent.setCancelled(true);
 
                         String input = AnvilInputUtils.getRenameText(inventoryClickEvent);
+                        if (input.isBlank()) {
+                            new UsersGui(this.user()).open();
+                            return;
+                        }
+
                         Player player = Bukkit.getPlayer(input);
                         if (player == null) {
                             MessageUtils.sendMessage(this.user().onlinePlayer(), Language.PREFIX, "Not online!");

@@ -24,9 +24,9 @@ public final class Language {
     public static String RELOAD_SUCCESS = "<#00FF00>Successfully reloaded the configurations of the plugin in <white><time></white>ms!";
     public static String RELOAD_FAIL = "<#FF0000>There were some issues while reloading file(s): <white><files></white>! Please check out the console for more information! <br>Reload done in: <white><time></white>ms!";
     public static String USER_NOT_LOADED = "<#FF0000>Your userdata has not loaded yet! Please try again in a moment!";
-    public static String NOT_IN_TEAM = "Not in team";
-    public static String NO_PERMISSION = "No permission";
-    public static String NOT_LEADER = "Not leader";
+    public static String NOT_IN_TEAM = "<#FF0000>You are not in a team!";
+    public static String NO_PERMISSION = "<#FF0000>You are not permitted to do this!";
+    public static String NOT_LEADER = "<#FF0000>You are not the leader of this team!";
     public static String DISBANDED = "Disbanded";
     public static String ALREADY_IN_TEAM = "In team";
     public static String ALREADY_EXISTS = "Exists";

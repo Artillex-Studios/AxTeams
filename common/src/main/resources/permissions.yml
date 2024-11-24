@@ -1,8 +1,1 @@
-permissions:
-  group_permissions_edit:
-    display: "Group permission edit"
-
-  group_priority_change:
-    display: "Group permission edit"
-
 config-version: 1

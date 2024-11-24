@@ -67,6 +67,8 @@ public interface Team {
 
     <Y, T extends Identifiable<Y>, Z extends TeamValue<Y, T>> void add(Z type, T value);
 
+    <Y, T extends Identifiable<Y>, Z extends TeamValue<Y, T>> void remove(Z type, T value);
+
     void markUnsaved();
 
     CompletableFuture<Void> disband();

@@ -18,6 +18,7 @@ import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axteams.api.teams.Group;
 import com.artillexstudios.axteams.api.teams.Permissions;
 import com.artillexstudios.axteams.api.teams.Team;
+import com.artillexstudios.axteams.api.teams.values.TeamValues;
 import com.artillexstudios.axteams.api.users.User;
 import com.artillexstudios.axteams.config.Language;
 import com.artillexstudios.axteams.guis.GuiBase;
@@ -212,7 +213,32 @@ public final class GroupEditGui extends GuiBase {
                 return;
             }
 
-//            new GroupEditGui(this.user(), value).open();
+            Team team = this.user().team();
+            if (team == null) {
+                event.getWhoClicked().closeInventory();
+                return;
+            }
+
+            boolean hasMembers = team.members(true)
+                    .stream()
+                    .anyMatch(u -> u.group().equals(this.group));
+            if (hasMembers) {
+                MessageUtils.sendMessage(user().onlinePlayer(), Language.PREFIX, "Has members!");
+                return;
+            }
+
+            if (this.group.priority() == Group.DEFAULT_PRIORITY) {
+                MessageUtils.sendMessage(user().onlinePlayer(), Language.PREFIX, "Default group!");
+                return;
+            }
+
+            if (this.group.priority() == Group.OWNER_PRIORITY) {
+                MessageUtils.sendMessage(user().onlinePlayer(), Language.PREFIX, "Owner group!");
+                return;
+            }
+
+            team.remove(TeamValues.GROUPS, this.group);
+            new GroupsGui(this.user()).open();
         }));
     }
 }
