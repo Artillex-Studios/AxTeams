@@ -5,8 +5,8 @@ import com.artillexstudios.axapi.libs.libby.BukkitLibraryManager;
 import com.artillexstudios.axapi.placeholders.ParseContext;
 import com.artillexstudios.axapi.placeholders.Placeholders;
 import com.artillexstudios.axapi.utils.AsyncUtils;
-import com.artillexstudios.axapi.utils.FeatureFlags;
 import com.artillexstudios.axapi.utils.LogUtils;
+import com.artillexstudios.axapi.utils.featureflags.FeatureFlags;
 import com.artillexstudios.axteams.api.AxTeamsAPI;
 import com.artillexstudios.axteams.api.teams.Group;
 import com.artillexstudios.axteams.api.teams.Permission;
@@ -44,9 +44,9 @@ public final class AxTeamsPlugin extends AxPlugin {
     }
 
     @Override
-    public void updateFlags() {
-        FeatureFlags.PLACEHOLDER_API_HOOK.set(true);
-        FeatureFlags.PLACEHOLDER_API_IDENTIFIER.set("axteams");
+    public void updateFlags(FeatureFlags flags) {
+        flags.PLACEHOLDER_API_HOOK.set(true);
+        flags.PLACEHOLDER_API_IDENTIFIER.set("axteams");
     }
 
     @Override

@@ -16,6 +16,7 @@ import com.artillexstudios.axteams.api.users.User;
 import com.artillexstudios.axteams.config.Config;
 import com.artillexstudios.axteams.config.Groups;
 import com.artillexstudios.axteams.teams.Teams;
+import com.artillexstudios.axteams.users.UserSettingsRepository;
 import com.artillexstudios.axteams.users.Users;
 import it.unimi.dsi.fastutil.longs.LongLongPair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -54,6 +55,7 @@ public final class DataHandler {
     private static final Field<Integer> TEAM_ID = DSL.field("team_id", int.class);
     private static final Field<Integer> TEAM_LEADER = DSL.field("team_leader", int.class);
     private static final Field<Long> LAST_SEEN = DSL.field("last_seen", long.class);
+    private static final Field<String> SERIALIZED_SETTINGS = DSL.field("serialized_settings", String.class);
 
     public static CompletionStage<Void> setup() {
         ArrayList<CompletableFuture<Integer>> futures = new ArrayList<>();
@@ -78,6 +80,7 @@ public final class DataHandler {
                 .column(LAST_SEEN, SQLDataType.BIGINT)
                 .column(TEAM_GROUP, SQLDataType.INTEGER)
                 .column(TEAM_ID, SQLDataType.INTEGER)
+                .column(SERIALIZED_SETTINGS, SQLDataType.VARCHAR)
                 .primaryKey(ID)
                 .executeAsync(AsyncUtils.executor())
                 .exceptionallyAsync(throwable -> {
@@ -125,7 +128,7 @@ public final class DataHandler {
             }
 
             CompletableFuture.allOf(teamValues.toArray(new CompletableFuture[0])).thenRun(() -> values.complete(1));
-        }, 60);
+        }, 20);
 
         futures.add(values);
         return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
@@ -177,7 +180,6 @@ public final class DataHandler {
                 if (loaded != null) {
                     for (User member : loaded.members(true)) {
                         if (member.player().getUniqueId().equals(uuid)) {
-                            // TODO: Figure out what causes this
                             LogUtils.warn("Got user from loaded team! This is a fail-safe, something went wrong and caused this!");
                             Users.loadWithContext(member, context);
                             Teams.loadWithContext(loaded, context);
@@ -197,12 +199,15 @@ public final class DataHandler {
                         if (Config.DEBUG) {
                             LogUtils.debug("Null team id; online!");
                         }
-                        userConsumer.accept(new com.artillexstudios.axteams.users.User(record.get(ID), offlinePlayer, null, textures == null ? "" : textures.first(), null, System.currentTimeMillis()));
+                        User user = new com.artillexstudios.axteams.users.User(record.get(ID), offlinePlayer, null, textures == null ? "" : textures.first(), null, System.currentTimeMillis());
+                        ((UserSettingsRepository) user.settingsRepository()).load(record.get(SERIALIZED_SETTINGS));
+                        userConsumer.accept(user);
                     } else {
                         if (Config.DEBUG) {
                             LogUtils.debug("Not null team ({}) id; online!", teamID);
                         }
                         User user = new com.artillexstudios.axteams.users.User(record.get(ID), offlinePlayer, null, textures == null ? "" : textures.first(), Group.ofId(record.get(TEAM_GROUP)), System.currentTimeMillis());
+                        ((UserSettingsRepository) user.settingsRepository()).load(record.get(SERIALIZED_SETTINGS));
                         Users.loadWithContext(user, context);
                         if (context == LoadContext.FULL) {
                             if (Config.DEBUG) {
@@ -234,9 +239,12 @@ public final class DataHandler {
                     }
                 } else {
                     if (teamID == null) {
-                        userConsumer.accept(new com.artillexstudios.axteams.users.User(record.get(ID), offlinePlayer, null, record.get(TEXTURES), null, record.get(LAST_SEEN)));
+                        User user = new com.artillexstudios.axteams.users.User(record.get(ID), offlinePlayer, null, record.get(TEXTURES), null, record.get(LAST_SEEN));
+                        ((UserSettingsRepository) user.settingsRepository()).load(record.get(SERIALIZED_SETTINGS));
+                        userConsumer.accept(user);
                     } else {
                         User user = new com.artillexstudios.axteams.users.User(record.get(ID), offlinePlayer, null, record.get(TEXTURES), Group.ofId(record.get(TEAM_GROUP)), record.get(LAST_SEEN));
+                        ((UserSettingsRepository) user.settingsRepository()).load(record.get(SERIALIZED_SETTINGS));
                         Users.loadWithContext(user, context);
                         if (context == LoadContext.FULL) {
                             Teams.loadTeam(new TeamID(teamID)).thenAccept(team -> {
@@ -478,6 +486,7 @@ public final class DataHandler {
                         .set(LAST_SEEN, player.isOnline() ? System.currentTimeMillis() : user.lastOnline())
                         .set(TEAM_GROUP, group != null ? group.id() : 0)
                         .set(TEAM_ID, team != null ? team.id().id() : 0)
+                        .set(SERIALIZED_SETTINGS, ((UserSettingsRepository) user.settingsRepository()).save())
                         .where(ID.eq(user.id()))
                 );
             }

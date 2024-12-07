@@ -38,6 +38,7 @@ public final class Language {
     public static String TEAM_VALUE_NOT_FOUND = "<#FF0000>There is no teamvalue registered with id <id>!";
     public static String TEAM_CHAT_FORMAT = "<#FF0000>Team <white>| <group> <player> <gray>» <white><message>";
     public static String ALLY_CHAT_FORMAT = "<#03BAFC>Ally <white>| <team_display_name> <group> <player> <gray>» <white><message>";
+    public static String UNKNOWN_MEMBER = "<#FF0000>A member named <name> does not exist!";
     public static String lastLanguage;
     private com.artillexstudios.axapi.config.Config config = null;
 

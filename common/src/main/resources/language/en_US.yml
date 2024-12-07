@@ -12,6 +12,7 @@ error:
   not-leader: "<#FF0000>You are not the leader of this team!"
   teamvalue-not-found: "<#FF0000>There is no teamvalue registered with id <id>!"
   already-exists: "<#FF0000>A team named <name> already exists!"
+  unknown-member: "<#FF0000>A member named <name> does not exist!"
 
 update-notifier:
   new-version-available: "<#00FF00>A new version of this plugin is available! <gray>(<white>Current:</white> <#FF0000><current></#FF0000> <gray>| <white>Latest:</white> <#00FF00><latest></#00FF00>)</gray>"

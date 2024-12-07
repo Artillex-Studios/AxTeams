@@ -3,6 +3,7 @@ package com.artillexstudios.axteams.api.users;
 import com.artillexstudios.axteams.api.teams.Group;
 import com.artillexstudios.axteams.api.teams.Permission;
 import com.artillexstudios.axteams.api.teams.Team;
+import com.artillexstudios.axteams.api.users.settings.UserSettingsRepository;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -34,6 +35,8 @@ public interface User {
     Player onlinePlayer();
 
     String name();
+
+    UserSettingsRepository settingsRepository();
 
     default boolean hasPermission(Permission permission) {
         Team team = this.team();

@@ -1,12 +1,15 @@
 package com.artillexstudios.axteams.command.arguments;
 
+import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axteams.api.teams.Team;
 import com.artillexstudios.axteams.api.users.User;
+import com.artillexstudios.axteams.config.Language;
 import com.artillexstudios.axteams.users.Users;
 import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.CustomArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -31,8 +34,7 @@ public final class TeamMemberArgument {
                 }
             }
 
-            // TODO: throw no member found
-            return null;
+            throw CustomArgument.CustomArgumentException.fromString(StringUtils.formatToString(Language.PREFIX + Language.UNKNOWN_MEMBER, Placeholder.parsed("name", info.input())));
         }).replaceSuggestions(ArgumentSuggestions.stringCollection(info -> {
             Team team = info.sender() instanceof Player player ? Users.getUserIfLoadedImmediately(player.getUniqueId()).team() : null;
             if (team == null) {
@@ -61,7 +63,7 @@ public final class TeamMemberArgument {
                 }
             }
 
-            return null;
+            throw CustomArgument.CustomArgumentException.fromString(StringUtils.formatToString(Language.PREFIX + Language.UNKNOWN_MEMBER, Placeholder.parsed("name", info.input())));
         }).replaceSuggestions(ArgumentSuggestions.stringCollection(info -> {
             Team team = info.sender() instanceof Player player ? Users.getUserIfLoadedImmediately(player.getUniqueId()).team() : null;
             if (team == null) {

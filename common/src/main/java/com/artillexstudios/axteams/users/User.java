@@ -20,6 +20,7 @@ import java.util.function.Supplier;
 
 public final class User implements com.artillexstudios.axteams.api.users.User {
     private final CircularLinkedSet<Supplier<GuiBase>> guis = new CircularLinkedSet<>(10);
+    private final UserSettingsRepository repository = new UserSettingsRepository(this);
     private final OfflinePlayer player;
     private final int id;
     private Team team;
@@ -130,6 +131,11 @@ public final class User implements com.artillexstudios.axteams.api.users.User {
     @Override
     public String name() {
         return this.onlinePlayer == null ? this.player().getName() : this.onlinePlayer.getName();
+    }
+
+    @Override
+    public com.artillexstudios.axteams.api.users.settings.UserSettingsRepository settingsRepository() {
+        return this.repository;
     }
 
     public void onlinePlayer(Player player) {

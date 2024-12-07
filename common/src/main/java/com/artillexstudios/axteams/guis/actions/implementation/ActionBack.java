@@ -33,7 +33,6 @@ public final class ActionBack extends Action<String> {
             return;
         }
 
-        // TODO: Figure out why it breaks sometimes
         try {
             GuiBase guiBase = guis.last().get();
             if (guiBase != null) {

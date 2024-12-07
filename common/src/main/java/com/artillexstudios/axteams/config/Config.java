@@ -32,9 +32,11 @@ public final class Config {
     public static int DATABASE_KEEPALIVE_TIME = 0;
     public static int DATABASE_CONNECTION_TIMEOUT = 5000;
     public static DatabaseType DATABASE_TYPE = DatabaseType.H2;
+    public static boolean TEAM_NAME_APPLY_TO_DISPLAY_NAME = false;
     public static int TEAM_NAME_MIN_LENGTH = 3;
     public static int TEAM_NAME_MAX_LENGTH = 16;
     public static int GUI_ACTION_COOLDOWN = 200;
+    public static int DEFAULT_WARP_LIMIT = 3;
     public static List<Pattern> TEAM_NAME_WHITELIST = new ArrayList<>();
     public static List<Pattern> TEAM_NAME_BLACKLIST = new ArrayList<>();
     public static int AUTOSAVE_SECONDS = 300;
@@ -83,12 +85,14 @@ public final class Config {
         DATABASE_MAXIMUM_LIFETIME = this.config.getInt("database.pool.maximum-lifetime", DATABASE_MAXIMUM_LIFETIME);
         DATABASE_KEEPALIVE_TIME = this.config.getInt("database.pool.keepalive-time", DATABASE_KEEPALIVE_TIME);
         DATABASE_CONNECTION_TIMEOUT = this.config.getInt("database.pool.connection-timeout", DATABASE_CONNECTION_TIMEOUT);
+        TEAM_NAME_APPLY_TO_DISPLAY_NAME = this.config.getBoolean("team-name.apply-to-display-name", TEAM_NAME_APPLY_TO_DISPLAY_NAME);
         TEAM_NAME_MIN_LENGTH = this.config.getInt("team-name.min-length", TEAM_NAME_MIN_LENGTH);
         TEAM_NAME_MAX_LENGTH = this.config.getInt("team-name.max-length", TEAM_NAME_MAX_LENGTH);
         TEAM_NAME_WHITELIST.clear();
         TEAM_NAME_WHITELIST.addAll(this.config.getStringList("team-name.whitelist", List.of("^[a-zA-Z0-9_]*$")).stream().map(Pattern::compile).toList());
         TEAM_NAME_BLACKLIST.clear();
         TEAM_NAME_BLACKLIST.addAll(this.config.getStringList("team-name.blacklist", List.of("badword")).stream().map(Pattern::compile).toList());
+        DEFAULT_WARP_LIMIT = this.config.getInt("default-warp-limit", DEFAULT_WARP_LIMIT);
         AUTOSAVE_SECONDS = this.config.getInt("autosave-seconds", AUTOSAVE_SECONDS);
         ASYNC_PROCESSOR_POOL_SIZE = this.config.getInt("async-processor-pool-size", ASYNC_PROCESSOR_POOL_SIZE);
         LANGUAGE = this.config.getString("language", LANGUAGE);

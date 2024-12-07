@@ -13,12 +13,15 @@ database:
     connection-timeout: 5000
 
 team-name:
+  apply-to-display-name: true # If this is enabled, these rules apply to the display-name of the team aswell
   min-length: 3
   max-length: 16 # Set to -1 to disable
   whitelist:
     - "^[a-zA-Z0-9_]*$" # Only allow alphanumeric characters; regular expression
   blacklist:
     - "badword" # The string it contains; regular expression
+
+default-warp-limit: 3 # The default amount of warps a team has
 
 # How often should changes to teams get saved?
 # This setting controls how often teams get saved

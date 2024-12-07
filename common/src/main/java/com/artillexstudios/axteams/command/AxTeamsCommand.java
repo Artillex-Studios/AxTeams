@@ -20,6 +20,7 @@ import com.artillexstudios.axteams.api.teams.values.identifiables.IdentifiableCo
 import com.artillexstudios.axteams.api.teams.values.identifiables.IdentifiableLocation;
 import com.artillexstudios.axteams.api.teams.values.identifiables.Warp;
 import com.artillexstudios.axteams.api.users.User;
+import com.artillexstudios.axteams.api.users.settings.UserSettings;
 import com.artillexstudios.axteams.command.arguments.TeamArgument;
 import com.artillexstudios.axteams.command.arguments.TeamMemberArgument;
 import com.artillexstudios.axteams.command.arguments.TeamValueArgument;
@@ -33,6 +34,8 @@ import com.artillexstudios.axteams.guis.implementation.UsersGui;
 import com.artillexstudios.axteams.teams.NameValidation;
 import com.artillexstudios.axteams.teams.Teams;
 import com.artillexstudios.axteams.users.Users;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.GreedyStringArgument;
@@ -49,12 +52,18 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public enum AxTeamsCommand {
     INSTANCE;
+    private final Cache<UUID, Boolean> disbandCache = Caffeine.newBuilder()
+            .expireAfterWrite(Duration.ofSeconds(30))
+            .maximumSize(1000)
+            .build();
 
     public void register() {
         new CommandTree("axteams")
@@ -125,7 +134,6 @@ public enum AxTeamsCommand {
                 )
                 .then(new LiteralArgument("disband")
                         .executesPlayer((sender, args) -> {
-                            // TODO: Confirm
                             User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                             if (user == null) {
                                 MessageUtils.sendMessage(sender, Language.PREFIX, Language.USER_NOT_LOADED);
@@ -143,9 +151,15 @@ public enum AxTeamsCommand {
                                 return;
                             }
 
-                            team.disband().thenRun(() -> {
-                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.DISBANDED);
-                            });
+                            if (this.disbandCache.getIfPresent(sender.getUniqueId()) != null) {
+                                this.disbandCache.invalidate(sender.getUniqueId());
+                                team.disband().thenRun(() -> {
+                                    MessageUtils.sendMessage(sender, Language.PREFIX, Language.DISBANDED);
+                                });
+                            } else {
+                                this.disbandCache.put(sender.getUniqueId(), true);
+                                // TODO: Message
+                            }
                         })
                 )
                 .then(new LiteralArgument("list")
@@ -201,7 +215,14 @@ public enum AxTeamsCommand {
                                 return;
                             }
 
-
+                            boolean allyChat = UserSettings.ALLY_CHAT_TOGGLED.read(user);
+                            boolean teamChat = UserSettings.TEAM_CHAT_TOGGLED.read(user);
+                            if (allyChat) {
+                                UserSettings.ALLY_CHAT_TOGGLED.write(user, false);
+                                UserSettings.TEAM_CHAT_TOGGLED.write(user, true);
+                            } else {
+                                UserSettings.TEAM_CHAT_TOGGLED.write(user, !teamChat);
+                            }
                         })
                 )
                 .then(new LiteralArgument("leave")
@@ -267,7 +288,14 @@ public enum AxTeamsCommand {
                                 return;
                             }
 
-                            // TODO: settings on user
+                            boolean allyChat = UserSettings.ALLY_CHAT_TOGGLED.read(user);
+                            boolean teamChat = UserSettings.TEAM_CHAT_TOGGLED.read(user);
+                            if (teamChat) {
+                                UserSettings.TEAM_CHAT_TOGGLED.write(user, false);
+                                UserSettings.ALLY_CHAT_TOGGLED.write(user, true);
+                            } else {
+                                UserSettings.ALLY_CHAT_TOGGLED.write(user, !allyChat);
+                            }
                         })
                 )
                 .then(new LiteralArgument("home")
@@ -468,7 +496,7 @@ public enum AxTeamsCommand {
 
                                             Integer warpLimit = team.first(TeamValues.WARP_LIMIT);
                                             List<Warp> warps = team.values(TeamValues.WARPS);
-                                            warpLimit = warpLimit == null ? 10 : warpLimit; // TODO: Configurable limit
+                                            warpLimit = warpLimit == null ? Config.DEFAULT_WARP_LIMIT : warpLimit;
                                             if (warps.size() + 1 > warpLimit) {
                                                 // TODO: Limit reached message
                                                 MessageUtils.sendMessage(sender, Language.PREFIX, Language.NO_PERMISSION);
@@ -510,7 +538,7 @@ public enum AxTeamsCommand {
 
                                     Integer warpLimit = team.first(TeamValues.WARP_LIMIT);
                                     List<Warp> warps = team.values(TeamValues.WARPS);
-                                    warpLimit = warpLimit == null ? 10 : warpLimit; // TODO: Configurable limit
+                                    warpLimit = warpLimit == null ? Config.DEFAULT_WARP_LIMIT : warpLimit;
                                     if (warps.size() + 1 > warpLimit) {
                                         // TODO: Limit reached message
                                         MessageUtils.sendMessage(sender, Language.PREFIX, "limit reached");
@@ -563,7 +591,6 @@ public enum AxTeamsCommand {
                                         return;
                                     }
 
-                                    // TODO: Check if they are banned
                                     if (team.invited(invited)) {
                                         MessageUtils.sendMessage(sender, Language.PREFIX, "already invited");
                                         return;
@@ -605,7 +632,6 @@ public enum AxTeamsCommand {
 
                                     Team joiningTeam = Teams.getTeamIfLoadedImmediately(args.getByClass("team", TeamID.class));
 
-                                    // TODO: Check if they are banned
                                     if (!joiningTeam.invited(user)) {
                                         MessageUtils.sendMessage(sender, Language.PREFIX, "Not invited");
                                         return;
