@@ -109,7 +109,6 @@ public abstract class TeamValue<Y, T extends Identifiable<Y>> {
 
                 value.id(id);
             } else if (value.state() == State.DELETED) {
-                LogUtils.warn("Deleted state! Deleting: {}", value.id());
                 queries.add(AxTeamsAPI.instance()
                         .context()
                         .deleteFrom(this.table)

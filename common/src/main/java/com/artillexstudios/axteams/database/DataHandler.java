@@ -450,7 +450,7 @@ public final class DataHandler {
                 );
 
                 for (TeamValue<?, ?> value : TeamValues.values()) {
-                    queries.addAll(value.save(team, (List) team.rawValues(value)));
+                    queries.addAll(value.save(team, (List) team.rawValues(value, true)));
                 }
 
                 team.clearDeleted();

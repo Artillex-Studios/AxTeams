@@ -88,6 +88,7 @@ public final class AxTeamsPlugin extends AxPlugin {
         Bukkit.getPluginManager().registerEvents(new TeamPvPListener(), this);
         AxTeamsCommand.INSTANCE.register();
         CommandAPI.onEnable();
+        FileUtils.copyFromResource("guis");
         Guis.loadAll();
 
         Placeholders.registerTransformer(OfflinePlayer.class, User.class, player -> {
@@ -221,8 +222,6 @@ public final class AxTeamsPlugin extends AxPlugin {
         Placeholders.register("message", ctx -> {
             return ctx.resolve(String.class);
         });
-
-        FileUtils.copyFromResource("guis");
     }
 
     @Override

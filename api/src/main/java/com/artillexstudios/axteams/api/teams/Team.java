@@ -34,7 +34,11 @@ public interface Team {
 
     boolean hasOnline();
 
-    <Y, T extends Identifiable<Y>, Z extends TeamValue<Y, T>> List<T> rawValues(Z type);
+    default <Y, T extends Identifiable<Y>, Z extends TeamValue<Y, T>> List<T> rawValues(Z type) {
+        return this.rawValues(type, false);
+    }
+
+    <Y, T extends Identifiable<Y>, Z extends TeamValue<Y, T>> List<T> rawValues(Z type, boolean all);
 
     default <Y, T extends Identifiable<Y>, Z extends TeamValue<Y, T>> List<Y> values(Z type) {
         List<T> values = this.rawValues(type);

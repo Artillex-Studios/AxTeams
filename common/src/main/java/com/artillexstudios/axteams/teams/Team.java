@@ -97,7 +97,7 @@ public final class Team implements com.artillexstudios.axteams.api.teams.Team {
     }
 
     @Override
-    public <Y, T extends Identifiable<Y>, Z extends TeamValue<Y, T>> List<T> rawValues(Z type) {
+    public <Y, T extends Identifiable<Y>, Z extends TeamValue<Y, T>> List<T> rawValues(Z type, boolean force) {
         List<T> list = (List<T>) this.data.get(type);
         List<T> returning = new ArrayList<>(list == null ? 1 : list.size());
         if (list != null && !list.isEmpty()) {
@@ -106,7 +106,7 @@ public final class Team implements com.artillexstudios.axteams.api.teams.Team {
                     continue;
                 }
 
-                if (identifiable.state() == State.DELETED) {
+                if (identifiable.state() == State.DELETED && !force) {
                     continue;
                 }
 
