@@ -371,7 +371,6 @@ public enum AxTeamsCommand {
                             }
 
                             team.add(TeamValues.PVP, new IdentifiableBoolean(!pvp));
-                            LogUtils.info("State: {}", !pvp);
                             // TODO: Send message
                         })
                 )

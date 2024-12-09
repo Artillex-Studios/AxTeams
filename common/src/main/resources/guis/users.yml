@@ -11,6 +11,8 @@ user:
     - ""
     - "<gray>» <white>Click to manage!"
 
+username-gui-title: "Enter a username!"
+
 invite:
   material: oak_sign
   name: "<green>Invite a player!"

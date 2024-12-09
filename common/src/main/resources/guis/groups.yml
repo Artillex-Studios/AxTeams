@@ -17,6 +17,8 @@ create:
     - ""
     - "<gray>» <white>Click here to create a new group!"
 
+new-group-title: "Enter a group name!"
+
 items:
   - type: gray_stained_glass_pane
     slots:

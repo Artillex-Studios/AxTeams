@@ -11,7 +11,7 @@ import com.artillexstudios.axapi.placeholders.ResolutionType;
 import com.artillexstudios.axapi.utils.ItemBuilder;
 import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axapi.utils.MessageUtils;
-import com.artillexstudios.axteams.api.events.PreTeamInviteEvent;
+import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axteams.api.teams.Group;
 import com.artillexstudios.axteams.api.teams.Permissions;
 import com.artillexstudios.axteams.api.teams.Team;
@@ -19,20 +19,17 @@ import com.artillexstudios.axteams.api.teams.values.TeamValues;
 import com.artillexstudios.axteams.api.users.User;
 import com.artillexstudios.axteams.config.Language;
 import com.artillexstudios.axteams.guis.GuiBase;
-import com.artillexstudios.axteams.users.Users;
 import com.artillexstudios.axteams.utils.AnvilInputUtils;
 import com.artillexstudios.axteams.utils.FileUtils;
 import com.artillexstudios.axteams.utils.IdentifiableSupplier;
 import dev.triumphteam.gui.guis.GuiItem;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 public final class GroupsGui extends GuiBase {
     private static final Config config = new Config(FileUtils.PLUGIN_DIRECTORY.resolve("guis/").resolve("groups.yml").toFile());
@@ -115,7 +112,7 @@ public final class GroupsGui extends GuiBase {
 
             AnvilInput anvilInput = new AnvilInput.Builder()
                     .item(WrappedItemStack.wrap(new ItemStack(Material.PAPER)))
-                    .title(Component.text("Enter a group name!"))
+                    .title(StringUtils.format(this.config().getString("new-group-title")))
                     .event((inventoryClickEvent) -> {
                         inventoryClickEvent.setCancelled(true);
 

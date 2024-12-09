@@ -11,6 +11,7 @@ import com.artillexstudios.axapi.placeholders.ResolutionType;
 import com.artillexstudios.axapi.utils.ItemBuilder;
 import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axapi.utils.MessageUtils;
+import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axteams.api.events.PreTeamInviteEvent;
 import com.artillexstudios.axteams.api.teams.Permissions;
 import com.artillexstudios.axteams.api.teams.Team;
@@ -110,7 +111,7 @@ public final class UsersGui extends GuiBase {
 
             AnvilInput anvilInput = new AnvilInput.Builder()
                     .item(WrappedItemStack.wrap(new ItemStack(Material.PAPER)))
-                    .title(Component.text("Enter a username!"))
+                    .title(StringUtils.format(this.config().getString("invite.slots")))
                     .event((inventoryClickEvent) -> {
                         inventoryClickEvent.setCancelled(true);
 
