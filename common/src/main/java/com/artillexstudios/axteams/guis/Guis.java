@@ -1,5 +1,6 @@
 package com.artillexstudios.axteams.guis;
 
+import com.artillexstudios.axapi.config.Config;
 import com.artillexstudios.axteams.api.users.User;
 import com.artillexstudios.axteams.guis.implementation.ConfigGui;
 import com.artillexstudios.axteams.guis.implementation.GroupsGui;
@@ -25,7 +26,7 @@ public final class Guis {
 
         FileUtils.listFiles(GUIS_FOLDER, new String[]{"yaml", "yml"}, true).stream()
                 .filter(file -> !guis.containsKey(FilenameUtils.getBaseName(file.getName())))
-                .forEach(file -> guis.put(FilenameUtils.getBaseName(file.getName()), ConfigGui::new));
+                .forEach(file -> guis.put(FilenameUtils.getBaseName(file.getName()), player -> new ConfigGui(player, new Config(file))));
     }
 
     public static GuiBase fetch(String name, User user) {
