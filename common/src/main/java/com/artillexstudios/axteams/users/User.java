@@ -115,7 +115,7 @@ public final class User implements com.artillexstudios.axteams.api.users.User {
 
     @Override
     public void message(Component message) {
-        Player player = this.player().getPlayer();
+        Player player = this.onlinePlayer;
         if (player == null) {
             return;
         }

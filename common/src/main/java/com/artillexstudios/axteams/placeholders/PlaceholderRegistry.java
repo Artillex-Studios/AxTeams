@@ -51,7 +51,7 @@ public enum PlaceholderRegistry {
             }
 
             return MiniMessage.miniMessage().serialize(first);
-        }, ParseContext.PLACEHOLDER_API);
+        });
 
         Placeholders.register("member_count", ctx -> {
             Team team = ctx.resolve(Team.class);

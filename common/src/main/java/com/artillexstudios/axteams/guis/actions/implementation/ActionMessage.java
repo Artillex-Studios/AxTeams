@@ -25,7 +25,7 @@ public final class ActionMessage extends Action<String> {
 
     @Override
     public void execute(User user, GuiBase base, String value) {
-        Player player = user.player().getPlayer();
+        Player player = user.onlinePlayer();
         if (player == null) {
             LogUtils.warn("Tried to send message to {}, who is offline!", user.player().getName());
             return;
