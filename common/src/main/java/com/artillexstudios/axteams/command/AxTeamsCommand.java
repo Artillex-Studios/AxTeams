@@ -646,7 +646,7 @@ public enum AxTeamsCommand {
                 )
                 .then(new LiteralArgument("ally")
                         .then(new LiteralArgument("accept")
-                                .then(TeamArgument.team("team")
+                                .then(TeamArgument.invited("team")
                                         .executesPlayer((sender, args) -> {
                                             User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                                             if (user == null) {
@@ -743,7 +743,7 @@ public enum AxTeamsCommand {
                                 )
                         )
                         .then(new LiteralArgument("remove")
-                                .then(TeamArgument.team("team")
+                                .then(TeamArgument.ally("team")
                                         .executesPlayer((sender, args) -> {
                                             User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                                             if (user == null) {

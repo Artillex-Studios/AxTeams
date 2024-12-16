@@ -231,6 +231,11 @@ public final class Team implements com.artillexstudios.axteams.api.teams.Team {
     }
 
     @Override
+    public List<TeamID> allyRequest() {
+        return this.allyRequests.elements();
+    }
+
+    @Override
     public void message(Component message) {
         for (User member : this.members(true)) {
             member.message(message);

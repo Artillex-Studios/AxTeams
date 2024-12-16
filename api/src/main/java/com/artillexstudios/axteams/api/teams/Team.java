@@ -117,5 +117,7 @@ public interface Team {
 
     boolean hasAllyRequest(TeamID teamID);
 
+    List<TeamID> allyRequest();
+
     void message(Component message);
 }

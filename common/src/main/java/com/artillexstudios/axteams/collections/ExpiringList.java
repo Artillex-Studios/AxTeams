@@ -4,6 +4,9 @@ import it.unimi.dsi.fastutil.objects.Object2LongArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class ExpiringList<T> {
     private final Object2LongArrayMap<T> cooldowns = new Object2LongArrayMap<>();
     private final long duration;
@@ -30,6 +33,16 @@ public final class ExpiringList<T> {
     public void remove(T key) {
         this.doHouseKeeping();
         this.cooldowns.removeLong(key);
+    }
+
+    public List<T> elements() {
+        this.doHouseKeeping();
+        List<T> elements = new ArrayList<>(this.cooldowns.size());
+        for (Object2LongMap.Entry<T> entry : this.cooldowns.object2LongEntrySet()) {
+            elements.add(entry.getKey());
+        }
+
+        return elements;
     }
 
     private void doHouseKeeping() {
