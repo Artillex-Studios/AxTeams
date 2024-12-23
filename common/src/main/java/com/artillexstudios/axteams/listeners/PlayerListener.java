@@ -19,7 +19,7 @@ public final class PlayerListener implements Listener {
         try {
             Users.loadUser(event.getPlayer().getUniqueId()).thenAccept(user -> {
                 ((com.artillexstudios.axteams.users.User) user).onlinePlayer(event.getPlayer());
-                if (Config.DEBUG) {
+                if (Config.debug) {
                     LogUtils.debug("Loaded user!");
                 }
 
@@ -45,7 +45,7 @@ public final class PlayerListener implements Listener {
         }
 
         if (!team.hasOnline()) {
-            if (Config.DEBUG) {
+            if (Config.debug) {
                 LogUtils.debug("Disconnecting team!");
             }
             Teams.disconnect(team.id());

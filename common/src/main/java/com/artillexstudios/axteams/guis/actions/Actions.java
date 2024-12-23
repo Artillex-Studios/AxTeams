@@ -37,7 +37,7 @@ public final class Actions {
         for (int i = 0; i < actions.size(); i++) {
             Action<Object> action = (Action<Object>) actions.get(i);
             Object value = parsed.get(i);
-            if (Config.DEBUG) {
+            if (Config.debug) {
                 LogUtils.debug("Executing actions: {} with parameters: {}", action, parsed);
             }
 

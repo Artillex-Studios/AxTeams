@@ -90,7 +90,7 @@ public final class DataHandler {
 
         futures.add(users.toCompletableFuture());
 
-        if (Config.DATABASE_TYPE == DatabaseType.SQLITE) {
+        if (Config.Database.type == DatabaseType.SQLITE) {
             CompletableFuture<Integer> pragma = new CompletableFuture<>();
             AsyncUtils.executor().submit(() -> {
                 DatabaseConnector.getInstance().context().fetch("PRAGMA journal_mode=WAL;");
@@ -135,7 +135,7 @@ public final class DataHandler {
     }
 
     private static void loadUser(int userId, LoadContext context, Consumer<User> userConsumer) {
-        if (Config.DEBUG) {
+        if (Config.debug) {
             LogUtils.debug("Loading user with userId: {}", userId);
         }
 
@@ -156,13 +156,13 @@ public final class DataHandler {
     }
 
     private static void loadUser(UUID uuid, Record record, LoadContext context, Consumer<User> userConsumer) {
-        if (Config.DEBUG) {
+        if (Config.debug) {
             LogUtils.debug("User data select record for record {} with context: {}", record, context);
         }
 
         User loadedUser = Users.getUserIfLoadedImmediately(uuid);
         if (loadedUser != null) {
-            if (Config.DEBUG) {
+            if (Config.debug) {
                 LogUtils.debug("Loaded user is not null: {}", loadedUser);
             }
             userConsumer.accept(loadedUser);
@@ -170,7 +170,7 @@ public final class DataHandler {
         }
 
         if (record != null) {
-            if (Config.DEBUG) {
+            if (Config.debug) {
                 LogUtils.debug("Record is not null!");
             }
 
@@ -196,26 +196,26 @@ public final class DataHandler {
                     Pair<String, String> textures = NMSHandlers.getNmsHandler().textures(offlinePlayer.getPlayer());
 
                     if (teamID == null) {
-                        if (Config.DEBUG) {
+                        if (Config.debug) {
                             LogUtils.debug("Null team id; online!");
                         }
                         User user = new com.artillexstudios.axteams.users.User(record.get(ID), offlinePlayer, null, textures == null ? "" : textures.first(), null, System.currentTimeMillis());
                         ((UserSettingsRepository) user.settingsRepository()).load(record.get(SERIALIZED_SETTINGS));
                         userConsumer.accept(user);
                     } else {
-                        if (Config.DEBUG) {
+                        if (Config.debug) {
                             LogUtils.debug("Not null team ({}) id; online!", teamID);
                         }
                         User user = new com.artillexstudios.axteams.users.User(record.get(ID), offlinePlayer, null, textures == null ? "" : textures.first(), Group.ofId(record.get(TEAM_GROUP)), System.currentTimeMillis());
                         ((UserSettingsRepository) user.settingsRepository()).load(record.get(SERIALIZED_SETTINGS));
                         Users.loadWithContext(user, context);
                         if (context == LoadContext.FULL) {
-                            if (Config.DEBUG) {
+                            if (Config.debug) {
                                 LogUtils.debug("Full team load");
                             }
 
                             Teams.loadTeam(new TeamID(teamID)).thenAcceptAsync(team -> {
-                                if (Config.DEBUG) {
+                                if (Config.debug) {
                                     LogUtils.debug("Loaded team {}", team == null ? "null" : team.name());
                                 }
 
@@ -226,7 +226,7 @@ public final class DataHandler {
                             }, AsyncUtils.executor());
                         } else {
                             Teams.getTeam(new TeamID(teamID), LoadContext.TEMPORARY).thenAcceptAsync(team -> {
-                                if (Config.DEBUG) {
+                                if (Config.debug) {
                                     LogUtils.debug("Temp loaded team {}", team.name());
                                 }
 
@@ -262,13 +262,13 @@ public final class DataHandler {
             return;
         }
 
-        if (Config.DEBUG) {
+        if (Config.debug) {
             LogUtils.debug("Creating new user!", uuid);
         }
 
         CompletableFuture<Triple<OfflinePlayer, Boolean, String>> playerFuture = CompletableFuture.supplyAsync(() -> {
             OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-            if (Config.DEBUG) {
+            if (Config.debug) {
                 LogUtils.debug("Is player online? {}", player.isOnline());
             }
 
@@ -301,7 +301,7 @@ public final class DataHandler {
     }
 
     public static CompletionStage<User> loadUser(UUID uuid, LoadContext context) {
-        if (Config.DEBUG) {
+        if (Config.debug) {
             LogUtils.debug("Loading user with uuid: {}", uuid);
         }
 
@@ -346,7 +346,7 @@ public final class DataHandler {
             com.artillexstudios.axteams.teams.Team team = new com.artillexstudios.axteams.teams.Team(teamID, user, name);
             for (Supplier<Group> groupSupplier : Groups.DEFAULT_GROUPS) {
                 Group group = groupSupplier.get();
-                if (Config.DEBUG) {
+                if (Config.debug) {
                     LogUtils.debug("Adding default group {}!", group.name());
                 }
                 team.add(TeamValues.GROUPS, group);
@@ -369,7 +369,7 @@ public final class DataHandler {
 
 
     public static CompletionStage<Team> loadTeam(TeamID teamID, LoadContext context) {
-        if (Config.DEBUG) {
+        if (Config.debug) {
             LogUtils.debug("Loading team! Thread: {}", Thread.currentThread().getName());
         }
         CompletableFuture<Team> teamFuture = new CompletableFuture<>();
@@ -389,7 +389,7 @@ public final class DataHandler {
             Record record = select.get(0);
             String name = record.get(TEAM_NAME);
             loadUser(record.get(TEAM_LEADER), context, user -> {
-                if (Config.DEBUG) {
+                if (Config.debug) {
                     LogUtils.debug("Loaded leader: {}", user);
                 }
                 com.artillexstudios.axteams.teams.Team team = new com.artillexstudios.axteams.teams.Team(teamID, user, name);
@@ -401,7 +401,7 @@ public final class DataHandler {
                             .where(TEAM_ID.eq(teamID.id()))
                             .fetch();
 
-                    if (Config.DEBUG) {
+                    if (Config.debug) {
                         LogUtils.debug("Select for value: {}: {}", value.id(), valueSelect);
                     }
                     team.loadAll(value, (List<Identifiable<?>>) value.parse(valueSelect));

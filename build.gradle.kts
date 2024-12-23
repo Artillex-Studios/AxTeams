@@ -30,7 +30,7 @@ subprojects {
     }
 
     dependencies {
-        implementation("com.artillexstudios.axapi:axapi:1.4.412:all")
+        implementation("com.artillexstudios.axapi:axapi:1.4.455:all")
         implementation("dev.jorel:commandapi-bukkit-shade:9.6.0")
         implementation("org.bstats:bstats-bukkit:3.0.2")
         implementation("com.h2database:h2:2.3.232")

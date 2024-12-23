@@ -36,7 +36,7 @@ public final class Teams {
     public static Team getTeamIfLoadedImmediately(TeamID teamID) {
         Team team = loadedTeams.get(teamID);
         if (team != null) {
-            if (Config.DEBUG) {
+            if (Config.debug) {
                 LogUtils.debug("Team with id {} is loaded already!", teamID.id());
             }
             return team;
@@ -44,7 +44,7 @@ public final class Teams {
 
         team = tempTeams.getIfPresent(teamID);
         if (team != null) {
-            if (Config.DEBUG) {
+            if (Config.debug) {
                 LogUtils.debug("Team with id {} is temp loaded!", teamID.id());
             }
             return team;
@@ -52,7 +52,7 @@ public final class Teams {
 
         Optional<Team> foundTeam = unsaved.stream().filter(t -> t.id().equals(teamID)).findAny();
         if (foundTeam.isPresent()) {
-            if (Config.DEBUG) {
+            if (Config.debug) {
                 LogUtils.debug("Team with id {} is unsaved!", teamID.id());
             }
             team = foundTeam.get();
@@ -69,12 +69,12 @@ public final class Teams {
     }
 
     public static CompletableFuture<Team> loadTeam(TeamID teamID) {
-        if (Config.DEBUG) {
+        if (Config.debug) {
             LogUtils.debug("Team load called!");
         }
         Team team = tempTeams.getIfPresent(teamID);
         if (team != null) {
-            if (Config.DEBUG) {
+            if (Config.debug) {
                 LogUtils.debug("Found already loaded team!");
             }
             tempTeams.invalidate(teamID);
@@ -82,7 +82,7 @@ public final class Teams {
             return CompletableFuture.completedFuture(team);
         }
 
-        if (Config.DEBUG) {
+        if (Config.debug) {
             LogUtils.debug("Getting team!", new Throwable());
         }
         return getTeam(teamID, LoadContext.FULL);
@@ -91,13 +91,13 @@ public final class Teams {
     public static CompletableFuture<Team> getTeam(TeamID teamID, LoadContext context) {
         Team team = getTeamIfLoadedImmediately(teamID);
         if (team != null) {
-            if (Config.DEBUG) {
+            if (Config.debug) {
                 LogUtils.debug("Found team from getTeamIfLoadedImmediately for teamId {}.", teamID.id());
             }
             return CompletableFuture.completedFuture(team);
         }
 
-        if (Config.DEBUG) {
+        if (Config.debug) {
             LogUtils.debug("Loading unloaded team with id {}", teamID.id());
         }
         return DataHandler.loadTeam(teamID, context).toCompletableFuture();
@@ -120,19 +120,19 @@ public final class Teams {
 
     public static NameValidation validate(String name) {
         int length = name.length();
-        if (length > Config.TEAM_NAME_MAX_LENGTH) {
+        if (length > Config.TeamName.maxLength) {
             return NameValidation.TOO_LONG;
-        } else if (length < Config.TEAM_NAME_MIN_LENGTH) {
+        } else if (length < Config.TeamName.minLength) {
             return NameValidation.TOO_SHORT;
         }
 
-        for (Pattern pattern : Config.TEAM_NAME_WHITELIST) {
+        for (Pattern pattern : Config.TeamName.whitelist) {
             if (!pattern.asMatchPredicate().test(name)) {
                 return NameValidation.NOT_WHITELISTED;
             }
         }
 
-        for (Pattern pattern : Config.TEAM_NAME_BLACKLIST) {
+        for (Pattern pattern : Config.TeamName.blacklist) {
             if (pattern.asPredicate().test(name)) {
                 return NameValidation.BLACKLISTED;
             }

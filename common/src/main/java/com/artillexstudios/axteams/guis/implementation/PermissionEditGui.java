@@ -57,7 +57,7 @@ public final class PermissionEditGui extends GuiBase {
 
     @Override
     public void open(int page) {
-        if (com.artillexstudios.axteams.config.Config.DEBUG) {
+        if (com.artillexstudios.axteams.config.Config.debug) {
             LogUtils.debug("Open called for user: {}", this.user().name());
         }
 
@@ -100,7 +100,7 @@ public final class PermissionEditGui extends GuiBase {
                         return;
                     }
 
-                    clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.GUI_ACTION_COOLDOWN);
+                    clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.guiActionCooldown);
 
                     this.group.permissions().remove(value);
                     team.markUnsaved();
@@ -113,7 +113,7 @@ public final class PermissionEditGui extends GuiBase {
                         return;
                     }
 
-                    clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.GUI_ACTION_COOLDOWN);
+                    clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.guiActionCooldown);
 
                     this.group.permissions().add(value);
                     team.markUnsaved();

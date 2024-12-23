@@ -52,7 +52,7 @@ public final class AxTeamsPlugin extends AxPlugin {
         Language.reload();
         Levels.reload();
         Groups.reload();
-        AsyncUtils.setup(Config.ASYNC_PROCESSOR_POOL_SIZE);
+        AsyncUtils.setup(Config.asyncProcessorPoolSize);
 
         CommandAPI.onLoad(new CommandAPIBukkitConfig(this)
                 .setNamespace("axteams")
@@ -62,12 +62,12 @@ public final class AxTeamsPlugin extends AxPlugin {
 
     @Override
     public void enable() {
-        if (Config.USE_BSTATS) {
+        if (Config.useBstats) {
             this.metrics = new Metrics(this, 23441);
         }
 
         DataHandler.setup().thenRun(() -> {
-            if (Config.DEBUG) {
+            if (Config.debug) {
                 LogUtils.debug("Loaded datahandler!");
             }
         });

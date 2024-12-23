@@ -195,7 +195,7 @@ public enum AxTeamsCommand {
                                     }
 
                                     Map<String, String> placeholders = Placeholders.asMap(Context.builder(ParseContext.INTERNAL).add(String.class, args.getByClass("message", String.class)).add(User.class, user));
-                                    if (Config.DEBUG) {
+                                    if (Config.debug) {
                                         LogUtils.debug("Placeholders in message send: {}", placeholders);
                                     }
 
@@ -495,7 +495,7 @@ public enum AxTeamsCommand {
 
                                             Integer warpLimit = team.first(TeamValues.WARP_LIMIT);
                                             List<Warp> warps = team.values(TeamValues.WARPS);
-                                            warpLimit = warpLimit == null ? Config.DEFAULT_WARP_LIMIT : warpLimit;
+                                            warpLimit = warpLimit == null ? Config.defaultWarpLimit : warpLimit;
                                             if (warps.size() + 1 > warpLimit) {
                                                 // TODO: Limit reached message
                                                 MessageUtils.sendMessage(sender, Language.PREFIX, Language.NO_PERMISSION);
@@ -537,7 +537,7 @@ public enum AxTeamsCommand {
 
                                     Integer warpLimit = team.first(TeamValues.WARP_LIMIT);
                                     List<Warp> warps = team.values(TeamValues.WARPS);
-                                    warpLimit = warpLimit == null ? Config.DEFAULT_WARP_LIMIT : warpLimit;
+                                    warpLimit = warpLimit == null ? Config.defaultWarpLimit : warpLimit;
                                     if (warps.size() + 1 > warpLimit) {
                                         // TODO: Limit reached message
                                         MessageUtils.sendMessage(sender, Language.PREFIX, "limit reached");

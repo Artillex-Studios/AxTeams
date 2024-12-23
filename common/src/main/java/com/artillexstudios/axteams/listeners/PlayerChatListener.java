@@ -41,7 +41,7 @@ public final class PlayerChatListener implements Listener {
             }
 
             Map<String, String> placeholders = Placeholders.asMap(Context.builder(ParseContext.INTERNAL).add(String.class, event.getMessage()).add(User.class, user));
-            if (Config.DEBUG) {
+            if (Config.debug) {
                 LogUtils.debug("Placeholders in message send: {}", placeholders);
             }
 

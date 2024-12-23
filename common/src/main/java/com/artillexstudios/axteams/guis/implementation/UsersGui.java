@@ -23,7 +23,6 @@ import com.artillexstudios.axteams.utils.AnvilInputUtils;
 import com.artillexstudios.axteams.utils.FileUtils;
 import com.artillexstudios.axteams.utils.IdentifiableSupplier;
 import dev.triumphteam.gui.guis.GuiItem;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -46,7 +45,7 @@ public final class UsersGui extends GuiBase {
 
     @Override
     public void open() {
-        if (com.artillexstudios.axteams.config.Config.DEBUG) {
+        if (com.artillexstudios.axteams.config.Config.debug) {
             LogUtils.debug("Open called for user: {}", this.user().name());
         }
 
@@ -85,7 +84,7 @@ public final class UsersGui extends GuiBase {
                     return;
                 }
 
-                clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.GUI_ACTION_COOLDOWN);
+                clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.guiActionCooldown);
             }));
         }
 
@@ -103,7 +102,7 @@ public final class UsersGui extends GuiBase {
                 return;
             }
 
-            clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.GUI_ACTION_COOLDOWN);
+            clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.guiActionCooldown);
             if (!this.user().hasPermission(Permissions.INVITE)) {
                 MessageUtils.sendMessage(this.user().onlinePlayer(), Language.PREFIX, Language.NO_PERMISSION);
                 return;

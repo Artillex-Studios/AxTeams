@@ -43,7 +43,7 @@ public final class Language {
     private com.artillexstudios.axapi.config.Config config = null;
 
     public static boolean reload() {
-        if (Config.DEBUG) {
+        if (Config.debug) {
             LogUtils.debug("Reload called on language!");
         }
         FileUtils.copyFromResource("language");
@@ -52,13 +52,13 @@ public final class Language {
     }
 
     private boolean refreshConfig() {
-        if (Config.DEBUG) {
+        if (Config.debug) {
             LogUtils.debug("Refreshing language");
         }
-        File file = LANGUAGE_DIRECTORY.resolve(Config.LANGUAGE + ".yml").toFile();
+        File file = LANGUAGE_DIRECTORY.resolve(Config.language + ".yml").toFile();
         boolean shouldDefault = false;
         if (file.exists()) {
-            if (Config.DEBUG) {
+            if (Config.debug) {
                 LogUtils.debug("File exists");
             }
             if (!YamlUtils.suggest(file)) {
@@ -67,29 +67,29 @@ public final class Language {
         } else {
             shouldDefault = true;
             file = LANGUAGE_DIRECTORY.resolve("en_US.yml").toFile();
-            log.error("No language configuration was found with the name {}! Defaulting to en_US...", Config.LANGUAGE);
+            log.error("No language configuration was found with the name {}! Defaulting to en_US...", Config.language);
         }
 
         // The user might have changed the config
-        if (this.config != null && lastLanguage != null && lastLanguage.equalsIgnoreCase(Config.LANGUAGE)) {
-            if (Config.DEBUG) {
+        if (this.config != null && lastLanguage != null && lastLanguage.equalsIgnoreCase(Config.language)) {
+            if (Config.debug) {
                 LogUtils.debug("Config not null");
             }
             this.config.reload();
         } else {
-            lastLanguage = shouldDefault ? "en_US" : Config.LANGUAGE;
-            if (Config.DEBUG) {
+            lastLanguage = shouldDefault ? "en_US" : Config.language;
+            if (Config.debug) {
                 LogUtils.debug("Set lastLanguage to {}", lastLanguage);
             }
             InputStream defaults = AxTeamsPlugin.instance().getResource("language/" + lastLanguage + ".yml");
             if (defaults == null) {
-                if (Config.DEBUG) {
+                if (Config.debug) {
                     LogUtils.debug("Defaults are null, defaulting to en_US.yml");
                 }
                 defaults = AxTeamsPlugin.instance().getResource("language/en_US.yml");
             }
 
-            if (Config.DEBUG) {
+            if (Config.debug) {
                 LogUtils.debug("Loading config from file {} with defaults {}", file, defaults);
             }
             this.config = new com.artillexstudios.axapi.config.Config(file, defaults, GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build());

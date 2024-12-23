@@ -129,24 +129,24 @@ public final class Team implements com.artillexstudios.axteams.api.teams.Team {
     public <Y, T extends Identifiable<Y>, Z extends TeamValue<Y, T>> void add(Z type, T value) {
         List<Identifiable<Y>> items = (List<Identifiable<Y>>) (Object) this.data.computeIfAbsent(type, val -> new ArrayList<>());
         if (type.single()) {
-            if (Config.DEBUG) {
+            if (Config.debug) {
                 LogUtils.debug("Add for type: {}", type.id());
             }
 
             if (items.size() == 1 && items.get(0) != null) {
-                if (Config.DEBUG) {
+                if (Config.debug) {
                     LogUtils.debug("Replacing!");
                 }
                 Identifiable<Y> val = items.get(0);
                 val.set(value.get());
             } else {
-                if (Config.DEBUG) {
+                if (Config.debug) {
                     LogUtils.debug("Adding!");
                 }
                 items.add(value);
             }
         } else {
-            if (Config.DEBUG) {
+            if (Config.debug) {
                 LogUtils.debug("Adding, as it's not single!");
             }
             items.add(value);

@@ -28,7 +28,7 @@ public final class ConfigGui extends GuiBase {
 
     @Override
     public void open() {
-        if (com.artillexstudios.axteams.config.Config.DEBUG) {
+        if (com.artillexstudios.axteams.config.Config.debug) {
             LogUtils.debug("Open called for user: {}", this.user().name());
         }
 

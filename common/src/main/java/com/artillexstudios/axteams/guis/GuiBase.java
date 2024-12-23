@@ -60,7 +60,7 @@ public abstract class GuiBase {
     public void populate() {
         this.gui.updateTitle(this.title(this.config.getString("title")));
         Map<String, String> placeholders = Placeholders.asMap(Context.builder(ParseContext.INTERNAL, ResolutionType.OFFLINE).add(User.class, this.user));
-        if (com.artillexstudios.axteams.config.Config.DEBUG) {
+        if (com.artillexstudios.axteams.config.Config.debug) {
             LogUtils.debug("Placeholders for item: {}", placeholders);
         }
 
@@ -72,7 +72,7 @@ public abstract class GuiBase {
             }
 
             IntList slots = this.slots(slotConfig);
-            if (com.artillexstudios.axteams.config.Config.DEBUG) {
+            if (com.artillexstudios.axteams.config.Config.debug) {
                 LogUtils.debug("Populating gui with item: {}. Slots: {}", item, slots);
             }
 
@@ -86,14 +86,14 @@ public abstract class GuiBase {
                     return;
                 }
 
-                clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.GUI_ACTION_COOLDOWN);
+                clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.guiActionCooldown);
                 Actions.execute(this.user, this, actions, values);
             }));
         }
     }
 
     public IntArrayList slots(Object slots) {
-        if (com.artillexstudios.axteams.config.Config.DEBUG) {
+        if (com.artillexstudios.axteams.config.Config.debug) {
             LogUtils.debug("Getting slots for object: {}", slots);
         }
 

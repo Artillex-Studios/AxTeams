@@ -110,7 +110,7 @@ public final class Groups {
             }
 
             String finalName = name;
-            if (Config.DEBUG) {
+            if (Config.debug) {
                 LogUtils.debug("Loaded group with id: {}, name: {}, priority: {}, permissions: {}.", id, name, priority, permissions);
             }
             DEFAULT_GROUPS.add(() -> new Group(priority, id, StringUtils.format(finalName), permissions));

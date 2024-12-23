@@ -46,7 +46,7 @@ public final class GroupsGui extends GuiBase {
 
     @Override
     public void open() {
-        if (com.artillexstudios.axteams.config.Config.DEBUG) {
+        if (com.artillexstudios.axteams.config.Config.debug) {
             LogUtils.debug("Open called for user: {}", this.user().name());
         }
 
@@ -85,7 +85,7 @@ public final class GroupsGui extends GuiBase {
                     return;
                 }
 
-                clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.GUI_ACTION_COOLDOWN);
+                clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.guiActionCooldown);
                 new GroupEditGui(this.user(), value).open();
             }));
         }
@@ -104,7 +104,7 @@ public final class GroupsGui extends GuiBase {
                 return;
             }
 
-            clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.GUI_ACTION_COOLDOWN);
+            clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.guiActionCooldown);
             if (!this.user().hasPermission(Permissions.INVITE)) {
                 MessageUtils.sendMessage(this.user().onlinePlayer(), Language.PREFIX, Language.NO_PERMISSION);
                 return;

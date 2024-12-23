@@ -24,7 +24,7 @@ public final class TeamSaver {
 
         this.future = this.service.scheduleAtFixedRate(() -> {
             DataHandler.saveTeams().thenAccept(pair -> {
-                if (Config.DEBUG) {
+                if (Config.debug) {
                     LogUtils.debug("Saved {} teams in {} ms!", pair.firstLong(), pair.secondLong() / 1_000_000L);
                 }
             }).exceptionallyAsync(throwable -> {
@@ -33,14 +33,14 @@ public final class TeamSaver {
             });
 
             DataHandler.saveUsers().thenAccept(pair -> {
-                if (Config.DEBUG) {
+                if (Config.debug) {
                     LogUtils.debug("Saved {} users in {} ms!", pair.firstLong(), pair.secondLong() / 1_000_000L);
                 }
             }).exceptionallyAsync(throwable -> {
                 LogUtils.error("An unexpected error occurred while saving teams!", throwable);
                 return null;
             });
-        }, Config.AUTOSAVE_SECONDS, Config.AUTOSAVE_SECONDS, TimeUnit.SECONDS);
+        }, Config.autosaveSeconds, Config.autosaveSeconds, TimeUnit.SECONDS);
     }
 
     public void stop() {
@@ -49,13 +49,13 @@ public final class TeamSaver {
             this.future = null;
 
             DataHandler.saveTeams().toCompletableFuture().thenAccept(pair -> {
-                if (Config.DEBUG) {
+                if (Config.debug) {
                     LogUtils.debug("Saved {} teams in {} ms!", pair.firstLong(), pair.secondLong() / 1_000_000L);
                 }
             }).join();
 
             DataHandler.saveUsers().toCompletableFuture().thenAccept(pair -> {
-                if (Config.DEBUG) {
+                if (Config.debug) {
                     LogUtils.debug("Saved {} users in {} ms!", pair.firstLong(), pair.secondLong() / 1_000_000L);
                 }
             }).join();

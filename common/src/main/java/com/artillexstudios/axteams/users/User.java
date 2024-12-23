@@ -41,12 +41,12 @@ public final class User implements com.artillexstudios.axteams.api.users.User {
     @Override
     public void team(Team team) {
         if (this.group instanceof IdGroup) {
-            if (Config.DEBUG) {
+            if (Config.debug) {
                 LogUtils.debug("Looking for group with id {}.", this.group.id());
             }
 
             List<Group> groups = team.values(TeamValues.GROUPS);
-            if (Config.DEBUG) {
+            if (Config.debug) {
                 LogUtils.debug("Loaded groups in team: {}", groups);
             }
             Optional<Group> optional = groups

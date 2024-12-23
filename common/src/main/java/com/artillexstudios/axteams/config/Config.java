@@ -1,120 +1,99 @@
 package com.artillexstudios.axteams.config;
 
-import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.dvs.versioning.BasicVersioning;
-import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.dumper.DumperSettings;
-import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.general.GeneralSettings;
-import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.loader.LoaderSettings;
-import com.artillexstudios.axapi.libs.boostedyaml.boostedyaml.settings.updater.UpdaterSettings;
+import com.artillexstudios.axapi.config.YamlConfiguration;
+import com.artillexstudios.axapi.config.annotation.ConfigurationPart;
+import com.artillexstudios.axapi.config.annotation.PostProcess;
 import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axapi.utils.YamlUtils;
 import com.artillexstudios.axteams.AxTeamsPlugin;
 import com.artillexstudios.axteams.database.DatabaseType;
 import com.artillexstudios.axteams.utils.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.yaml.snakeyaml.DumperOptions;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public final class Config {
-    private static final Logger log = LoggerFactory.getLogger(Config.class);
+public final class Config implements ConfigurationPart {
     private static final Config INSTANCE = new Config();
-    public static String DATABASE_ADDRESS = "127.0.0.1";
-    public static int DATABASE_PORT = 3306;
-    public static String DATABASE_DATABASE = "admin";
-    public static String DATABASE_USERNAME = "admin";
-    public static String DATABASE_PASSWORD = "admin";
-    public static int DATABASE_MAXIMUM_POOL_SIZE = 10;
-    public static int DATABASE_MINIMUM_IDLE = 10;
-    public static int DATABASE_MAXIMUM_LIFETIME = 1800000;
-    public static int DATABASE_KEEPALIVE_TIME = 0;
-    public static int DATABASE_CONNECTION_TIMEOUT = 5000;
-    public static DatabaseType DATABASE_TYPE = DatabaseType.H2;
-    public static boolean TEAM_NAME_APPLY_TO_DISPLAY_NAME = false;
-    public static int TEAM_NAME_MIN_LENGTH = 3;
-    public static int TEAM_NAME_MAX_LENGTH = 16;
-    public static int GUI_ACTION_COOLDOWN = 200;
-    public static int DEFAULT_WARP_LIMIT = 3;
-    public static List<Pattern> TEAM_NAME_WHITELIST = new ArrayList<>();
-    public static List<Pattern> TEAM_NAME_BLACKLIST = new ArrayList<>();
-    public static int AUTOSAVE_SECONDS = 300;
-    public static int ASYNC_PROCESSOR_POOL_SIZE = 3;
-    public static String LANGUAGE = "en_US";
-    public static boolean USE_BSTATS = true;
-    public static boolean DEBUG = false;
-    private com.artillexstudios.axapi.config.Config config = null;
+
+    public static class Database implements ConfigurationPart {
+        public static DatabaseType type = DatabaseType.H2;
+        public static String address = "127.0.0.1";
+        public static int port = 3306;
+        public static String database = "admin";
+        public static String username = "admin";
+        public static String password = "admin";
+
+        public static class Pool implements ConfigurationPart {
+            public static int maximumPoolSize = 10;
+            public static int minimumIdle = 10;
+            public static int maximumLifetime = 1800000;
+            public static int keepaliveTime = 0;
+            public static int connectionTimeout = 5000;
+
+            @PostProcess
+            public static void postProcess() {
+                if (maximumPoolSize < 1) {
+                    LogUtils.warn("Maximum database pool size is lower than 1! This is not supported! Defaulting to 1.");
+                    maximumPoolSize = 1;
+                }
+            }
+        }
+    }
+
+    public static class TeamName implements ConfigurationPart {
+        public static boolean applyToDisplayName = false;
+        public static int minLength = 3;
+        public static int maxLength = 16;
+        public static List<Pattern> whitelist = new ArrayList<>();
+        public static List<Pattern> blacklist = new ArrayList<>();
+    }
+
+    public static String language = "en_US";
+    public static int guiActionCooldown = 200;
+    public static int defaultWarpLimit = 3;
+    public static int autosaveSeconds = 300;
+    public static int asyncProcessorPoolSize = 3;
+    public static boolean useBstats = true;
+    public static boolean debug = false;
+    public static int configVersion = 1;
+    private YamlConfiguration config = null;
 
     public static boolean reload() {
         return INSTANCE.refreshConfig();
     }
 
     private boolean refreshConfig() {
-        File file = FileUtils.PLUGIN_DIRECTORY.resolve("config.yml").toFile();
-        if (file.exists()) {
-            if (!YamlUtils.suggest(file)) {
+        Path path = FileUtils.PLUGIN_DIRECTORY.resolve("config.yml");
+        if (Files.exists(path)) {
+            if (!YamlUtils.suggest(path.toFile())) {
                 return false;
             }
         }
 
-        if (this.config != null) {
-            this.config.reload();
-        } else {
-            this.config = new com.artillexstudios.axapi.config.Config(file, AxTeamsPlugin.instance().getResource("config.yml"), GeneralSettings.builder().setUseDefaults(false).build(), LoaderSettings.builder().setAutoUpdate(true).build(), DumperSettings.DEFAULT, UpdaterSettings.builder().setVersioning(new BasicVersioning("config-version")).build());
+        if (this.config == null) {
+            this.config = YamlConfiguration.of(path, Config.class)
+                    .configVersion(1, "config-version")
+                    .withDefaults(AxTeamsPlugin.instance().getResource("config.yml"))
+                    .withDumperOptions(options -> {
+                        options.setPrettyFlow(true);
+                        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+                    }).build();
         }
 
-        refreshValues();
+        this.config.load();
+        this.config.save();
         return true;
     }
 
-    private void refreshValues() {
-        if (this.config == null) {
-            log.error("Config was not loaded correctly! Using default values!");
-            return;
-        }
-
-        DATABASE_TYPE = DatabaseType.parse(this.config.getString("database.type", DATABASE_TYPE.name()));
-        DATABASE_ADDRESS = this.config.getString("database.address", DATABASE_ADDRESS);
-        DATABASE_PORT = this.config.getInt("database.port", DATABASE_PORT);
-        DATABASE_DATABASE = this.config.getString("database.database", DATABASE_DATABASE);
-        DATABASE_USERNAME = this.config.getString("database.username", DATABASE_USERNAME);
-        DATABASE_PASSWORD = this.config.getString("database.password", DATABASE_PASSWORD);
-        DATABASE_MAXIMUM_POOL_SIZE = this.config.getInt("database.pool.maximum-pool-size", DATABASE_MAXIMUM_POOL_SIZE);
-        DATABASE_MINIMUM_IDLE = this.config.getInt("database.pool.minimum-idle", DATABASE_MINIMUM_IDLE);
-        DATABASE_MAXIMUM_LIFETIME = this.config.getInt("database.pool.maximum-lifetime", DATABASE_MAXIMUM_LIFETIME);
-        DATABASE_KEEPALIVE_TIME = this.config.getInt("database.pool.keepalive-time", DATABASE_KEEPALIVE_TIME);
-        DATABASE_CONNECTION_TIMEOUT = this.config.getInt("database.pool.connection-timeout", DATABASE_CONNECTION_TIMEOUT);
-        TEAM_NAME_APPLY_TO_DISPLAY_NAME = this.config.getBoolean("team-name.apply-to-display-name", TEAM_NAME_APPLY_TO_DISPLAY_NAME);
-        TEAM_NAME_MIN_LENGTH = this.config.getInt("team-name.min-length", TEAM_NAME_MIN_LENGTH);
-        TEAM_NAME_MAX_LENGTH = this.config.getInt("team-name.max-length", TEAM_NAME_MAX_LENGTH);
-        TEAM_NAME_WHITELIST.clear();
-        TEAM_NAME_WHITELIST.addAll(this.config.getStringList("team-name.whitelist", List.of("^[a-zA-Z0-9_]*$")).stream().map(Pattern::compile).toList());
-        TEAM_NAME_BLACKLIST.clear();
-        TEAM_NAME_BLACKLIST.addAll(this.config.getStringList("team-name.blacklist", List.of("badword")).stream().map(Pattern::compile).toList());
-        DEFAULT_WARP_LIMIT = this.config.getInt("default-warp-limit", DEFAULT_WARP_LIMIT);
-        AUTOSAVE_SECONDS = this.config.getInt("autosave-seconds", AUTOSAVE_SECONDS);
-        ASYNC_PROCESSOR_POOL_SIZE = this.config.getInt("async-processor-pool-size", ASYNC_PROCESSOR_POOL_SIZE);
-        LANGUAGE = this.config.getString("language", LANGUAGE);
-        USE_BSTATS = this.config.getBoolean("use-bstats", USE_BSTATS);
-        DEBUG = this.config.getBoolean("debug", DEBUG);
-
-        this.validate();
-    }
-
-    private void validate() {
-        if (Config.AUTOSAVE_SECONDS <= 0) {
+    @PostProcess
+    public static void postProcess() {
+        if (autosaveSeconds <= 0) {
             LogUtils.warn("Autosave frequency is set too low! Defaulting to 15 seconds!");
-            AUTOSAVE_SECONDS = 15;
-        }
-
-        if (Config.AUTOSAVE_SECONDS <= 5) {
-            LogUtils.warn("It is not recommended to set autosave-seconds to <= 5, as this might degrade performance!");
-        }
-
-        if (Config.DATABASE_MAXIMUM_POOL_SIZE < 1) {
-            LogUtils.warn("Maximum database pool size is lower than 1! This is not supported! Defaulting to 1.");
-            DATABASE_MAXIMUM_POOL_SIZE = 1;
+            autosaveSeconds = 15;
         }
     }
 }
