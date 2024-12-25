@@ -3,6 +3,7 @@ package com.artillexstudios.axteams.config;
 import com.artillexstudios.axapi.config.YamlConfiguration;
 import com.artillexstudios.axapi.config.annotation.Comment;
 import com.artillexstudios.axapi.config.annotation.ConfigurationPart;
+import com.artillexstudios.axapi.config.annotation.Ignored;
 import com.artillexstudios.axapi.config.annotation.Named;
 import com.artillexstudios.axapi.libs.snakeyaml.DumperOptions;
 import com.artillexstudios.axapi.utils.LogUtils;
@@ -118,18 +119,10 @@ public final class Language implements ConfigurationPart {
     @Comment("The prefix we should use before messages sent by the plugin.")
     public static String prefix = "<b><gradient:#CB2D3E:#EF473A>AxTeams</gradient></b> ";
 
+    @Comment("Do not touch!")
+    public static int configVersion = 1;
 
-
-
-//    public static String DISBANDED = "Disbanded";
-//    public static String ALREADY_IN_TEAM = "In team";
-//    public static String ALREADY_EXISTS = "Exists";
-//    public static String TOO_SHORT = "Short";
-//    public static String TOO_LONG = "Long";
-//    public static String BLACKLISTED = "Blacklisted";
-//    public static String NOT_WHITELISTED = "not whitelisted";
-//    public static String CREATED = "created";
-
+    @Ignored
     public static String lastLanguage;
     private YamlConfiguration config = null;
 
@@ -184,6 +177,7 @@ public final class Language implements ConfigurationPart {
                     .withDefaults(defaults)
                     .withDumperOptions(options -> {
                         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+                        options.setSplitLines(false);
                     }).build();
         }
 

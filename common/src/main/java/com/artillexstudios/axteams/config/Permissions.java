@@ -15,7 +15,7 @@ import java.util.Map;
 
 public final class Permissions implements ConfigurationPart {
     private static final Permissions INSTANCE = new Permissions();
-    public static Map<String, Object> permissions = Map.of();
+    public static Map<String, Map<String, Object>> permissions = Map.of();
     public static int configVersion = 1;
     private YamlConfiguration config = null;
 
