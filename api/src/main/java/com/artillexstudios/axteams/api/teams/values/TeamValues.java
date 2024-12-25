@@ -14,6 +14,7 @@ import com.artillexstudios.axteams.api.teams.values.implementation.TeamDisplayNa
 import com.artillexstudios.axteams.api.teams.values.implementation.TeamGroupsValue;
 import com.artillexstudios.axteams.api.teams.values.implementation.TeamHomeValue;
 import com.artillexstudios.axteams.api.teams.values.implementation.TeamPvPValue;
+import com.artillexstudios.axteams.api.teams.values.implementation.TeamSizeLimitValue;
 import com.artillexstudios.axteams.api.teams.values.implementation.TeamWarpLimitValue;
 import com.artillexstudios.axteams.api.teams.values.implementation.TeamWarpsValue;
 import com.artillexstudios.axteams.api.utils.Registry;
@@ -35,6 +36,7 @@ public final class TeamValues {
     public static final TeamValue<Boolean, IdentifiableBoolean> PVP = register(new TeamPvPValue());
     public static final TeamValue<Warp, Warp> WARPS = register(new TeamWarpsValue());
     public static final TeamValue<Integer, IdentifiableInteger> WARP_LIMIT = register(new TeamWarpLimitValue());
+    public static final TeamValue<Integer, IdentifiableInteger> TEAM_SIZE_LIMIT = register(new TeamSizeLimitValue());
     public static final TeamValue<Location, IdentifiableLocation> HOME = register(new TeamHomeValue());
     public static final TeamValue<Integer, IdentifiableInteger> ALLIES = register(new TeamAlliesValue());
     public static final TeamValue<Group, Group> GROUPS = register(new TeamGroupsValue());

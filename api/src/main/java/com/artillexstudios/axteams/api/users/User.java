@@ -32,6 +32,7 @@ public interface User {
 
     void message(Component message);
 
+    @Nullable
     Player onlinePlayer();
 
     String name();

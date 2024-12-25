@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public final class TeamArgument {
 
@@ -24,13 +25,11 @@ public final class TeamArgument {
         return new CustomArgument<>(new StringArgument(valueName), info -> {
             TeamID id = Teams.byName(info.input());
             if (id == null) {
-                throw CustomArgument.CustomArgumentException.fromAdventureComponent(StringUtils.format(Language.PREFIX + Language.TEAM_VALUE_NOT_FOUND, Placeholder.parsed("id", info.input())));
+                throw CustomArgument.CustomArgumentException.fromAdventureComponent(StringUtils.format(Language.prefix + Language.Error.notFound, Placeholder.parsed("name", info.input())));
             }
 
             return id;
-        }).replaceSuggestions(ArgumentSuggestions.strings(info -> {
-            return Teams.names().toArray(new String[0]);
-        }));
+        }).replaceSuggestions(ArgumentSuggestions.stringCollection(info -> Teams.names()));
     }
 
     public static Argument<TeamID> ally(String valueName) {

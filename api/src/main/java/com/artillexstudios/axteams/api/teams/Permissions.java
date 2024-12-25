@@ -17,6 +17,7 @@ public final class Permissions {
     public static final Permission KICK = register(new Permission("kick", "Kick user"));
     public static final Permission ALLY_SEND = register(new Permission("ally_send", "Send ally request"));
     public static final Permission ALLY_ACCEPT = register(new Permission("ally_accept", "Ally request accept"));
+    public static final Permission ALLY_REMOVE = register(new Permission("ally_remove", "Ally remove"));
     public static final Permission GROUP_RENAME = register(new Permission("group_rename", "Rename group"));
     public static final Permission GROUP_DELETE = register(new Permission("group_delete", "Delete group"));
     public static final Permission GROUP_CREATE = register(new Permission("group_create", "Create group"));

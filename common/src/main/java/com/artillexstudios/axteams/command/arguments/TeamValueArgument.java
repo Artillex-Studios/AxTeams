@@ -17,7 +17,7 @@ public final class TeamValueArgument {
             try {
                 return TeamValues.get(info.input());
             } catch (RegistrationFailedException e) {
-                throw CustomArgument.CustomArgumentException.fromAdventureComponent(StringUtils.format(Language.PREFIX + Language.TEAM_VALUE_NOT_FOUND, Placeholder.parsed("id", info.input())));
+                throw CustomArgument.CustomArgumentException.fromAdventureComponent(StringUtils.format(Language.prefix + "Value with id <id> not found!", Placeholder.parsed("id", info.input())));
             }
         }).replaceSuggestions(ArgumentSuggestions.strings(info -> {
             return TeamValues.keys().toArray(new String[0]);

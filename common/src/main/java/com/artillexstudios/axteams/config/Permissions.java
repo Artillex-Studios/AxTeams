@@ -2,12 +2,12 @@ package com.artillexstudios.axteams.config;
 
 import com.artillexstudios.axapi.config.YamlConfiguration;
 import com.artillexstudios.axapi.config.annotation.ConfigurationPart;
+import com.artillexstudios.axapi.libs.snakeyaml.DumperOptions;
 import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axapi.utils.YamlUtils;
 import com.artillexstudios.axteams.AxTeamsPlugin;
 import com.artillexstudios.axteams.api.teams.Permission;
 import com.artillexstudios.axteams.utils.FileUtils;
-import org.yaml.snakeyaml.DumperOptions;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,7 +15,7 @@ import java.util.Map;
 
 public final class Permissions implements ConfigurationPart {
     private static final Permissions INSTANCE = new Permissions();
-    public static Map<String, Map<String, Object>> permissions = Map.of();
+    public static Map<String, Object> permissions = Map.of();
     public static int configVersion = 1;
     private YamlConfiguration config = null;
 

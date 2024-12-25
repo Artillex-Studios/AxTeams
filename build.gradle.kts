@@ -30,7 +30,7 @@ subprojects {
     }
 
     dependencies {
-        implementation("com.artillexstudios.axapi:axapi:1.4.455:all")
+        implementation("com.artillexstudios.axapi:axapi:1.4.474:all")
         implementation("dev.jorel:commandapi-bukkit-shade:9.6.0")
         implementation("org.bstats:bstats-bukkit:3.0.2")
         implementation("com.h2database:h2:2.3.232")
@@ -55,7 +55,6 @@ tasks {
     shadowJar {
         relocate("com.github.benmanes", "com.artillexstudios.axteams.libs.axapi.libs.caffeine")
         relocate("com.artillexstudios.axapi", "com.artillexstudios.axteams.libs.axapi")
-        relocate("dev.jorel.commandapi", "com.artillexstudios.axteams.libs.commandapi")
         relocate("dev.jorel.commandapi", "com.artillexstudios.axteams.libs.commandapi")
         relocate("dev.triumphteam.gui", "com.artillexstudios.axteams.libs.triumphgui")
         relocate("com.zaxxer", "com.artillexstudios.axteams.libs.hikaricp")

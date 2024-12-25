@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 
 public final class Team implements com.artillexstudios.axteams.api.teams.Team {
     private final ConcurrentHashMap<TeamValue<?, ?>, List<Identifiable<?>>> data = new ConcurrentHashMap<>();
@@ -86,14 +87,15 @@ public final class Team implements com.artillexstudios.axteams.api.teams.Team {
     }
 
     @Override
-    public boolean hasOnline() {
-        for (User member : members(true)) {
-            if (member.onlinePlayer() != null) {
-                return true;
+    public List<User> members(Predicate<User> predicate, boolean includeOwner) {
+        ObjectArrayList<User> users = new ObjectArrayList<>();
+        for (User member : this.members(includeOwner)) {
+            if (predicate.test(member)) {
+                users.add(member);
             }
         }
 
-        return false;
+        return users;
     }
 
     @Override

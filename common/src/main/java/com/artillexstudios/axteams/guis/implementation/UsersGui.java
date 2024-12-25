@@ -104,7 +104,7 @@ public final class UsersGui extends GuiBase {
 
             clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.guiActionCooldown);
             if (!this.user().hasPermission(Permissions.INVITE)) {
-                MessageUtils.sendMessage(this.user().onlinePlayer(), Language.PREFIX, Language.NO_PERMISSION);
+                MessageUtils.sendMessage(this.user().onlinePlayer(), Language.prefix, Language.Error.noPermission);
                 return;
             }
 
@@ -122,23 +122,23 @@ public final class UsersGui extends GuiBase {
 
                         Player player = Bukkit.getPlayer(input);
                         if (player == null) {
-                            MessageUtils.sendMessage(this.user().onlinePlayer(), Language.PREFIX, "Not online!");
+                            MessageUtils.sendMessage(this.user().onlinePlayer(), Language.prefix, "Not online!");
                             return;
                         }
 
                         User invited = Users.getUserIfLoadedImmediately(player.getUniqueId());
                         if (invited == null) {
-                            MessageUtils.sendMessage(this.user().onlinePlayer(), Language.PREFIX, "Not yet loaded!");
+                            MessageUtils.sendMessage(this.user().onlinePlayer(), Language.prefix, "Not yet loaded!");
                             return;
                         }
 
                         if (team.members(true).contains(invited)) {
-                            MessageUtils.sendMessage(this.user().onlinePlayer(), Language.PREFIX, "already member");
+                            MessageUtils.sendMessage(this.user().onlinePlayer(), Language.prefix, "already member");
                             return;
                         }
 
                         if (team.invited(invited)) {
-                            MessageUtils.sendMessage(this.user().onlinePlayer(), Language.PREFIX, "already invited");
+                            MessageUtils.sendMessage(this.user().onlinePlayer(), Language.prefix, "already invited");
                             return;
                         }
 

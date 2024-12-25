@@ -106,7 +106,7 @@ public final class GroupsGui extends GuiBase {
 
             clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.guiActionCooldown);
             if (!this.user().hasPermission(Permissions.INVITE)) {
-                MessageUtils.sendMessage(this.user().onlinePlayer(), Language.PREFIX, Language.NO_PERMISSION);
+                MessageUtils.sendMessage(this.user().onlinePlayer(), Language.prefix, Language.Error.noPermission);
                 return;
             }
 
@@ -124,7 +124,7 @@ public final class GroupsGui extends GuiBase {
 
                         for (Group value : team.values(TeamValues.GROUPS)) {
                             if (value.name().equalsIgnoreCase(input)) {
-                                MessageUtils.sendMessage(this.user().onlinePlayer(), Language.PREFIX, "Group already exists");
+                                MessageUtils.sendMessage(this.user().onlinePlayer(), Language.prefix, "Group already exists");
                                 return;
                             }
                         }

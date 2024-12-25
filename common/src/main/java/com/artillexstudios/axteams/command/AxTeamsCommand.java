@@ -10,6 +10,7 @@ import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axteams.AxTeamsPlugin;
 import com.artillexstudios.axteams.api.AxTeamsAPI;
 import com.artillexstudios.axteams.api.events.PreTeamInviteEvent;
+import com.artillexstudios.axteams.api.events.TeamInviteEvent;
 import com.artillexstudios.axteams.api.teams.Permissions;
 import com.artillexstudios.axteams.api.teams.Team;
 import com.artillexstudios.axteams.api.teams.TeamID;
@@ -73,12 +74,12 @@ public enum AxTeamsCommand {
                                 .executesPlayer((sender, args) -> {
                                     User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                                     if (user == null) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.USER_NOT_LOADED);
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.userNotLoaded);
                                         return;
                                     }
 
                                     if (user.team() != null) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.ALREADY_IN_TEAM);
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.alreadyInTeam);
                                         return;
                                     }
 
@@ -88,28 +89,28 @@ public enum AxTeamsCommand {
                                     }
 
                                     if (Teams.doesNameExist(name)) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.ALREADY_EXISTS);
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.alreadyExists, Placeholder.unparsed("name", name));
                                         return;
                                     }
 
                                     NameValidation validation = Teams.validate(name);
                                     switch (validation) {
                                         case TOO_SHORT ->
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.TOO_SHORT);
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.TeamNaming.tooShort, Placeholder.unparsed("name", name));
                                         case TOO_LONG ->
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.TOO_LONG);
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.TeamNaming.tooLong, Placeholder.unparsed("name", name));
                                         case BLACKLISTED ->
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.BLACKLISTED);
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.TeamNaming.blacklisted, Placeholder.unparsed("name", name));
                                         case NOT_WHITELISTED ->
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_WHITELISTED);
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.TeamNaming.notWhitelisted, Placeholder.unparsed("name", name));
                                         case VALID -> Teams.create(user, name).thenAccept(team -> {
                                             if (team == null) {
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, "Failed to create team! No owner group is set up! Please inform server administrators!");
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.failedToCreate);
                                                 return;
                                             }
 
                                             team.add(TeamValues.TEAM_DISPLAY_NAME, new IdentifiableComponent(Component.text(name)));
-                                            MessageUtils.sendMessage(sender, Language.PREFIX, Language.CREATED);
+                                            MessageUtils.sendMessage(sender, Language.prefix, Language.Success.created, Placeholder.unparsed("name", name));
                                         });
                                     }
                                 })
@@ -119,13 +120,13 @@ public enum AxTeamsCommand {
                         .executesPlayer((sender, args) -> {
                             User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                             if (user == null) {
-                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.USER_NOT_LOADED);
+                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.userNotLoaded);
                                 return;
                             }
 
                             Team team = user.team();
                             if (team == null) {
-                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_IN_TEAM);
+                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.notInTeam);
                                 return;
                             }
 
@@ -136,29 +137,29 @@ public enum AxTeamsCommand {
                         .executesPlayer((sender, args) -> {
                             User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                             if (user == null) {
-                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.USER_NOT_LOADED);
+                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.userNotLoaded);
                                 return;
                             }
 
                             Team team = user.team();
                             if (team == null) {
-                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_IN_TEAM);
+                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.notInTeam);
                                 return;
                             }
 
                             if (team.leader() != user) {
-                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_LEADER);
+                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.notLeader);
                                 return;
                             }
 
                             if (this.disbandCache.getIfPresent(sender.getUniqueId()) != null) {
                                 this.disbandCache.invalidate(sender.getUniqueId());
                                 team.disband().thenRun(() -> {
-                                    MessageUtils.sendMessage(sender, Language.PREFIX, Language.DISBANDED);
+                                    MessageUtils.sendMessage(sender, Language.prefix, Language.Success.disbanded);
                                 });
                             } else {
                                 this.disbandCache.put(sender.getUniqueId(), true);
-                                // TODO: Message
+                                MessageUtils.sendMessage(sender, Language.prefix, Language.Success.disbandConfirmation);
                             }
                         })
                 )
@@ -166,13 +167,13 @@ public enum AxTeamsCommand {
                         .executesPlayer((sender, args) -> {
                             User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                             if (user == null) {
-                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.USER_NOT_LOADED);
+                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.userNotLoaded);
                                 return;
                             }
 
                             Team team = user.team();
                             if (team == null) {
-                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_IN_TEAM);
+                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.notInTeam);
                                 return;
                             }
 
@@ -184,13 +185,13 @@ public enum AxTeamsCommand {
                                 .executesPlayer((sender, args) -> {
                                     User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                                     if (user == null) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.USER_NOT_LOADED);
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.userNotLoaded);
                                         return;
                                     }
 
                                     Team team = user.team();
                                     if (team == null) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_IN_TEAM);
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.notInTeam);
                                         return;
                                     }
 
@@ -199,19 +200,19 @@ public enum AxTeamsCommand {
                                         LogUtils.debug("Placeholders in message send: {}", placeholders);
                                     }
 
-                                    team.message(StringUtils.format(Language.TEAM_CHAT_FORMAT, placeholders));
+                                    team.message(StringUtils.format(Language.ChatFormat.team, placeholders));
                                 })
                         )
                         .executesPlayer((sender, args) -> {
                             User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                             if (user == null) {
-                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.USER_NOT_LOADED);
+                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.userNotLoaded);
                                 return;
                             }
 
                             Team team = user.team();
                             if (team == null) {
-                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_IN_TEAM);
+                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.notInTeam);
                                 return;
                             }
 
@@ -223,30 +224,32 @@ public enum AxTeamsCommand {
                             } else {
                                 UserSettings.TEAM_CHAT_TOGGLED.write(user, !teamChat);
                             }
+
+                            MessageUtils.sendMessage(sender, Language.prefix, teamChat ? Language.Success.ChatToggle.TeamChat.disable : Language.Success.ChatToggle.TeamChat.enable);
                         })
                 )
                 .then(new LiteralArgument("leave")
                         .executesPlayer((sender, args) -> {
                             User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                             if (user == null) {
-                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.USER_NOT_LOADED);
+                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.userNotLoaded);
                                 return;
                             }
 
                             Team team = user.team();
                             if (team == null) {
-                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_IN_TEAM);
+                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.notInTeam);
                                 return;
                             }
 
                             if (user.equals(team.leader())) {
-                                MessageUtils.sendMessage(sender, Language.PREFIX, "You are the leader!");
+                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.leader);
                                 return;
                             }
 
                             team.remove(user);
-                            // TODO: Leave message
-                            MessageUtils.sendMessage(sender, Language.PREFIX, "left");
+                            MessageUtils.sendMessage(sender, Language.prefix, Language.Success.leave);
+                            team.message(StringUtils.format(Language.prefix + Language.Success.leaveAnnouncement, Placeholder.unparsed("player", sender.getName())));
                         })
                 )
                 .then(new LiteralArgument("allychat")
@@ -254,17 +257,17 @@ public enum AxTeamsCommand {
                                 .executesPlayer((sender, args) -> {
                                     User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                                     if (user == null) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.USER_NOT_LOADED);
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.userNotLoaded);
                                         return;
                                     }
 
                                     Team team = user.team();
                                     if (team == null) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_IN_TEAM);
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.notInTeam);
                                         return;
                                     }
 
-                                    Component message = StringUtils.format(Language.ALLY_CHAT_FORMAT, Placeholders.asMap(Context.builder(ParseContext.INTERNAL).add(String.class, args.getByClass("message", String.class)).add(User.class, user)));
+                                    Component message = StringUtils.format(Language.ChatFormat.ally, Placeholders.asMap(Context.builder(ParseContext.INTERNAL).add(String.class, args.getByClass("message", String.class)).add(User.class, user)));
                                     team.message(message);
 
                                     for (Integer value : team.values(TeamValues.ALLIES)) {
@@ -278,13 +281,13 @@ public enum AxTeamsCommand {
                         .executesPlayer((sender, args) -> {
                             User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                             if (user == null) {
-                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.USER_NOT_LOADED);
+                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.userNotLoaded);
                                 return;
                             }
 
                             Team team = user.team();
                             if (team == null) {
-                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_IN_TEAM);
+                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.notInTeam);
                                 return;
                             }
 
@@ -296,30 +299,32 @@ public enum AxTeamsCommand {
                             } else {
                                 UserSettings.ALLY_CHAT_TOGGLED.write(user, !allyChat);
                             }
+
+                            MessageUtils.sendMessage(sender, Language.prefix, allyChat ? Language.Success.ChatToggle.AllyChat.disable : Language.Success.ChatToggle.AllyChat.enable);
                         })
                 )
                 .then(new LiteralArgument("home")
                         .executesPlayer((sender, args) -> {
                             User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                             if (user == null) {
-                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.USER_NOT_LOADED);
+                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.userNotLoaded);
                                 return;
                             }
 
                             Team team = user.team();
                             if (team == null) {
-                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_IN_TEAM);
+                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.notInTeam);
                                 return;
                             }
 
                             Location home = team.first(TeamValues.HOME);
                             if (home == null) {
-                                MessageUtils.sendMessage(sender, Language.PREFIX, "no home set");
+                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.noHomeSet);
                                 return;
                             }
 
                             PaperUtils.teleportAsync(sender, home).thenAccept((success) -> {
-                                // TODO: teleport message
+                                MessageUtils.sendMessage(sender, Language.prefix, Language.Success.teleportHome);
                             });
                         })
                 )
@@ -327,41 +332,41 @@ public enum AxTeamsCommand {
                         .executesPlayer((sender, args) -> {
                             User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                             if (user == null) {
-                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.USER_NOT_LOADED);
+                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.userNotLoaded);
                                 return;
                             }
 
                             Team team = user.team();
                             if (team == null) {
-                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_IN_TEAM);
+                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.notInTeam);
                                 return;
                             }
 
                             if (!user.hasPermission(Permissions.HOME_CREATE)) {
-                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.NO_PERMISSION);
+                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.noPermission);
                                 return;
                             }
 
                             team.add(TeamValues.HOME, new IdentifiableLocation(sender.getLocation()));
-                            // TODO: feedback
+                            MessageUtils.sendMessage(sender, Language.prefix, Language.Success.setHome);
                         })
                 )
                 .then(new LiteralArgument("pvp")
                         .executesPlayer((sender, args) -> {
                             User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                             if (user == null) {
-                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.USER_NOT_LOADED);
+                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.userNotLoaded);
                                 return;
                             }
 
                             Team team = user.team();
                             if (team == null) {
-                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_IN_TEAM);
+                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.notInTeam);
                                 return;
                             }
 
                             if (!user.hasPermission(Permissions.PVP)) {
-                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.NO_PERMISSION);
+                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.noPermission);
                                 return;
                             }
 
@@ -371,7 +376,7 @@ public enum AxTeamsCommand {
                             }
 
                             team.add(TeamValues.PVP, new IdentifiableBoolean(!pvp));
-                            // TODO: Send message
+                            MessageUtils.sendMessage(sender, Language.prefix, pvp ? Language.Success.PvPToggle.disable : Language.Success.PvPToggle.enable);
                         })
                 )
                 .then(new LiteralArgument("transfer")
@@ -379,31 +384,31 @@ public enum AxTeamsCommand {
                                 .executesPlayer((sender, args) -> {
                                     User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                                     if (user == null) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.USER_NOT_LOADED);
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.userNotLoaded);
                                         return;
                                     }
 
                                     Team team = user.team();
                                     if (team == null) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_IN_TEAM);
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.notInTeam);
                                         return;
                                     }
 
                                     if (team.leader() != user) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_LEADER);
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.notLeader);
                                         return;
                                     }
 
                                     User other = args.getByClass("other", User.class);
                                     if (other == null) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, "No member found");
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.unknownMember);
                                         return;
                                     }
 
-
                                     other.group(team.leader().group());
                                     team.leader(other);
-                                    // TODO: feedback
+                                    MessageUtils.sendMessage(sender, Language.prefix, Language.Success.transfer, Placeholder.unparsed("player", other.name()));
+                                    team.message(StringUtils.format(Language.prefix + Language.Success.transferAnnouncement, Placeholder.unparsed("from", user.name()), Placeholder.unparsed("to", other.name())));
                                 })
                         )
                 )
@@ -413,13 +418,13 @@ public enum AxTeamsCommand {
                                         .executesPlayer((sender, args) -> {
                                             User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                                             if (user == null) {
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.USER_NOT_LOADED);
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.userNotLoaded);
                                                 return;
                                             }
 
                                             Team team = user.team();
                                             if (team == null) {
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_IN_TEAM);
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.notInTeam);
                                                 return;
                                             }
 
@@ -430,27 +435,25 @@ public enum AxTeamsCommand {
 
                                             String password = args.getByClass("password", String.class);
                                             if (!warp.password().isBlank() && !warp.password().equals(password)) {
-                                                // TODO: Send incorrect password message
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, "Incorrect password");
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Warp.incorrectPassword, Placeholder.unparsed("name", warp.name()));
                                                 return;
                                             }
 
                                             PaperUtils.teleportAsync(sender, warp.location()).thenAccept(accepted -> {
-                                                // TODO: Send teleported message
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, "teleported to warp");
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Warp.teleported, Placeholder.unparsed("name", warp.name()));
                                             });
                                         })
                                 )
                                 .executesPlayer((sender, args) -> {
                                     User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                                     if (user == null) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.USER_NOT_LOADED);
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.userNotLoaded);
                                         return;
                                     }
 
                                     Team team = user.team();
                                     if (team == null) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_IN_TEAM);
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.notInTeam);
                                         return;
                                     }
 
@@ -460,14 +463,12 @@ public enum AxTeamsCommand {
                                     }
 
                                     if (warp.password() != null && !warp.password().isBlank()) {
-                                        // TODO: Send needs password message
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, "needs password");
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Warp.hasPassword, Placeholder.unparsed("name", warp.name()));
                                         return;
                                     }
 
                                     PaperUtils.teleportAsync(sender, warp.location()).thenAccept(accepted -> {
-                                        // TODO: Send teleported message
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, "teleported to warp");
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Warp.teleported, Placeholder.unparsed("name", warp.name()));
                                     });
                                 })
                         )
@@ -478,18 +479,18 @@ public enum AxTeamsCommand {
                                         .executesPlayer((sender, args) -> {
                                             User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                                             if (user == null) {
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.USER_NOT_LOADED);
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.userNotLoaded);
                                                 return;
                                             }
 
                                             Team team = user.team();
                                             if (team == null) {
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_IN_TEAM);
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.notInTeam);
                                                 return;
                                             }
 
                                             if (!user.hasPermission(Permissions.WARP_CREATE)) {
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.NO_PERMISSION);
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.noPermission);
                                                 return;
                                             }
 
@@ -497,8 +498,7 @@ public enum AxTeamsCommand {
                                             List<Warp> warps = team.values(TeamValues.WARPS);
                                             warpLimit = warpLimit == null ? Config.defaultWarpLimit : warpLimit;
                                             if (warps.size() + 1 > warpLimit) {
-                                                // TODO: Limit reached message
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.NO_PERMISSION);
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Warp.limitReached, Placeholder.unparsed("warps", String.valueOf(warps.size())), Placeholder.unparsed("limit", String.valueOf(warpLimit)));
                                                 return;
                                             }
 
@@ -512,26 +512,33 @@ public enum AxTeamsCommand {
                                                 return;
                                             }
 
+                                            for (Warp value : warps) {
+                                                if (value.name().equalsIgnoreCase(name)) {
+                                                    MessageUtils.sendMessage(sender, Language.prefix, Language.Warp.alreadyExists, Placeholder.unparsed("name", name));
+                                                    return;
+                                                }
+                                            }
+
                                             Warp warp = new Warp(name, sender.getLocation(), password);
                                             team.add(TeamValues.WARPS, warp);
-                                            // TODO: Created message
+                                            MessageUtils.sendMessage(sender, Language.prefix, Language.Warp.created, Placeholder.unparsed("name", name));
                                         })
                                 )
                                 .executesPlayer((sender, args) -> {
                                     User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                                     if (user == null) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.USER_NOT_LOADED);
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.userNotLoaded);
                                         return;
                                     }
 
                                     Team team = user.team();
                                     if (team == null) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_IN_TEAM);
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.notInTeam);
                                         return;
                                     }
 
                                     if (!user.hasPermission(Permissions.WARP_CREATE)) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.NO_PERMISSION);
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.noPermission);
                                         return;
                                     }
 
@@ -539,8 +546,7 @@ public enum AxTeamsCommand {
                                     List<Warp> warps = team.values(TeamValues.WARPS);
                                     warpLimit = warpLimit == null ? Config.defaultWarpLimit : warpLimit;
                                     if (warps.size() + 1 > warpLimit) {
-                                        // TODO: Limit reached message
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, "limit reached");
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Warp.limitReached, Placeholder.unparsed("warps", String.valueOf(warps.size())), Placeholder.unparsed("limit", String.valueOf(warpLimit)));
                                         return;
                                     }
 
@@ -549,10 +555,16 @@ public enum AxTeamsCommand {
                                         return;
                                     }
 
-                                    // TODO: Check if warp with that name exists
+                                    for (Warp value : warps) {
+                                        if (value.name().equalsIgnoreCase(name)) {
+                                            MessageUtils.sendMessage(sender, Language.prefix, Language.Warp.alreadyExists, Placeholder.unparsed("name", name));
+                                            return;
+                                        }
+                                    }
+
                                     Warp warp = new Warp(name, sender.getLocation(), "");
                                     team.add(TeamValues.WARPS, warp);
-                                    MessageUtils.sendMessage(sender, Language.PREFIX, "created warp");
+                                    MessageUtils.sendMessage(sender, Language.prefix, Language.Warp.created, Placeholder.unparsed("name", name));
                                 })
                         )
                 )
@@ -564,34 +576,36 @@ public enum AxTeamsCommand {
                                         return List.of();
                                     }
 
-                                    List<String> memberNames = team.members(true).stream().map(user -> user.player().getName()).toList();
-                                    return Bukkit.getOnlinePlayers().stream().map(Player::getName).filter(name -> !memberNames.contains(name)).toList();
+                                    List<String> memberNames = team.members(member -> member.onlinePlayer() != null, true)
+                                            .stream()
+                                            .map(User::name)
+                                            .toList();
+
+                                    return Bukkit.getOnlinePlayers()
+                                            .stream()
+                                            .map(Player::getName)
+                                            .filter(name -> !memberNames.contains(name))
+                                            .toList();
                                 })).executesPlayer((sender, args) -> {
                                     User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
-                                    User invited = AxTeamsAPI.instance().getUserIfLoadedImmediately(args.getByClass("player", Player.class));
                                     if (user == null) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.USER_NOT_LOADED);
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.userNotLoaded);
                                         return;
                                     }
 
                                     Team team = user.team();
                                     if (team == null) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_IN_TEAM);
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.notInTeam);
                                         return;
                                     }
 
                                     if (!user.hasPermission(Permissions.INVITE)) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.NO_PERMISSION);
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.noPermission);
                                         return;
                                     }
 
-                                    if (team.members(true).contains(invited)) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, "already member");
-                                        return;
-                                    }
-
-                                    if (team.invited(invited)) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, "already invited");
+                                    User invited = AxTeamsAPI.instance().getUserIfLoadedImmediately(args.getByClass("player", Player.class));
+                                    if (invited == null) {
                                         return;
                                     }
 
@@ -599,8 +613,29 @@ public enum AxTeamsCommand {
                                         return;
                                     }
 
-                                    // TODO: messages
+                                    if (team.members(true).contains(invited)) {
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Invite.alreadyMember);
+                                        return;
+                                    }
+
+                                    if (team.invited(invited)) {
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Invite.alreadyInvited);
+                                        return;
+                                    }
+
+                                    int memberSize = team.members(true).size();
+                                    Integer sizeLimit = team.first(TeamValues.TEAM_SIZE_LIMIT);
+                                    sizeLimit = sizeLimit == null ? Config.defaultTeamSizeLimit : sizeLimit;
+                                    if (memberSize + 1 > sizeLimit) {
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Invite.teamIsFull);
+                                        return;
+                                    }
+
+                                    new TeamInviteEvent(team, user, invited).call();
                                     team.invite(invited);
+                                    MessageUtils.sendMessage(sender, Language.prefix, Language.Invite.inviteSent, Placeholder.unparsed("player", sender.getName()));
+                                    team.message(StringUtils.format(Language.prefix + Language.Invite.inviteSentAnnouncement, Placeholder.unparsed("other", invited.name()), Placeholder.unparsed("player", sender.getName())));
+                                    MessageUtils.sendMessage(invited.onlinePlayer(), Language.prefix, Language.Invite.inviteReceived, Placeholder.unparsed("player", sender.getName()), Placeholder.unparsed("team", team.name()));
                                 })
                         )
                 )
@@ -608,6 +643,10 @@ public enum AxTeamsCommand {
                         .then(TeamArgument.team("team")
                                 .replaceSuggestions(ArgumentSuggestions.stringCollection(info -> {
                                     User user = info.sender() instanceof Player player ? Users.getUserIfLoadedImmediately(player.getUniqueId()) : null;
+                                    if (user == null) {
+                                        return List.of();
+                                    }
+
                                     Team team = user.team();
                                     if (team != null) {
                                         return List.of();
@@ -615,32 +654,45 @@ public enum AxTeamsCommand {
 
                                     List<Team> teams = Teams.loaded();
 
-                                    return teams.stream().filter(s -> s.invited(user)).map(Team::name).toList();
+                                    return teams.stream()
+                                            .filter(s -> s.invited(user))
+                                            .map(Team::name)
+                                            .toList();
                                 })).executesPlayer((sender, args) -> {
                                     User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                                     if (user == null) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.USER_NOT_LOADED);
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.userNotLoaded);
                                         return;
                                     }
 
                                     Team team = user.team();
                                     if (team != null) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, "in team");
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.alreadyInTeam);
                                         return;
                                     }
 
                                     Team joiningTeam = Teams.getTeamIfLoadedImmediately(args.getByClass("team", TeamID.class));
-
-                                    if (!joiningTeam.invited(user)) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, "Not invited");
+                                    if (joiningTeam == null) {
                                         return;
                                     }
 
-                                    // TODO: messages
-                                    // TODO: team size limit check
+                                    if (!joiningTeam.invited(user)) {
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Invite.notInvited);
+                                        return;
+                                    }
+
+                                    int memberSize = joiningTeam.members(true).size();
+                                    Integer sizeLimit = joiningTeam.first(TeamValues.TEAM_SIZE_LIMIT);
+                                    sizeLimit = sizeLimit == null ? Config.defaultTeamSizeLimit : sizeLimit;
+                                    if (memberSize + 1 > sizeLimit) {
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Invite.teamIsFull);
+                                        return;
+                                    }
+
                                     joiningTeam.removeInvite(user);
                                     joiningTeam.add(user);
-                                    MessageUtils.sendMessage(sender, Language.PREFIX, "joined!");
+                                    MessageUtils.sendMessage(sender, Language.prefix, Language.Invite.inviteAccepted);
+                                    joiningTeam.message(StringUtils.format(Language.prefix + Language.Invite.inviteAcceptedAnnouncement, Placeholder.unparsed("player", sender.getName())));
                                 })
                         )
                 )
@@ -650,13 +702,13 @@ public enum AxTeamsCommand {
                                         .executesPlayer((sender, args) -> {
                                             User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                                             if (user == null) {
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.USER_NOT_LOADED);
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.userNotLoaded);
                                                 return;
                                             }
 
                                             Team userTeam = user.team();
                                             if (userTeam == null) {
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_IN_TEAM);
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.notInTeam);
                                                 return;
                                             }
 
@@ -665,28 +717,33 @@ public enum AxTeamsCommand {
                                                 return;
                                             }
 
+                                            if (!user.hasPermission(Permissions.ALLY_ACCEPT)) {
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.noPermission);
+                                                return;
+                                            }
+
                                             Team team = Teams.getTeamIfLoadedImmediately(teamID);
-                                            if (team == null) {
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, "Team is not loaded");
+                                            if (team == null || !team.hasOnline()) {
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Ally.notOnline, Placeholder.unparsed("team", Teams.byId(teamID)));
                                                 return;
                                             }
 
                                             if (userTeam.isAlly(teamID)) {
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, "Already allies!");
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Ally.alreadyAllies, Placeholder.unparsed("team", team.name()));
                                                 return;
                                             }
 
                                             if (!userTeam.hasAllyRequest(teamID)) {
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, "No request");
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Ally.notInvited, Placeholder.unparsed("team", team.name()));
                                                 return;
                                             }
-
 
                                             userTeam.removeAllyRequest(teamID);
                                             team.removeAllyRequest(userTeam.id());
                                             team.addAlly(userTeam.id());
                                             userTeam.addAlly(teamID);
                                             // TODO: Message
+
                                         })
                                 )
                         )
@@ -695,18 +752,18 @@ public enum AxTeamsCommand {
                                         .executesPlayer((sender, args) -> {
                                             User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                                             if (user == null) {
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.USER_NOT_LOADED);
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.userNotLoaded);
                                                 return;
                                             }
 
                                             Team userTeam = user.team();
                                             if (userTeam == null) {
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_IN_TEAM);
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.notInTeam);
                                                 return;
                                             }
 
                                             if (!user.hasPermission(Permissions.ALLY_SEND)) {
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.NO_PERMISSION);
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.noPermission);
                                                 return;
                                             }
 
@@ -716,29 +773,32 @@ public enum AxTeamsCommand {
                                             }
 
                                             Team team = Teams.getTeamIfLoadedImmediately(teamID);
-                                            if (team == null) {
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, "Team is not loaded");
+                                            if (team == null || !team.hasOnline()) {
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Ally.notOnline);
                                                 return;
                                             }
 
                                             if (userTeam.isAlly(teamID)) {
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, "Already allies!");
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Ally.alreadyAllies);
                                                 return;
                                             }
 
                                             if (team.hasAllyRequest(userTeam.id())) {
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, "Already sent request!");
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Ally.alreadyInvited);
                                                 return;
                                             }
 
                                             if (userTeam.hasAllyRequest(teamID)) {
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, "You have an incoming request! Use ally accept to accept!");
+                                                MessageUtils.sendMessage(sender, Language.prefix, "You have an incoming request! Use ally accept to accept!");
                                                 return;
                                             }
 
+                                            // TODO: team size checks
                                             team.addAllyRequest(userTeam.id());
                                             userTeam.addAllyRequest(teamID);
-                                            // TODO: Messages
+                                            MessageUtils.sendMessage(sender, Language.prefix, Language.Ally.inviteSent, Placeholder.unparsed("team", team.name()));
+                                            userTeam.message(StringUtils.format(Language.prefix + Language.Ally.inviteSentAnnouncement, Placeholder.unparsed("player", user.name()), Placeholder.unparsed("team", team.name())));
+                                            team.message(StringUtils.format(Language.prefix + Language.Ally.inviteReceived, Placeholder.unparsed("player", user.name()), Placeholder.unparsed("team", userTeam.name())));
                                         })
                                 )
                         )
@@ -747,13 +807,13 @@ public enum AxTeamsCommand {
                                         .executesPlayer((sender, args) -> {
                                             User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                                             if (user == null) {
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.USER_NOT_LOADED);
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.userNotLoaded);
                                                 return;
                                             }
 
                                             Team userTeam = user.team();
                                             if (userTeam == null) {
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_IN_TEAM);
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.notInTeam);
                                                 return;
                                             }
 
@@ -764,12 +824,12 @@ public enum AxTeamsCommand {
 
                                             Team team = Teams.getTeamIfLoadedImmediately(teamID);
                                             if (team == null) {
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, "Team is not loaded");
+                                                MessageUtils.sendMessage(sender, Language.prefix, "Team is not loaded");
                                                 return;
                                             }
 
                                             if (!userTeam.isAlly(teamID)) {
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, "Not allies!");
+                                                MessageUtils.sendMessage(sender, Language.prefix, "Not allies!");
                                                 return;
                                             }
 
@@ -785,13 +845,13 @@ public enum AxTeamsCommand {
                                 .executesPlayer((sender, args) -> {
                                     User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                                     if (user == null) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.USER_NOT_LOADED);
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.userNotLoaded);
                                         return;
                                     }
 
                                     Team team = user.team();
                                     if (team == null) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_IN_TEAM);
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.notInTeam);
                                         return;
                                     }
 
@@ -801,12 +861,12 @@ public enum AxTeamsCommand {
                                     }
 
                                     if (!user.hasPermission(Permissions.KICK, other)) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.NO_PERMISSION);
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.noPermission);
                                         return;
                                     }
 
                                     team.remove(other);
-                                    MessageUtils.sendMessage(sender, Language.PREFIX, "removed player");
+                                    MessageUtils.sendMessage(sender, Language.prefix, Language.Success.kicked, Placeholder.unparsed("player", other.name()));
                                 })
                         )
                 )
@@ -815,18 +875,18 @@ public enum AxTeamsCommand {
                                 .executesPlayer((sender, args) -> {
                                     User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                                     if (user == null) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.USER_NOT_LOADED);
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.userNotLoaded);
                                         return;
                                     }
 
                                     Team team = user.team();
                                     if (team == null) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_IN_TEAM);
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.notInTeam);
                                         return;
                                     }
 
                                     if (!user.equals(team.leader())) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_LEADER);
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.notLeader);
                                         return;
                                     }
 
@@ -836,20 +896,20 @@ public enum AxTeamsCommand {
                                     }
 
                                     if (Teams.doesNameExist(name)) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.ALREADY_EXISTS);
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Error.alreadyExists);
                                         return;
                                     }
 
                                     NameValidation validation = Teams.validate(name);
                                     switch (validation) {
                                         case TOO_SHORT ->
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.TOO_SHORT);
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.TeamNaming.tooShort);
                                         case TOO_LONG ->
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.TOO_LONG);
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.TeamNaming.tooLong);
                                         case BLACKLISTED ->
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.BLACKLISTED);
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.TeamNaming.blacklisted);
                                         case NOT_WHITELISTED ->
-                                                MessageUtils.sendMessage(sender, Language.PREFIX, Language.NOT_WHITELISTED);
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.Error.TeamNaming.notWhitelisted);
                                         case VALID -> {
                                             Teams.changeName(team.name(), name);
                                             team.name(name);
@@ -920,7 +980,7 @@ public enum AxTeamsCommand {
                         .then(new LiteralArgument("version")
                                 .withPermission("axteams.command.admin.version")
                                 .executes((sender, args) -> {
-                                    MessageUtils.sendMessage(sender, Language.PREFIX, "<green>You are running <white>AxTeams</white> version <white><version></white> on <white><implementation></white> version <white><implementation-version></white> (Implementing API version <white><api-version></white>)",
+                                    MessageUtils.sendMessage(sender, Language.prefix, "<green>You are running <white>AxTeams</white> version <white><version></white> on <white><implementation></white> version <white><implementation-version></white> (Implementing API version <white><api-version></white>)",
                                             Placeholder.unparsed("version", AxTeamsPlugin.instance().getDescription().getVersion()),
                                             Placeholder.unparsed("implementation", Bukkit.getName()),
                                             Placeholder.unparsed("implementation-version", Bukkit.getVersion()),
@@ -955,9 +1015,9 @@ public enum AxTeamsCommand {
                                     }
 
                                     if (failed.isEmpty()) {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.RELOAD_SUCCESS, Placeholder.parsed("time", Long.toString((System.nanoTime() - start) / 1_000_000)));
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Reload.success, Placeholder.unparsed("time", Long.toString((System.nanoTime() - start) / 1_000_000)));
                                     } else {
-                                        MessageUtils.sendMessage(sender, Language.PREFIX, Language.RELOAD_FAIL, Placeholder.parsed("time", Long.toString((System.nanoTime() - start) / 1_000_000)), Placeholder.parsed("files", String.join(", ", failed)));
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.Reload.fail, Placeholder.unparsed("time", Long.toString((System.nanoTime() - start) / 1_000_000)), Placeholder.unparsed("files", String.join(", ", failed)));
                                     }
                                 })
                         )

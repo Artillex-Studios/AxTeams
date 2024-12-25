@@ -35,26 +35,34 @@ public final class PlayerChatListener implements Listener {
         Team team = user.team();
         if (user.settingsRepository().read(UserSettings.TEAM_CHAT_TOGGLED)) {
             if (team == null) {
-                MessageUtils.sendMessage(player, Language.PREFIX, "Team chat disabled");
+                MessageUtils.sendMessage(player, Language.prefix, "Team chat disabled");
                 UserSettings.TEAM_CHAT_TOGGLED.write(user, false);
                 return;
             }
 
-            Map<String, String> placeholders = Placeholders.asMap(Context.builder(ParseContext.INTERNAL).add(String.class, event.getMessage()).add(User.class, user));
+            Map<String, String> placeholders = Placeholders.asMap(Context.builder(ParseContext.INTERNAL)
+                    .add(String.class, event.getMessage())
+                    .add(User.class, user)
+            );
             if (Config.debug) {
                 LogUtils.debug("Placeholders in message send: {}", placeholders);
             }
 
             event.setCancelled(true);
-            team.message(StringUtils.format(Language.TEAM_CHAT_FORMAT, placeholders));
+            team.message(StringUtils.format(Language.ChatFormat.team, placeholders));
         } else if (user.settingsRepository().read(UserSettings.ALLY_CHAT_TOGGLED)) {
             if (team == null) {
-                MessageUtils.sendMessage(player, Language.PREFIX, "Ally chat disabled");
+                MessageUtils.sendMessage(player, Language.prefix, "Ally chat disabled");
                 UserSettings.ALLY_CHAT_TOGGLED.write(user, false);
                 return;
             }
 
-            Component message = StringUtils.format(Language.ALLY_CHAT_FORMAT, Placeholders.asMap(Context.builder(ParseContext.INTERNAL).add(String.class, event.getMessage()).add(User.class, user)));
+            Map<String, String> placeholders = Placeholders.asMap(Context.builder(ParseContext.INTERNAL)
+                    .add(String.class, event.getMessage())
+                    .add(User.class, user)
+            );
+
+            Component message = StringUtils.format(Language.ChatFormat.ally, placeholders);
             event.setCancelled(true);
             team.message(message);
             for (Integer value : team.values(TeamValues.ALLIES)) {

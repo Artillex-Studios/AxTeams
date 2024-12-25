@@ -203,4 +203,14 @@ public final class Teams {
     public static TeamID byName(String name) {
         return teamNames.get(name);
     }
+
+    public static String byId(TeamID id) {
+        for (Map.Entry<String, TeamID> entry : teamNames.entrySet()) {
+            if (entry.getValue().equals(id)) {
+                return entry.getKey();
+            }
+        }
+
+        return "";
+    }
 }

@@ -4,11 +4,13 @@ import com.artillexstudios.axteams.api.teams.values.Identifiable;
 import com.artillexstudios.axteams.api.teams.values.TeamValue;
 import com.artillexstudios.axteams.api.users.User;
 import net.kyori.adventure.text.Component;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Predicate;
 
 public interface Team {
 
@@ -32,7 +34,11 @@ public interface Team {
 
     List<User> members(boolean includeOwner);
 
-    boolean hasOnline();
+    List<User> members(Predicate<User> predicate, boolean includeOwner);
+
+    default boolean hasOnline() {
+        return !this.members(member -> member.onlinePlayer() != null, true).isEmpty();
+    }
 
     default <Y, T extends Identifiable<Y>, Z extends TeamValue<Y, T>> List<T> rawValues(Z type) {
         return this.rawValues(type, false);

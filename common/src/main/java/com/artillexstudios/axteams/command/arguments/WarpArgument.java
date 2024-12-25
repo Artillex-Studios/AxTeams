@@ -38,7 +38,7 @@ public final class WarpArgument {
             }
 
             if (warp == null) {
-                throw CustomArgument.CustomArgumentException.fromAdventureComponent(StringUtils.format(Language.PREFIX, Placeholder.parsed("name", info.input())));
+                throw CustomArgument.CustomArgumentException.fromAdventureComponent(StringUtils.format(Language.prefix + Language.Warp.notFound, Placeholder.parsed("name", info.input())));
             }
 
             return warp;
@@ -48,7 +48,10 @@ public final class WarpArgument {
                 return List.of();
             }
 
-            return team.rawValues(TeamValues.WARPS).stream().map(Warp::name).toList();
+            return team.rawValues(TeamValues.WARPS)
+                    .stream()
+                    .map(Warp::name)
+                    .toList();
         }));
     }
 }
