@@ -120,19 +120,19 @@ public final class Teams {
 
     public static NameValidation validate(String name) {
         int length = name.length();
-        if (length > Config.TeamName.maxLength) {
+        if (length > Config.teamName.maxLength) {
             return NameValidation.TOO_LONG;
-        } else if (length < Config.TeamName.minLength) {
+        } else if (length < Config.teamName.minLength) {
             return NameValidation.TOO_SHORT;
         }
 
-        for (Pattern pattern : Config.TeamName.whitelist) {
+        for (Pattern pattern : Config.teamName.whitelist) {
             if (!pattern.asMatchPredicate().test(name)) {
                 return NameValidation.NOT_WHITELISTED;
             }
         }
 
-        for (Pattern pattern : Config.TeamName.blacklist) {
+        for (Pattern pattern : Config.teamName.blacklist) {
             if (pattern.asPredicate().test(name)) {
                 return NameValidation.BLACKLISTED;
             }

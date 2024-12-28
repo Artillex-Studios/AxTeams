@@ -8,6 +8,7 @@ import com.artillexstudios.axteams.api.teams.Permission;
 import com.artillexstudios.axteams.api.teams.Team;
 import com.artillexstudios.axteams.api.teams.values.TeamValues;
 import com.artillexstudios.axteams.api.users.User;
+import com.artillexstudios.axteams.config.Language;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.OfflinePlayer;
@@ -138,10 +139,11 @@ public enum PlaceholderRegistry {
             User user = ctx.resolve(User.class);
             Team team = user.team();
             if (team == null) {
-                return "----"; // TODO: no team from config
+                return Language.placeholder.noTeam;
             }
 
-            return "level" /*team.first(TeamValues.WARP_LIMIT)*/; // TODO: yes
+            Integer level = team.first(TeamValues.LEVEL);
+            return level == null ? "0" : level.toString();
         });
 
         Placeholders.register("message", ctx -> {

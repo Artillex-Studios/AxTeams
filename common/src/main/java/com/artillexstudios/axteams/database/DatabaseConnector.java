@@ -24,7 +24,7 @@ public final class DatabaseConnector {
     private final HikariDataSource dataSource;
 
     private DatabaseConnector() {
-        this.dataSource = new HikariDataSource(Config.Database.type.getConfig());
+        this.dataSource = new HikariDataSource(Config.database.type.getConfig());
 
         Settings settings = new Settings()
                 .withRenderNameCase(RenderNameCase.LOWER)
@@ -46,7 +46,7 @@ public final class DatabaseConnector {
                     log.error("An exception occurred while releasing connection!", exception);
                 }
             }
-        }, Config.Database.type.getType(), settings);
+        }, Config.database.type.getType(), settings);
     }
 
     public DSLContext context() {

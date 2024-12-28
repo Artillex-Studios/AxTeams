@@ -38,7 +38,7 @@ public final class WarpArgument {
             }
 
             if (warp == null) {
-                throw CustomArgument.CustomArgumentException.fromAdventureComponent(StringUtils.format(Language.prefix + Language.Warp.notFound, Placeholder.parsed("name", info.input())));
+                throw CustomArgument.CustomArgumentException.fromAdventureComponent(StringUtils.format(Language.prefix + Language.warp.notFound, Placeholder.parsed("name", info.input())));
             }
 
             return warp;

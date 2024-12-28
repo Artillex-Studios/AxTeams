@@ -25,7 +25,7 @@ public final class TeamArgument {
         return new CustomArgument<>(new StringArgument(valueName), info -> {
             TeamID id = Teams.byName(info.input());
             if (id == null) {
-                throw CustomArgument.CustomArgumentException.fromAdventureComponent(StringUtils.format(Language.prefix + Language.Error.notFound, Placeholder.parsed("name", info.input())));
+                throw CustomArgument.CustomArgumentException.fromAdventureComponent(StringUtils.format(Language.prefix + Language.error.notFound, Placeholder.parsed("name", info.input())));
             }
 
             return id;

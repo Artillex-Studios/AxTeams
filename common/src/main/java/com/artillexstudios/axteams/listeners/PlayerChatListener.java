@@ -35,7 +35,7 @@ public final class PlayerChatListener implements Listener {
         Team team = user.team();
         if (user.settingsRepository().read(UserSettings.TEAM_CHAT_TOGGLED)) {
             if (team == null) {
-                MessageUtils.sendMessage(player, Language.prefix, "Team chat disabled");
+                MessageUtils.sendMessage(player, Language.prefix, Language.success.chatToggle.teamChat.disable);
                 UserSettings.TEAM_CHAT_TOGGLED.write(user, false);
                 return;
             }
@@ -49,10 +49,10 @@ public final class PlayerChatListener implements Listener {
             }
 
             event.setCancelled(true);
-            team.message(StringUtils.format(Language.ChatFormat.team, placeholders));
+            team.message(StringUtils.format(Language.chatFormat.team, placeholders));
         } else if (user.settingsRepository().read(UserSettings.ALLY_CHAT_TOGGLED)) {
             if (team == null) {
-                MessageUtils.sendMessage(player, Language.prefix, "Ally chat disabled");
+                MessageUtils.sendMessage(player, Language.prefix, Language.success.chatToggle.allyChat.disable);
                 UserSettings.ALLY_CHAT_TOGGLED.write(user, false);
                 return;
             }
@@ -62,7 +62,7 @@ public final class PlayerChatListener implements Listener {
                     .add(User.class, user)
             );
 
-            Component message = StringUtils.format(Language.ChatFormat.ally, placeholders);
+            Component message = StringUtils.format(Language.chatFormat.ally, placeholders);
             event.setCancelled(true);
             team.message(message);
             for (Integer value : team.values(TeamValues.ALLIES)) {

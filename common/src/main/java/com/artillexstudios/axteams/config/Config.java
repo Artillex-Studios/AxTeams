@@ -4,6 +4,7 @@ import com.artillexstudios.axapi.config.YamlConfiguration;
 import com.artillexstudios.axapi.config.annotation.Comment;
 import com.artillexstudios.axapi.config.annotation.ConfigurationPart;
 import com.artillexstudios.axapi.config.annotation.PostProcess;
+import com.artillexstudios.axapi.config.annotation.Serializable;
 import com.artillexstudios.axapi.libs.snakeyaml.DumperOptions;
 import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axapi.utils.YamlUtils;
@@ -19,43 +20,49 @@ import java.util.regex.Pattern;
 
 public final class Config implements ConfigurationPart {
     private static final Config INSTANCE = new Config();
+    public static Database database = new Database();
+    public static TeamName teamName = new TeamName();
 
-    public static class Database implements ConfigurationPart {
+    @Serializable
+    public static class Database {
         @Comment("h2, sqlite or mysql")
-        public static DatabaseType type = DatabaseType.H2;
-        public static String address = "127.0.0.1";
-        public static int port = 3306;
-        public static String database = "admin";
-        public static String username = "admin";
-        public static String password = "admin";
+        public DatabaseType type = DatabaseType.H2;
+        public String address = "127.0.0.1";
+        public int port = 3306;
+        public String database = "admin";
+        public String username = "admin";
+        public String password = "admin";
+        public Pool pool = new Pool();
 
-        public static class Pool implements ConfigurationPart {
-            public static int maximumPoolSize = 10;
-            public static int minimumIdle = 10;
-            public static int maximumLifetime = 1800000;
-            public static int keepaliveTime = 0;
-            public static int connectionTimeout = 5000;
+        @Serializable
+        public static class Pool {
+            public int maximumPoolSize = 10;
+            public int minimumIdle = 10;
+            public int maximumLifetime = 1800000;
+            public int keepaliveTime = 0;
+            public int connectionTimeout = 5000;
 
-            @PostProcess
-            public static void postProcess() {
-                if (maximumPoolSize < 1) {
-                    LogUtils.warn("Maximum database pool size is lower than 1! This is not supported! Defaulting to 1.");
-                    maximumPoolSize = 1;
-                }
-            }
+//            @PostProcess
+//            public static void postProcess() {
+//                if (maximumPoolSize < 1) {
+//                    LogUtils.warn("Maximum database pool size is lower than 1! This is not supported! Defaulting to 1.");
+//                    maximumPoolSize = 1;
+//                }
+//            }
         }
     }
 
-    public static class TeamName implements ConfigurationPart {
+    @Serializable
+    public static class TeamName {
         @Comment("If this is enabled, these rules apply to the display-name of the team aswell")
-        public static boolean applyToDisplayName = false;
-        public static int minLength = 3;
+        public boolean applyToDisplayName = false;
+        public int minLength = 3;
         @Comment("Set to -1 to disable")
-        public static int maxLength = 16;
+        public int maxLength = 16;
         @Comment("e.g.: Only allow alphanumeric characters; regular expression")
-        public static List<Pattern> whitelist = new ArrayList<>();
+        public List<Pattern> whitelist = new ArrayList<>();
         @Comment("e.g.: The string it contains; regular expression")
-        public static List<Pattern> blacklist = new ArrayList<>();
+        public List<Pattern> blacklist = new ArrayList<>();
     }
 
     @Comment("""
@@ -71,6 +78,12 @@ public final class Config implements ConfigurationPart {
             """)
     public static int guiActionCooldown = 200;
     @Comment("""
+            The default enderchest rows.
+            Increasing this will not change the value for
+            already existing teams.
+            """)
+    public static int defaultEnderChestRows = 3;
+    @Comment("""
             The default warp limit of a team.
             Increasing this will not change the value for
             already existing teams.
@@ -82,6 +95,12 @@ public final class Config implements ConfigurationPart {
             already existing teams.
             """)
     public static int defaultTeamSizeLimit = 5;
+    @Comment("""
+            The default maximal allies of a team.
+            Increasing this will not change the value for
+            already existing teams.
+            """)
+    public static int defaultAllyLimit = 5;
     @Comment("""
             How often should changes to teams get saved?
             This setting controls how often teams get saved

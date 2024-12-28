@@ -4,7 +4,6 @@ import com.artillexstudios.axteams.api.LoadContext;
 import com.artillexstudios.axteams.api.users.User;
 import com.artillexstudios.axteams.database.DataHandler;
 import com.artillexstudios.axteams.exception.UserAlreadyLoadedException;
-import com.artillexstudios.axteams.teams.Teams;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;

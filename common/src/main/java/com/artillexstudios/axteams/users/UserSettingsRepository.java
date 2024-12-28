@@ -47,6 +47,10 @@ public final class UserSettingsRepository implements com.artillexstudios.axteams
     }
 
     public void load(String string) {
+        if (string == null) {
+            return;
+        }
+
         int cursor = 0;
         while (cursor < string.length()) {
             int delimiterPos = string.indexOf('|', cursor);

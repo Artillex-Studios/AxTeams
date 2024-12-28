@@ -25,6 +25,7 @@ import com.artillexstudios.axteams.guis.GuiBase;
 import com.artillexstudios.axteams.utils.AnvilInputUtils;
 import com.artillexstudios.axteams.utils.FileUtils;
 import com.artillexstudios.axteams.utils.IdentifiableSupplier;
+import com.google.common.base.Suppliers;
 import dev.triumphteam.gui.guis.GuiItem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -89,7 +90,7 @@ public final class GroupEditGui extends GuiBase {
 
             clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.guiActionCooldown);
             if (!user().hasPermission(Permissions.GROUP_PERMISSIONS_EDIT, this.group)) {
-                MessageUtils.sendMessage(user().onlinePlayer(), Language.prefix, Language.Error.noPermission);
+                MessageUtils.sendMessage(user().onlinePlayer(), Language.prefix, Language.error.noPermission);
                 return;
             }
 
@@ -104,7 +105,7 @@ public final class GroupEditGui extends GuiBase {
 
             clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.guiActionCooldown);
             if (!user().hasPermission(Permissions.GROUP_PRIORITY_CHANGE, this.group)) {
-                MessageUtils.sendMessage(user().onlinePlayer(), Language.prefix, Language.Error.noPermission);
+                MessageUtils.sendMessage(user().onlinePlayer(), Language.prefix, Language.error.noPermission);
                 return;
             }
 
@@ -138,7 +139,7 @@ public final class GroupEditGui extends GuiBase {
 
             clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.guiActionCooldown);
             if (!user().hasPermission(Permissions.GROUP_PREFIX_CHANGE, this.group)) {
-                MessageUtils.sendMessage(user().onlinePlayer(), Language.prefix, Language.Error.noPermission);
+                MessageUtils.sendMessage(user().onlinePlayer(), Language.prefix, Language.error.noPermission);
                 return;
             }
 
@@ -178,7 +179,7 @@ public final class GroupEditGui extends GuiBase {
 
             clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.guiActionCooldown);
             if (!user().hasPermission(Permissions.GROUP_RENAME, this.group)) {
-                MessageUtils.sendMessage(user().onlinePlayer(), Language.prefix, Language.Error.noPermission);
+                MessageUtils.sendMessage(user().onlinePlayer(), Language.prefix, Language.error.noPermission);
                 return;
             }
 
@@ -209,7 +210,7 @@ public final class GroupEditGui extends GuiBase {
 
             clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.guiActionCooldown);
             if (!user().hasPermission(Permissions.GROUP_DELETE, this.group)) {
-                MessageUtils.sendMessage(user().onlinePlayer(), Language.prefix, Language.Error.noPermission);
+                MessageUtils.sendMessage(user().onlinePlayer(), Language.prefix, Language.error.noPermission);
                 return;
             }
 

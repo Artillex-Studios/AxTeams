@@ -5,21 +5,27 @@ user:
   material: player_head
   texture: "<texture>"
   name: "<player>"
+  slots: 4
   lore:
     - ""
     - "<gray>- <white>Group: <group_display_name>"
+
+group:
+  material: gold_block
+  texture: "<texture>"
+  name: "<group_display_name> group"
+  lore:
     - ""
     - "<gray>» <white>Click to manage!"
 
-username-gui-title: "Enter a username!"
-
-invite:
-  material: oak_sign
-  name: "<green>Invite a player!"
-  slots: 35
+current-group:
+  material: diamond_block
+  texture: "<texture>"
+  name: "<group_display_name> group"
   lore:
     - ""
-    - "<gray>» <white>Click here to invite a new player!"
+    - "<gray>» <white>Click to manage!"
+
 
 items:
   - type: gray_stained_glass_pane

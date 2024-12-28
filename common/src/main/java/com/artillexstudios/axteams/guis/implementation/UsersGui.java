@@ -85,6 +85,7 @@ public final class UsersGui extends GuiBase {
                 }
 
                 clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.guiActionCooldown);
+                new UserGui(this.user(), member).open();
             }));
         }
 
@@ -104,7 +105,7 @@ public final class UsersGui extends GuiBase {
 
             clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.guiActionCooldown);
             if (!this.user().hasPermission(Permissions.INVITE)) {
-                MessageUtils.sendMessage(this.user().onlinePlayer(), Language.prefix, Language.Error.noPermission);
+                MessageUtils.sendMessage(this.user().onlinePlayer(), Language.prefix, Language.error.noPermission);
                 return;
             }
 

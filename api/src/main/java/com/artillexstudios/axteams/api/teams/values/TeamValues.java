@@ -4,15 +4,20 @@ import com.artillexstudios.axteams.api.exception.RegistrationFailedException;
 import com.artillexstudios.axteams.api.teams.Group;
 import com.artillexstudios.axteams.api.teams.values.identifiables.IdentifiableBigDecimal;
 import com.artillexstudios.axteams.api.teams.values.identifiables.IdentifiableBoolean;
+import com.artillexstudios.axteams.api.teams.values.identifiables.IdentifiableByteArray;
 import com.artillexstudios.axteams.api.teams.values.identifiables.IdentifiableComponent;
 import com.artillexstudios.axteams.api.teams.values.identifiables.IdentifiableInteger;
 import com.artillexstudios.axteams.api.teams.values.identifiables.IdentifiableLocation;
 import com.artillexstudios.axteams.api.teams.values.identifiables.Warp;
 import com.artillexstudios.axteams.api.teams.values.implementation.TeamAlliesValue;
+import com.artillexstudios.axteams.api.teams.values.implementation.TeamAllyLimitValue;
 import com.artillexstudios.axteams.api.teams.values.implementation.TeamBankValue;
 import com.artillexstudios.axteams.api.teams.values.implementation.TeamDisplayNameValue;
+import com.artillexstudios.axteams.api.teams.values.implementation.TeamEnderChestRowsValue;
+import com.artillexstudios.axteams.api.teams.values.implementation.TeamEnderChestValue;
 import com.artillexstudios.axteams.api.teams.values.implementation.TeamGroupsValue;
 import com.artillexstudios.axteams.api.teams.values.implementation.TeamHomeValue;
+import com.artillexstudios.axteams.api.teams.values.implementation.TeamLevelValue;
 import com.artillexstudios.axteams.api.teams.values.implementation.TeamPvPValue;
 import com.artillexstudios.axteams.api.teams.values.implementation.TeamSizeLimitValue;
 import com.artillexstudios.axteams.api.teams.values.implementation.TeamWarpLimitValue;
@@ -39,7 +44,11 @@ public final class TeamValues {
     public static final TeamValue<Integer, IdentifiableInteger> TEAM_SIZE_LIMIT = register(new TeamSizeLimitValue());
     public static final TeamValue<Location, IdentifiableLocation> HOME = register(new TeamHomeValue());
     public static final TeamValue<Integer, IdentifiableInteger> ALLIES = register(new TeamAlliesValue());
+    public static final TeamValue<Integer, IdentifiableInteger> TEAM_ALLY_LIMIT = register(new TeamAllyLimitValue());
     public static final TeamValue<Group, Group> GROUPS = register(new TeamGroupsValue());
+    public static final TeamValue<Integer, IdentifiableInteger> LEVEL = register(new TeamLevelValue());
+    public static final TeamValue<Integer, IdentifiableInteger> ENDER_CHEST_ROWS = register(new TeamEnderChestRowsValue());
+    public static final TeamValue<byte[], IdentifiableByteArray> ENDER_CHEST = register(new TeamEnderChestValue());
     public static final TeamValue<BigDecimal, IdentifiableBigDecimal> BANK = register(new TeamBankValue());
 
     public static <Y, T extends Identifiable<Y>> TeamValue<Y, T> register(TeamValue<Y, T> teamValue) {

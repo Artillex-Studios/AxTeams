@@ -23,6 +23,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.apache.commons.lang3.tuple.Triple;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.jooq.Field;
 import org.jooq.Query;
 import org.jooq.Record;
@@ -90,7 +91,7 @@ public final class DataHandler {
 
         futures.add(users.toCompletableFuture());
 
-        if (Config.Database.type == DatabaseType.SQLITE) {
+        if (Config.database.type == DatabaseType.SQLITE) {
             CompletableFuture<Integer> pragma = new CompletableFuture<>();
             AsyncUtils.executor().submit(() -> {
                 DatabaseConnector.getInstance().context().fetch("PRAGMA journal_mode=WAL;");
@@ -272,8 +273,13 @@ public final class DataHandler {
                 LogUtils.debug("Is player online? {}", player.isOnline());
             }
 
-            Pair<String, String> textures = NMSHandlers.getNmsHandler().textures(player.getPlayer());
-            return Triple.of(player, player.isOnline(), player.isOnline() ? textures == null ? "" : textures.first() : "");
+            Player onlinePlayer = player.getPlayer();
+            String texture = "";
+            if (onlinePlayer != null) {
+                Pair<String, String> textures = NMSHandlers.getNmsHandler().textures(onlinePlayer);
+                texture = textures.first() == null ? "" : textures.first();
+            }
+            return Triple.of(player, player.isOnline(), texture);
         }, command -> Scheduler.get().run(command)).exceptionallyAsync(throwable -> {
             LogUtils.error("An unexpected error occurred while saving users!", throwable);
             return null;

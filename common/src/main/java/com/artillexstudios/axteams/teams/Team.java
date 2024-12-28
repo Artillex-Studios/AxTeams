@@ -12,6 +12,7 @@ import com.artillexstudios.axteams.collections.ExpiringList;
 import com.artillexstudios.axteams.config.Config;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
+import org.bukkit.inventory.Inventory;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public final class Team implements com.artillexstudios.axteams.api.teams.Team {
     private final ExpiringList<User> invited = new ExpiringList<>(Duration.ofMinutes(5).toMillis());
     private final ExpiringList<TeamID> allyRequests = new ExpiringList<>(Duration.ofMinutes(5).toMillis());
     private final TeamID teamID;
+    private Inventory enderChestInventory;
     private User leader;
     private String name;
 
@@ -242,5 +244,10 @@ public final class Team implements com.artillexstudios.axteams.api.teams.Team {
         for (User member : this.members(true)) {
             member.message(message);
         }
+    }
+
+    @Override
+    public Inventory enderChest() {
+        return null;
     }
 }

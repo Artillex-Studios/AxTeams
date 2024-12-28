@@ -5,6 +5,7 @@ import com.artillexstudios.axteams.api.teams.values.TeamValue;
 import com.artillexstudios.axteams.api.users.User;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -126,4 +127,6 @@ public interface Team {
     List<TeamID> allyRequest();
 
     void message(Component message);
+
+    Inventory enderChest();
 }

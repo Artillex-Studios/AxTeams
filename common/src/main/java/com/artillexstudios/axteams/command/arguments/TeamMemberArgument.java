@@ -34,7 +34,7 @@ public final class TeamMemberArgument {
                 }
             }
 
-            throw CustomArgument.CustomArgumentException.fromString(StringUtils.formatToString(Language.prefix + Language.Error.unknownMember, Placeholder.parsed("name", info.input())));
+            throw CustomArgument.CustomArgumentException.fromString(StringUtils.formatToString(Language.prefix + Language.error.unknownMember, Placeholder.parsed("name", info.input())));
         }).replaceSuggestions(ArgumentSuggestions.stringCollection(info -> {
             Team team = info.sender() instanceof Player player ? Users.getUserIfLoadedImmediately(player.getUniqueId()).team() : null;
             if (team == null) {
@@ -63,7 +63,7 @@ public final class TeamMemberArgument {
                 }
             }
 
-            throw CustomArgument.CustomArgumentException.fromString(StringUtils.formatToString(Language.prefix + Language.Error.unknownMember, Placeholder.parsed("name", info.input())));
+            throw CustomArgument.CustomArgumentException.fromString(StringUtils.formatToString(Language.prefix + Language.error.unknownMember, Placeholder.parsed("name", info.input())));
         }).replaceSuggestions(ArgumentSuggestions.stringCollection(info -> {
             Team team = info.sender() instanceof Player player ? Users.getUserIfLoadedImmediately(player.getUniqueId()).team() : null;
             if (team == null) {

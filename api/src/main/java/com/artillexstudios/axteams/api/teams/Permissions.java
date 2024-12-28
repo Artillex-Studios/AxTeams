@@ -24,6 +24,8 @@ public final class Permissions {
     public static final Permission GROUP_PREFIX_CHANGE = register(new Permission("group_prefix_change", "Change group prefix"));
     public static final Permission GROUP_PRIORITY_CHANGE = register(new Permission("group_priority_change", "Change group priority"));
     public static final Permission GROUP_PERMISSIONS_EDIT = register(new Permission("group_permissions_edit", "Edit group permissions"));
+    public static final Permission USER_GROUP_MODIFY = register(new Permission("user_group_modify", "Modify the group of a member"));
+    public static final Permission ENDER_CHEST_OPEN = register(new Permission("ender_chest_open", "Open the team enderchest"));
 
     public static Permission register(Permission permission) {
         if (permission.permission().contains(".")) {
