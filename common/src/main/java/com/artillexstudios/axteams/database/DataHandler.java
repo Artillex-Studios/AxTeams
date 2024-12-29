@@ -413,6 +413,7 @@ public final class DataHandler {
                     team.loadAll(value, (List<Identifiable<?>>) value.parse(valueSelect));
                 }
 
+                team.postLoad();
                 user.team(team);
                 Result<Record> users = DatabaseConnector.getInstance().context()
                         .select()

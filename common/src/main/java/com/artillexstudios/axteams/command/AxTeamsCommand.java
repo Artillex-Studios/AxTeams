@@ -116,6 +116,7 @@ public enum AxTeamsCommand {
                                                 return;
                                             }
 
+                                            team.postLoad();
                                             team.add(TeamValues.TEAM_DISPLAY_NAME, new IdentifiableComponent(Component.text(finalName)));
                                             MessageUtils.sendMessage(sender, Language.prefix, Language.success.created, Placeholder.unparsed("name", finalName));
                                         });

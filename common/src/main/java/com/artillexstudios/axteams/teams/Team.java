@@ -133,10 +133,16 @@ public final class Team implements com.artillexstudios.axteams.api.teams.Team {
 
     public void loadAll(TeamValue<?, ?> type, List<Identifiable<?>> values) {
         this.data.computeIfAbsent(type, val -> new ArrayList<>()).addAll(values);
+    }
+
+    public void postLoad() {
         Integer enderChestRows = this.first(TeamValues.ENDER_CHEST_ROWS);
         enderChestRows = enderChestRows == null ? Config.defaultEnderChestRows : enderChestRows;
         this.enderChestInventory = Bukkit.createInventory(new TeamInventoryHolder(this), Math.min(54, enderChestRows * 9), StringUtils.formatToString(Language.enderChestTitle));
-        this.enderChestInventory.setContents(Serializers.ITEM_ARRAY.deserialize(this.first(TeamValues.ENDER_CHEST)));
+        byte[] bytes = this.first(TeamValues.ENDER_CHEST);
+        if (bytes != null && bytes.length != 0) {
+            this.enderChestInventory.setContents(Serializers.ITEM_ARRAY.deserialize(bytes));
+        }
     }
 
     @Override
