@@ -18,6 +18,14 @@ group:
     - ""
     - "<gray>» <white>Click here to edit the group of the player!"
 
+kick:
+  material: barrier
+  name: "<#FF0000Kick player"
+  slots: 19
+  lore:
+    - ""
+    - "<gray>» <white>Click here to kick the player!"
+
 items:
   - type: gray_stained_glass_pane
     slots:
@@ -27,8 +35,3 @@ items:
     slots: 31
     actions:
       - "[back]"
-  - type: barrier
-    name: "Kick user"
-    slots: 19
-    actions:
-      - "[player] axteams kick <player>"

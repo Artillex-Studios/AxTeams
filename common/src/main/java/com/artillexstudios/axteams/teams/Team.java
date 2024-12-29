@@ -1,6 +1,8 @@
 package com.artillexstudios.axteams.teams;
 
+import com.artillexstudios.axapi.serializers.Serializers;
 import com.artillexstudios.axapi.utils.LogUtils;
+import com.artillexstudios.axapi.utils.StringUtils;
 import com.artillexstudios.axteams.api.teams.TeamID;
 import com.artillexstudios.axteams.api.teams.values.Identifiable;
 import com.artillexstudios.axteams.api.teams.values.State;
@@ -10,9 +12,13 @@ import com.artillexstudios.axteams.api.teams.values.identifiables.IdentifiableIn
 import com.artillexstudios.axteams.api.users.User;
 import com.artillexstudios.axteams.collections.ExpiringList;
 import com.artillexstudios.axteams.config.Config;
+import com.artillexstudios.axteams.config.Language;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -127,6 +133,10 @@ public final class Team implements com.artillexstudios.axteams.api.teams.Team {
 
     public void loadAll(TeamValue<?, ?> type, List<Identifiable<?>> values) {
         this.data.computeIfAbsent(type, val -> new ArrayList<>()).addAll(values);
+        Integer enderChestRows = this.first(TeamValues.ENDER_CHEST_ROWS);
+        enderChestRows = enderChestRows == null ? Config.defaultEnderChestRows : enderChestRows;
+        this.enderChestInventory = Bukkit.createInventory(new TeamInventoryHolder(this), Math.min(54, enderChestRows * 9), StringUtils.formatToString(Language.enderChestTitle));
+        this.enderChestInventory.setContents(Serializers.ITEM_ARRAY.deserialize(this.first(TeamValues.ENDER_CHEST)));
     }
 
     @Override
@@ -248,6 +258,21 @@ public final class Team implements com.artillexstudios.axteams.api.teams.Team {
 
     @Override
     public Inventory enderChest() {
-        return null;
+        Integer enderChestRows = this.first(TeamValues.ENDER_CHEST_ROWS);
+        enderChestRows = enderChestRows == null ? Config.defaultEnderChestRows : enderChestRows;
+        if (this.enderChestInventory.getSize() != Math.min(54, enderChestRows * 9)) {
+            List<HumanEntity> viewers = new ArrayList<>(this.enderChestInventory.getViewers());
+            for (HumanEntity viewer : viewers) {
+                viewer.closeInventory();
+            }
+            ItemStack[] items = this.enderChestInventory.getContents();
+            this.enderChestInventory = Bukkit.createInventory(new TeamInventoryHolder(this), Math.min(54, enderChestRows * 9), StringUtils.formatToString(Language.enderChestTitle));
+            this.enderChestInventory.setContents(items);
+            for (HumanEntity viewer : viewers) {
+                viewer.openInventory(this.enderChestInventory);
+            }
+        }
+
+        return this.enderChestInventory;
     }
 }

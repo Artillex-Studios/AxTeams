@@ -16,6 +16,7 @@ import com.artillexstudios.axteams.guis.GuiBase;
 import com.artillexstudios.axteams.utils.FileUtils;
 import com.artillexstudios.axteams.utils.IdentifiableSupplier;
 import dev.triumphteam.gui.guis.GuiItem;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -70,6 +71,22 @@ public final class UserGui extends GuiBase {
             }
 
             new UserGroupEditGui(this.user(), this.other).open();
+        }));
+
+        this.gui().setItem(this.slots(this.config().get("kick.slots")), new GuiItem(this.getItem("kick", this.user()), event -> {
+            UUID uuid = event.getWhoClicked().getUniqueId();
+            if (clickCooldown.hasCooldown(uuid)) {
+                return;
+            }
+
+            clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.guiActionCooldown);
+            if (!user().hasPermission(Permissions.KICK, this.other)) {
+                MessageUtils.sendMessage(user().onlinePlayer(), Language.prefix, Language.error.noPermission);
+                return;
+            }
+
+            this.user().team().remove(this.other);
+            MessageUtils.sendMessage(this.user().onlinePlayer(), Language.prefix, Language.success.kicked, Placeholder.unparsed("player", other.name()));
         }));
 
         this.gui().setItem(this.slots(this.config().get("user.slots")), new GuiItem(this.getItem("user", this.other)));

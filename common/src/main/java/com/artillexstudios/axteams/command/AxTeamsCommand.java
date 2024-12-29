@@ -33,6 +33,7 @@ import com.artillexstudios.axteams.config.Levels;
 import com.artillexstudios.axteams.guis.implementation.MainGui;
 import com.artillexstudios.axteams.guis.implementation.UsersGui;
 import com.artillexstudios.axteams.teams.NameValidation;
+import com.artillexstudios.axteams.teams.TeamInventoryHolder;
 import com.artillexstudios.axteams.teams.Teams;
 import com.artillexstudios.axteams.users.Users;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -48,10 +49,13 @@ import dev.jorel.commandapi.arguments.StringArgument;
 import dev.jorel.commandapi.arguments.TextArgument;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -70,7 +74,7 @@ public enum AxTeamsCommand {
         new CommandTree("axteams")
                 .withAliases("axteam", "teams", "team")
                 .then(new LiteralArgument("create")
-                        .then(new TextArgument("name")
+                        .then(new GreedyStringArgument("name")
                                 .executesPlayer((sender, args) -> {
                                     User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                                     if (user == null) {
@@ -88,6 +92,8 @@ public enum AxTeamsCommand {
                                     if (name == null) {
                                         return;
                                     }
+                                    name = name.split(" ")[0];
+                                    String finalName = name;
 
                                     if (Teams.doesNameExist(name)) {
                                         MessageUtils.sendMessage(sender, Language.prefix, Language.error.alreadyExists, Placeholder.unparsed("name", name));
@@ -110,8 +116,8 @@ public enum AxTeamsCommand {
                                                 return;
                                             }
 
-                                            team.add(TeamValues.TEAM_DISPLAY_NAME, new IdentifiableComponent(Component.text(name)));
-                                            MessageUtils.sendMessage(sender, Language.prefix, Language.success.created, Placeholder.unparsed("name", name));
+                                            team.add(TeamValues.TEAM_DISPLAY_NAME, new IdentifiableComponent(Component.text(finalName)));
+                                            MessageUtils.sendMessage(sender, Language.prefix, Language.success.created, Placeholder.unparsed("name", finalName));
                                         });
                                     }
                                 })
@@ -435,6 +441,7 @@ public enum AxTeamsCommand {
                                             }
 
                                             String password = args.getByClass("password", String.class);
+                                            password = password.split(" ")[0];
                                             if (!warp.password().isBlank() && !warp.password().equals(password)) {
                                                 MessageUtils.sendMessage(sender, Language.prefix, Language.warp.incorrectPassword, Placeholder.unparsed("name", warp.name()));
                                                 return;
@@ -476,7 +483,7 @@ public enum AxTeamsCommand {
                 )
                 .then(new LiteralArgument("setwarp")
                         .then(new StringArgument("name")
-                                .then(new StringArgument("password")
+                                .then(new GreedyStringArgument("password")
                                         .executesPlayer((sender, args) -> {
                                             User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                                             if (user == null) {
@@ -512,6 +519,7 @@ public enum AxTeamsCommand {
                                             if (password == null) {
                                                 return;
                                             }
+                                            password = password.split(" ")[0];
 
                                             for (Warp value : warps) {
                                                 if (value.name().equalsIgnoreCase(name)) {
@@ -843,6 +851,11 @@ public enum AxTeamsCommand {
                                                 return;
                                             }
 
+                                            if (!user.hasPermission(Permissions.ALLY_REMOVE)) {
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.error.noPermission);
+                                                return;
+                                            }
+
                                             TeamID teamID = args.getByClass("team", TeamID.class);
                                             if (teamID == null) {
                                                 return;
@@ -900,7 +913,7 @@ public enum AxTeamsCommand {
                         )
                 )
                 .then(new LiteralArgument("rename")
-                        .then(new StringArgument("name")
+                        .then(new GreedyStringArgument("name")
                                 .executesPlayer((sender, args) -> {
                                     User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
                                     if (user == null) {
@@ -923,6 +936,7 @@ public enum AxTeamsCommand {
                                     if (name == null) {
                                         return;
                                     }
+                                    name = name.split(" ")[0];
 
                                     if (Teams.doesNameExist(name)) {
                                         MessageUtils.sendMessage(sender, Language.prefix, Language.error.alreadyExists);
@@ -932,16 +946,67 @@ public enum AxTeamsCommand {
                                     NameValidation validation = Teams.validate(name);
                                     switch (validation) {
                                         case TOO_SHORT ->
-                                                MessageUtils.sendMessage(sender, Language.prefix, Language.error.teamNaming.tooShort);
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.error.teamNaming.tooShort, Placeholder.unparsed("name", name));
                                         case TOO_LONG ->
-                                                MessageUtils.sendMessage(sender, Language.prefix, Language.error.teamNaming.tooLong);
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.error.teamNaming.tooLong, Placeholder.unparsed("name", name));
                                         case BLACKLISTED ->
-                                                MessageUtils.sendMessage(sender, Language.prefix, Language.error.teamNaming.blacklisted);
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.error.teamNaming.blacklisted, Placeholder.unparsed("name", name));
                                         case NOT_WHITELISTED ->
-                                                MessageUtils.sendMessage(sender, Language.prefix, Language.error.teamNaming.notWhitelisted);
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.error.teamNaming.notWhitelisted, Placeholder.unparsed("name", name));
                                         case VALID -> {
                                             Teams.changeName(team.name(), name);
                                             team.name(name);
+                                        }
+                                    }
+                                })
+                        )
+                )
+                .then(new LiteralArgument("displayname")
+                        .then(new StringArgument("name")
+                                .executesPlayer((sender, args) -> {
+                                    User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
+                                    if (user == null) {
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.error.userNotLoaded);
+                                        return;
+                                    }
+
+                                    String newName = args.getByClass("name", String.class);
+
+                                    Team team = user.team();
+                                    if (team == null) {
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.error.notInTeam);
+                                        return;
+                                    }
+
+                                    if (!user.hasPermission(Permissions.CHANGE_DISPLAY_NAME)) {
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.error.noPermission);
+                                        return;
+                                    }
+
+
+                                    Component previous = team.first(TeamValues.TEAM_DISPLAY_NAME);
+                                    if (previous == null || newName == null) {
+                                        return;
+                                    }
+
+                                    Component name = StringUtils.format(newName);
+                                    String plain = PlainTextComponentSerializer.plainText().serialize(name);
+                                    if (Config.teamName.applyToDisplayName) {
+                                        NameValidation validation = Teams.validate(plain);
+                                        switch (validation) {
+                                            case TOO_SHORT ->
+                                                    MessageUtils.sendMessage(sender, Language.prefix, Language.error.teamNaming.tooShort, Placeholder.component("name", name));
+                                            case TOO_LONG ->
+                                                    MessageUtils.sendMessage(sender, Language.prefix, Language.error.teamNaming.tooLong, Placeholder.component("name", name));
+                                            case BLACKLISTED ->
+                                                    MessageUtils.sendMessage(sender, Language.prefix, Language.error.teamNaming.blacklisted, Placeholder.component("name", name));
+                                            case NOT_WHITELISTED ->
+                                                    MessageUtils.sendMessage(sender, Language.prefix, Language.error.teamNaming.notWhitelisted, Placeholder.component("name", name));
+                                            case VALID -> {
+                                                team.add(TeamValues.TEAM_DISPLAY_NAME, new IdentifiableComponent(name));
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.success.displayNameChanged, Placeholder.component("old-name", previous), Placeholder.component("name", name));
+                                                team.message(StringUtils.format(Language.prefix + Language.success.displayNameChangedAnnouncement, Placeholder.unparsed("player", user.name()), Placeholder.component("old-name", previous), Placeholder.component("name", name)));
+                                            }
                                         }
                                     }
                                 })
@@ -966,7 +1031,12 @@ public enum AxTeamsCommand {
                                 return;
                             }
 
-                            // TODO: Implement
+                            Inventory enderChest = team.enderChest();
+                            if (enderChest == null) {
+                                return;
+                            }
+
+                            sender.openInventory(enderChest);
                         })
                 )
                 .then(new LiteralArgument("bank")

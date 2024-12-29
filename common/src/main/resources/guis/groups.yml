@@ -8,6 +8,9 @@ group:
   lore:
     - ""
     - "<gray>» <white>Click to manage!"
+    - ""
+    - "<gray>» <white>Shift+left click to increase priority!"
+    - "<gray>» <white>Shift+right click to decrease priority!"
 
 create:
   material: oak_sign

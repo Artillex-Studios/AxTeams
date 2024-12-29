@@ -17,6 +17,7 @@ import com.artillexstudios.axteams.database.TeamSaver;
 import com.artillexstudios.axteams.guis.Guis;
 import com.artillexstudios.axteams.listeners.PlayerChatListener;
 import com.artillexstudios.axteams.listeners.PlayerListener;
+import com.artillexstudios.axteams.listeners.TeamEnderChestListener;
 import com.artillexstudios.axteams.listeners.TeamPvPListener;
 import com.artillexstudios.axteams.placeholders.PlaceholderRegistry;
 import com.artillexstudios.axteams.utils.FileUtils;
@@ -78,6 +79,7 @@ public final class AxTeamsPlugin extends AxPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         Bukkit.getPluginManager().registerEvents(new TeamPvPListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerChatListener(), this);
+        Bukkit.getPluginManager().registerEvents(new TeamEnderChestListener(), this);
         AxTeamsCommand.INSTANCE.register();
         CommandAPI.onEnable();
         FileUtils.copyFromResource("guis");

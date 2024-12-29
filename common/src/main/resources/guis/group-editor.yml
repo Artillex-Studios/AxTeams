@@ -6,11 +6,6 @@ permissions:
   name: "Manage permissions"
   slots: 11
 
-priority:
-  type: candle
-  name: "Change priority"
-  slots: 13
-
 prefix:
   type: oak_sign
   name: "Change prefix"
@@ -25,6 +20,9 @@ delete:
   type: barrier
   name: "Delete"
   slots: 26
+
+display-name-gui-title: "Enter a new display name!"
+rename-gui-title: "Enter a new name!"
 
 items:
   - type: gray_stained_glass_pane

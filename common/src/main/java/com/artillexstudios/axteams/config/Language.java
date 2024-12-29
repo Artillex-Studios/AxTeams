@@ -50,14 +50,18 @@ public final class Language implements ConfigurationPart {
         public String leader = "<#FF0000>You are the leader of this team! You can't leave it. You can however disband it with /team disband!";
         public String noHomeSet = "<#FF0000>Your team does not have a home set!";
         public String notFound = "<#FF0000>No team named <name> was found!";
+        public String groupAlreadyExists = "<#FF0000>Group <group> already exists!";
+        public String hasMembers = "<#FF0000>This group has members, so it can't be deleted!";
+        public String ownerGroup = "<#FF0000>This group is the owner group, so it can't be deleted!";
+        public String defaultGroup = "<#FF0000>This group is the default group, so it can't be deleted!";
         public TeamNaming teamNaming = new TeamNaming();
 
         @Serializable
         public static class TeamNaming {
-            public String tooShort = "<#FF0000>The name<white><name></white> is too short!";
-            public String tooLong = "<#FF0000>The name<white><name></white> is too short!";
-            public String blacklisted = "<#FF0000>The name<white><name></white> is blacklisted! Not cool!";
-            public String notWhitelisted = "<#FF0000>The name<white><name></white> is not allowed!";
+            public String tooShort = "<#FF0000>The name <white><name></white> is too short!";
+            public String tooLong = "<#FF0000>The name <white><name></white> is too short!";
+            public String blacklisted = "<#FF0000>The name <white><name></white> is blacklisted! Not cool!";
+            public String notWhitelisted = "<#FF0000>The name <white><name></white> is not allowed!";
         }
     }
 
@@ -81,6 +85,9 @@ public final class Language implements ConfigurationPart {
         public String kicked = "<#00FF00>You have successfully kicked <player> from the team!";
         public String groupChangedForOther = "<#00FF00>You have changed <player>'s group to <group>!";
         public String groupChanged = "<#00FF00>Your group has been changed to <group>!";
+        public String displayNameChanged = "<#00FF00>You have successfully changed the team's displayname to <name>!";
+        public String displayNameChangedAnnouncement = "<#00FF00><player> change the team's display name from <old-name> to <name>!";
+        public String groupCreated = "<#00FF00><group>has been created!";
         public ChatToggle chatToggle = new ChatToggle();
         @Named("pvp-toggle")
         public PvPToggle pvPToggle = new PvPToggle();

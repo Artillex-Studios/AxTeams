@@ -25,7 +25,6 @@ import com.artillexstudios.axteams.guis.GuiBase;
 import com.artillexstudios.axteams.utils.AnvilInputUtils;
 import com.artillexstudios.axteams.utils.FileUtils;
 import com.artillexstudios.axteams.utils.IdentifiableSupplier;
-import com.google.common.base.Suppliers;
 import dev.triumphteam.gui.guis.GuiItem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -97,40 +96,6 @@ public final class GroupEditGui extends GuiBase {
             new PermissionEditGui(this.user(), this.group).open();
         }));
 
-        this.gui().setItem(this.slots(this.config().get("priority.slots")), new GuiItem(this.getItem("priority", this.user()), event -> {
-            UUID uuid = event.getWhoClicked().getUniqueId();
-            if (clickCooldown.hasCooldown(uuid)) {
-                return;
-            }
-
-            clickCooldown.addCooldown(uuid, com.artillexstudios.axteams.config.Config.guiActionCooldown);
-            if (!user().hasPermission(Permissions.GROUP_PRIORITY_CHANGE, this.group)) {
-                MessageUtils.sendMessage(user().onlinePlayer(), Language.prefix, Language.error.noPermission);
-                return;
-            }
-
-            SignInput signInput = new SignInput.Builder()
-                    .setLines(List.of(Component.empty(), Component.text("Enter the new priority"), Component.empty(), Component.empty()))
-                    .setHandler((player, lines) -> {
-                        String firstLine = PlainTextComponentSerializer.plainText().serialize(lines[0]);
-                        try {
-                            int priority = Integer.parseInt(firstLine);
-                            group.priority(priority);
-                        } catch (NumberFormatException exception) {
-                            MessageUtils.sendMessage(player, "<red>Failed to parse number!");
-                            return;
-                        }
-
-                        // TODO: Change the priority of different groups, permission checks
-                        Scheduler.get().run(() -> {
-                            new GroupEditGui(GroupEditGui.this.user(), GroupEditGui.this.group).open();
-                        });
-                    })
-                    .build((Player) event.getWhoClicked());
-
-            signInput.open();
-        }));
-
         this.gui().setItem(this.slots(this.config().get("prefix.slots")), new GuiItem(this.getItem("prefix", this.user()), event -> {
             UUID uuid = event.getWhoClicked().getUniqueId();
             if (clickCooldown.hasCooldown(uuid)) {
@@ -148,7 +113,7 @@ public final class GroupEditGui extends GuiBase {
                         item.set(DataComponents.customName(), this.group.displayName());
                         return item;
                     }))
-                    .title(Component.text("Enter a new display name!"))
+                    .title(StringUtils.format(this.config().getString("display-name-gui-title")))
                     .event((inventoryClickEvent) -> {
                         inventoryClickEvent.setCancelled(true);
 
@@ -170,7 +135,6 @@ public final class GroupEditGui extends GuiBase {
             anvilInput.open();
         }));
 
-        // TODO: Proper lang from files
         this.gui().setItem(this.slots(this.config().get("rename.slots")), new GuiItem(this.getItem("rename", this.user()), event -> {
             UUID uuid = event.getWhoClicked().getUniqueId();
             if (clickCooldown.hasCooldown(uuid)) {
@@ -184,11 +148,11 @@ public final class GroupEditGui extends GuiBase {
             }
 
             SignInput signInput = new SignInput.Builder()
-                    .setLines(List.of(Component.empty(), Component.text("Enter the new name"), Component.empty(), Component.empty()))
+                    .setLines(List.of(Component.empty(), StringUtils.format(this.config().getString("rename-gui-title")), Component.empty(), Component.empty()))
                     .setHandler((player, lines) -> {
                         String firstLine = PlainTextComponentSerializer.plainText().serialize(lines[0]);
                         if (firstLine.isBlank()) {
-                            MessageUtils.sendMessage(player, "<red>You did not input a new name!");
+                            new GroupEditGui(GroupEditGui.this.user(), GroupEditGui.this.group).open();
                             return;
                         }
 
@@ -224,17 +188,17 @@ public final class GroupEditGui extends GuiBase {
                     .stream()
                     .anyMatch(u -> u.group().equals(this.group));
             if (hasMembers) {
-                MessageUtils.sendMessage(user().onlinePlayer(), Language.prefix, "Has members!");
+                MessageUtils.sendMessage(user().onlinePlayer(), Language.prefix, Language.error.hasMembers);
                 return;
             }
 
             if (this.group.priority() == Group.DEFAULT_PRIORITY) {
-                MessageUtils.sendMessage(user().onlinePlayer(), Language.prefix, "Default group!");
+                MessageUtils.sendMessage(user().onlinePlayer(), Language.prefix, Language.error.defaultGroup);
                 return;
             }
 
             if (this.group.priority() == Group.OWNER_PRIORITY) {
-                MessageUtils.sendMessage(user().onlinePlayer(), Language.prefix, "Owner group!");
+                MessageUtils.sendMessage(user().onlinePlayer(), Language.prefix, Language.error.ownerGroup);
                 return;
             }
 

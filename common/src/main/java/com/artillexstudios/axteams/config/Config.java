@@ -42,13 +42,13 @@ public final class Config implements ConfigurationPart {
             public int keepaliveTime = 0;
             public int connectionTimeout = 5000;
 
-//            @PostProcess
-//            public static void postProcess() {
-//                if (maximumPoolSize < 1) {
-//                    LogUtils.warn("Maximum database pool size is lower than 1! This is not supported! Defaulting to 1.");
-//                    maximumPoolSize = 1;
-//                }
-//            }
+            @PostProcess
+            public void postProcess() {
+                if (maximumPoolSize < 1) {
+                    LogUtils.warn("Maximum database pool size is lower than 1! This is not supported! Defaulting to 1.");
+                    maximumPoolSize = 1;
+                }
+            }
         }
     }
 

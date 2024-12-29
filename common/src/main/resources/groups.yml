@@ -6,7 +6,7 @@ groups:
       - "chest.open"
   - id: moderator
     name: "Moderator"
-    priority: 1
+    priority: 0
   - id: owner
     name: "Owner"
     priority: 10000 # Owner prioirty
