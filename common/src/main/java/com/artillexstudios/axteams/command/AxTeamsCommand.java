@@ -1,5 +1,7 @@
 package com.artillexstudios.axteams.command;
 
+import com.artillexstudios.axapi.libs.caffeine.caffeine.cache.Cache;
+import com.artillexstudios.axapi.libs.caffeine.caffeine.cache.Caffeine;
 import com.artillexstudios.axapi.placeholders.Context;
 import com.artillexstudios.axapi.placeholders.ParseContext;
 import com.artillexstudios.axapi.placeholders.Placeholders;
@@ -16,6 +18,7 @@ import com.artillexstudios.axteams.api.teams.Team;
 import com.artillexstudios.axteams.api.teams.TeamID;
 import com.artillexstudios.axteams.api.teams.values.TeamValue;
 import com.artillexstudios.axteams.api.teams.values.TeamValues;
+import com.artillexstudios.axteams.api.teams.values.identifiables.IdentifiableBigDecimal;
 import com.artillexstudios.axteams.api.teams.values.identifiables.IdentifiableBoolean;
 import com.artillexstudios.axteams.api.teams.values.identifiables.IdentifiableComponent;
 import com.artillexstudios.axteams.api.teams.values.identifiables.IdentifiableLocation;
@@ -33,30 +36,27 @@ import com.artillexstudios.axteams.config.Levels;
 import com.artillexstudios.axteams.guis.implementation.MainGui;
 import com.artillexstudios.axteams.guis.implementation.UsersGui;
 import com.artillexstudios.axteams.teams.NameValidation;
-import com.artillexstudios.axteams.teams.TeamInventoryHolder;
 import com.artillexstudios.axteams.teams.Teams;
 import com.artillexstudios.axteams.users.Users;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
+import dev.jorel.commandapi.arguments.DoubleArgument;
 import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.LiteralArgument;
 import dev.jorel.commandapi.arguments.OfflinePlayerArgument;
 import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
-import dev.jorel.commandapi.arguments.TextArgument;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -1042,13 +1042,92 @@ public enum AxTeamsCommand {
                 )
                 .then(new LiteralArgument("bank")
                         .then(new LiteralArgument("balance")
+                                .executesPlayer((sender, args) -> {
+                                    User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
+                                    if (user == null) {
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.error.userNotLoaded);
+                                        return;
+                                    }
 
+                                    Team team = user.team();
+                                    if (team == null) {
+                                        MessageUtils.sendMessage(sender, Language.prefix, Language.error.notInTeam);
+                                        return;
+                                    }
+
+                                    BigDecimal balance = team.first(TeamValues.BANK);
+                                    balance = balance == null ? BigDecimal.ZERO : balance;
+                                    MessageUtils.sendMessage(sender, Language.prefix, Language.success.bankBalance, Placeholder.unparsed("balance", balance.toPlainString()));
+                                })
                         )
                         .then(new LiteralArgument("take")
+                                .then(new DoubleArgument("amount")
+                                        .executesPlayer((sender, args) -> {
+                                            User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
+                                            if (user == null) {
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.error.userNotLoaded);
+                                                return;
+                                            }
 
+                                            Team team = user.team();
+                                            if (team == null) {
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.error.notInTeam);
+                                                return;
+                                            }
+
+                                            Double amount = args.getByClass("amount", Double.class);
+                                            if (amount == null || amount.isInfinite() || amount.isNaN()) {
+                                                return;
+                                            }
+
+                                            BigDecimal balance = team.first(TeamValues.BANK);
+                                            balance = balance == null ? BigDecimal.ZERO : balance;
+                                            BigDecimal newValue = balance.subtract(BigDecimal.valueOf(amount));
+                                            if (newValue.compareTo(BigDecimal.ZERO) <= 0) {
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.error.notEnoughBankBalance, Placeholder.unparsed("amount", String.valueOf(amount)), Placeholder.unparsed("balance", balance.toPlainString()));
+                                                return;
+                                            }
+
+                                            team.add(TeamValues.BANK, new IdentifiableBigDecimal(newValue));
+
+                                            MessageUtils.sendMessage(sender, Language.prefix, Language.success.bankBalanceTake, Placeholder.unparsed("amount", String.valueOf(amount)), Placeholder.unparsed("balance", balance.toPlainString()));
+                                        })
+                                )
                         )
-                        .then(new LiteralArgument("insert")
+                        .then(new LiteralArgument("deposit")
+                                .then(new DoubleArgument("amount")
+                                        .executesPlayer((sender, args) -> {
+                                            User user = AxTeamsAPI.instance().getUserIfLoadedImmediately(sender);
+                                            if (user == null) {
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.error.userNotLoaded);
+                                                return;
+                                            }
 
+                                            Team team = user.team();
+                                            if (team == null) {
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.error.notInTeam);
+                                                return;
+                                            }
+
+                                            Double amount = args.getByClass("amount", Double.class);
+                                            if (amount == null || amount.isInfinite() || amount.isNaN()) {
+                                                return;
+                                            }
+
+                                            // TODO: Economy hook take
+                                            BigDecimal balance = team.first(TeamValues.BANK);
+                                            balance = balance == null ? BigDecimal.ZERO : balance;
+                                            BigDecimal newValue = balance.add(BigDecimal.valueOf(amount));
+                                            if (newValue.compareTo(BigDecimal.ZERO) <= 0) {
+                                                MessageUtils.sendMessage(sender, Language.prefix, Language.error.notEnoughToDeposit, Placeholder.unparsed("amount", String.valueOf(amount)), Placeholder.unparsed("balance", balance.toPlainString()));
+                                                return;
+                                            }
+
+                                            team.add(TeamValues.BANK, new IdentifiableBigDecimal(newValue));
+
+                                            MessageUtils.sendMessage(sender, Language.prefix, Language.success.bankBalanceTake, Placeholder.unparsed("amount", String.valueOf(amount)), Placeholder.unparsed("balance", balance.toPlainString()));
+                                        })
+                                )
                         )
                 )
                 .then(new LiteralArgument("admin")

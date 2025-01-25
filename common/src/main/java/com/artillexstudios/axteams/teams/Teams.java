@@ -1,5 +1,7 @@
 package com.artillexstudios.axteams.teams;
 
+import com.artillexstudios.axapi.libs.caffeine.caffeine.cache.Cache;
+import com.artillexstudios.axapi.libs.caffeine.caffeine.cache.Caffeine;
 import com.artillexstudios.axapi.utils.AsyncUtils;
 import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axteams.api.LoadContext;
@@ -8,8 +10,6 @@ import com.artillexstudios.axteams.api.teams.TeamID;
 import com.artillexstudios.axteams.api.users.User;
 import com.artillexstudios.axteams.config.Config;
 import com.artillexstudios.axteams.database.DataHandler;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import java.util.ArrayList;

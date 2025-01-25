@@ -2,7 +2,6 @@ package com.artillexstudios.axteams.config;
 
 import com.artillexstudios.axapi.config.YamlConfiguration;
 import com.artillexstudios.axapi.config.annotation.ConfigurationPart;
-import com.artillexstudios.axapi.libs.snakeyaml.DumperOptions;
 import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axapi.utils.YamlUtils;
 import com.artillexstudios.axteams.AxTeamsPlugin;
@@ -11,11 +10,12 @@ import com.artillexstudios.axteams.utils.FileUtils;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public final class Permissions implements ConfigurationPart {
     private static final Permissions INSTANCE = new Permissions();
-    public static Map<String, Map<String, Object>> permissions = Map.of();
+    public static Map<String, Map<String, Object>> permissions = new LinkedHashMap<>();
     public static int configVersion = 1;
     private YamlConfiguration config = null;
 
@@ -52,9 +52,6 @@ public final class Permissions implements ConfigurationPart {
             this.config = YamlConfiguration.of(path, Permissions.class)
                     .configVersion(1, "config-version")
                     .withDefaults(AxTeamsPlugin.instance().getResource("permissions.yml"))
-                    .withDumperOptions(options -> {
-                        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-                    })
                     .build();
         }
 

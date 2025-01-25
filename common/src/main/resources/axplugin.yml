@@ -1,0 +1,28 @@
+main-class: "com.artillexstudios.axteams.AxTeamsPlugin"
+axapi-version: "1.4.531"
+axapi-relocation: "com.artillexstudios.axteams.libs.axapi"
+libraries-folder: "libraries"
+
+repositories:
+  - "https://jitpack.io/"
+  - "https://repo.codemc.org/repository/maven-public/"
+  - "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
+
+dependencies:
+  - "dev.jorel:commandapi-bukkit-shade:9.6.0"
+  - "com.h2database:h2:2.3.232"
+  - "dev.triumphteam:triumph-gui:3.1.10"
+  - "org.jooq:jooq:3.19.10"
+  - "com.zaxxer:HikariCP:5.1.0"
+
+relocations:
+  - from: "org.h2"
+    to: "com.artillexstudios.axteams.libs.h2"
+  - from: "dev.jorel.commandapi"
+    to: "com.artillexstudios.axteams.libs.commandapi"
+  - from: "dev.triumphteam.gui"
+    to: "com.artillexstudios.axteams.libs.triumphgui"
+  - from: "org.jooq"
+    to: "com.artillexstudios.axteams.libs.jooq"
+  - from: "com.zaxxer"
+    to: "com.artillexstudios.axteams.libs.hikaricp"

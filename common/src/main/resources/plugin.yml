@@ -1,5 +1,5 @@
 name: "AxTeams"
-main: "com.artillexstudios.axteams.AxTeamsPlugin"
+main: "com.artillexstudios.axteams.libs.axapibootstrapper.AxAPIBootstrapper"
 version: "${version}"
 api-version: "1.18"
 folia-supported: true

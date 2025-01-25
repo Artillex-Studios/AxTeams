@@ -54,6 +54,8 @@ public final class Language implements ConfigurationPart {
         public String hasMembers = "<#FF0000>This group has members, so it can't be deleted!";
         public String ownerGroup = "<#FF0000>This group is the owner group, so it can't be deleted!";
         public String defaultGroup = "<#FF0000>This group is the default group, so it can't be deleted!";
+        public String notEnoughBankBalance = "<#FF0000>There is not enough money in the bank to take!";
+        public String notEnoughToDeposit = "<#FF0000>You don't have enough money to deposit!";
         public TeamNaming teamNaming = new TeamNaming();
 
         @Serializable
@@ -88,6 +90,9 @@ public final class Language implements ConfigurationPart {
         public String displayNameChanged = "<#00FF00>You have successfully changed the team's displayname to <name>!";
         public String displayNameChangedAnnouncement = "<#00FF00><player> change the team's display name from <old-name> to <name>!";
         public String groupCreated = "<#00FF00><group>has been created!";
+        public String bankBalance = "<#00FF00>Current bank balance: <balance>$";
+        public String bankBalanceTake = "<#00FF00>Took out: <amount> current bank balance: <balance>$";
+        public String bankBalanceDeposit = "<#00FF00>Deposited: <amount> current bank balance: <balance>$";
         public ChatToggle chatToggle = new ChatToggle();
         @Named("pvp-toggle")
         public PvPToggle pvPToggle = new PvPToggle();
