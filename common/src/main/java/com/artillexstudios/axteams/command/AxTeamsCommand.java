@@ -1,7 +1,5 @@
 package com.artillexstudios.axteams.command;
 
-import com.artillexstudios.axapi.libs.caffeine.caffeine.cache.Cache;
-import com.artillexstudios.axapi.libs.caffeine.caffeine.cache.Caffeine;
 import com.artillexstudios.axapi.placeholders.Context;
 import com.artillexstudios.axapi.placeholders.ParseContext;
 import com.artillexstudios.axapi.placeholders.Placeholders;
@@ -38,6 +36,10 @@ import com.artillexstudios.axteams.guis.implementation.UsersGui;
 import com.artillexstudios.axteams.teams.NameValidation;
 import com.artillexstudios.axteams.teams.Teams;
 import com.artillexstudios.axteams.users.Users;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import dev.jorel.commandapi.CommandAPI;
+import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import dev.jorel.commandapi.CommandTree;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.DoubleArgument;
@@ -55,6 +57,7 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -69,6 +72,21 @@ public enum AxTeamsCommand {
             .expireAfterWrite(Duration.ofSeconds(30))
             .maximumSize(1000)
             .build();
+
+    public void load(JavaPlugin plugin) {
+        CommandAPI.onLoad(new CommandAPIBukkitConfig(plugin)
+                .setNamespace("axteams")
+                .skipReloadDatapacks(true)
+        );
+    }
+
+    public void enable() {
+        CommandAPI.onEnable();
+    }
+
+    public void disable() {
+        CommandAPI.onDisable();
+    }
 
     public void register() {
         new CommandTree("axteams")

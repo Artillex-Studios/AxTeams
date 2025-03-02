@@ -30,8 +30,8 @@ subprojects {
     }
 
     dependencies {
-        implementation("com.artillexstudios.axapibootstrapper:axapi-bootstrapper:1.0.21:all")
-        compileOnly("com.artillexstudios.axapi:axapi:1.4.531:all")
+        implementation("com.artillexstudios.axapi:axapi:1.4.549:all")
+        compileOnly("com.github.ben-manes.caffeine:caffeine:3.2.0")
         compileOnly("dev.jorel:commandapi-bukkit-shade:9.7.0")
         compileOnly("com.h2database:h2:2.3.232")
         compileOnly("org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT")
@@ -53,7 +53,7 @@ tasks {
     }
 
     shadowJar {
-//        relocate("com.github.benmanes", "com.artillexstudios.axteams.libs.axapi.libs.caffeine")
+        relocate("com.github.benmanes", "com.artillexstudios.axteams.libs.axapi.libs.caffeine")
         relocate("com.artillexstudios.axapi", "com.artillexstudios.axteams.libs.axapi")
         relocate("dev.jorel.commandapi", "com.artillexstudios.axteams.libs.commandapi")
         relocate("dev.triumphteam.gui", "com.artillexstudios.axteams.libs.triumphgui")

@@ -4,7 +4,7 @@ import com.artillexstudios.axapi.nms.NMSHandlers;
 import com.artillexstudios.axapi.scheduler.Scheduler;
 import com.artillexstudios.axapi.utils.AsyncUtils;
 import com.artillexstudios.axapi.utils.LogUtils;
-import com.artillexstudios.axapi.utils.Pair;
+import com.artillexstudios.axapi.utils.PlayerTextures;
 import com.artillexstudios.axteams.api.LoadContext;
 import com.artillexstudios.axteams.api.teams.Group;
 import com.artillexstudios.axteams.api.teams.Team;
@@ -194,20 +194,20 @@ public final class DataHandler {
             Scheduler.get().run(() -> {
                 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
                 if (offlinePlayer.isOnline()) {
-                    Pair<String, String> textures = NMSHandlers.getNmsHandler().textures(offlinePlayer.getPlayer());
+                    PlayerTextures textures = NMSHandlers.getNmsHandler().wrapper(offlinePlayer.getPlayer()).textures(null);
 
                     if (teamID == null) {
                         if (Config.debug) {
                             LogUtils.debug("Null team id; online!");
                         }
-                        User user = new com.artillexstudios.axteams.users.User(record.get(ID), offlinePlayer, null, textures == null ? "" : textures.first(), null, System.currentTimeMillis());
+                        User user = new com.artillexstudios.axteams.users.User(record.get(ID), offlinePlayer, null, textures.texture() == null ? "" : textures.texture(), null, System.currentTimeMillis());
                         ((UserSettingsRepository) user.settingsRepository()).load(record.get(SERIALIZED_SETTINGS));
                         userConsumer.accept(user);
                     } else {
                         if (Config.debug) {
                             LogUtils.debug("Not null team ({}) id; online!", teamID);
                         }
-                        User user = new com.artillexstudios.axteams.users.User(record.get(ID), offlinePlayer, null, textures == null ? "" : textures.first(), Group.ofId(record.get(TEAM_GROUP)), System.currentTimeMillis());
+                        User user = new com.artillexstudios.axteams.users.User(record.get(ID), offlinePlayer, null, textures.texture() == null ? "" : textures.texture(), Group.ofId(record.get(TEAM_GROUP)), System.currentTimeMillis());
                         ((UserSettingsRepository) user.settingsRepository()).load(record.get(SERIALIZED_SETTINGS));
                         Users.loadWithContext(user, context);
                         if (context == LoadContext.FULL) {
@@ -276,8 +276,8 @@ public final class DataHandler {
             Player onlinePlayer = player.getPlayer();
             String texture = "";
             if (onlinePlayer != null) {
-                Pair<String, String> textures = NMSHandlers.getNmsHandler().textures(onlinePlayer);
-                texture = textures.first() == null ? "" : textures.first();
+                PlayerTextures textures = NMSHandlers.getNmsHandler().wrapper(onlinePlayer).textures(null);
+                texture = textures.texture() == null ? "" : textures.texture();
             }
             return Triple.of(player, player.isOnline(), texture);
         }, command -> Scheduler.get().run(command)).exceptionallyAsync(throwable -> {

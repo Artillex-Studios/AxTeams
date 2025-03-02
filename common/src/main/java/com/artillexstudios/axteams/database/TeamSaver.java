@@ -1,6 +1,6 @@
 package com.artillexstudios.axteams.database;
 
-import com.artillexstudios.axapi.utils.ExceptionReportingScheduledThreadPool;
+import com.artillexstudios.axapi.executor.ExceptionReportingScheduledThreadPool;
 import com.artillexstudios.axapi.utils.LogUtils;
 import com.artillexstudios.axteams.config.Config;
 
